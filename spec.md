@@ -1,0 +1,177 @@
+# Project Spec: Process Exhumer Tool
+
+**Created**: 2026-06-04
+**Status**: Draft
+
+---
+
+## Goal
+
+A framework that takes a task or goal and "unearths" a process for accomplishing it programmatically — through recursive decomposition into atomic, contract-bound units of work, codification of each unit, and structural composition of the results. The longer-term ambition is that produced artifacts contain as little AI-call dependence as possible (ideally zero), so that work that was once judgment-based becomes reliably reproducible code.
+
+---
+
+## Success Criteria
+
+**For v1 (Claude Code skill prototype):**
+
+- [ ] Given an arbitrary task description, the framework can run end-to-end and produce: (a) a refined task spec from interrogation, (b) a decomposition into sub-tasks with assembly relationships and contracts, (c) generated code for each leaf, (d) verification results, (e) a composed result that performs the original task.
+- [ ] The framework runs entirely within Claude Code using the user's Max plan; no external API costs.
+- [ ] Each pipeline stage (interrogator, decomposition, codification, verification, composition) produces a cleanly extractable, structured output that does not depend on conversation context.
+- [ ] The decomposition step explicitly produces (assembly_pattern, glue_code, sub_task_contracts) at each node — not just a list of sub-tasks.
+- [ ] Verification operates on contract satisfaction — a leaf "passes" iff its generated code satisfies its declared contract.
+- [ ] When a leaf cannot satisfy a deterministic contract, the framework either recurses on it or accepts the leaf with an explicit "requires AI" annotation in the contract. No fuzzy reducibility heuristics.
+- [ ] The skill is structured to map cleanly onto a future MCP server architecture (explicit stage boundaries, structured outputs, no implicit context).
+- [ ] At least one ad-hoc end-to-end run produces a result a non-technical observer would recognize as "the framework did what it was supposed to do."
+
+**Broader vision (post-v1, informational):**
+
+- [ ] Eventually rebuilt as a standalone MCP server + CLI, usable by anyone with any MCP client.
+- [ ] Eventually supports AI-agent delegation as a first-class invocation pattern.
+- [ ] Eventually viable on weak local models (e.g., Gemma ~4B) for structural-pattern-following portions of its work.
+- [ ] Eventually grows a pattern library that calibrates pattern selection against accumulated outcomes.
+
+---
+
+## User Model
+
+### Who Uses This
+
+**v1 primary user**: the project author, exploring whether the framework's core abstractions hold up under real use. Working knowledge of Claude Code, comfortable with multi-turn dialog, familiar with the framework's design intent.
+
+**Long-term users** (post-v1):
+- Developers who want a structured way to derive programmatic implementations of recurring tasks.
+- AI agents delegating sub-tasks to the framework as part of their own work.
+- Anyone with an MCP client who wants to capture work-as-process rather than work-as-LLM-call.
+
+### Entry Point
+
+**v1**: User invokes the skill in a Claude Code session. The interrogator phase starts multi-turn dialog to refine the task; subsequent stages run in the same conversation (with optional subagent isolation for stages below interrogation, once prompts stabilize).
+
+**Long-term**:
+- Humans run a `process-exhume` CLI command.
+- AI agents call MCP tools directly with structured task descriptions matching the framework's input schema.
+
+### Key Workflows
+
+1. **Task refinement.** Interrogator-style dialog (or schema-conformant input for AI agents) produces a clear spec for the work to be done.
+2. **Decomposition.** The framework recursively decomposes the task. At each node it produces an assembly relationship, glue code, and contracts for each sub-task.
+3. **Codification.** For each leaf, generate code that satisfies the leaf's contract.
+4. **Verification.** Check that each leaf's code, and each composed node's code, satisfies its respective contract.
+5. **Composition.** Assemble the verified leaves upward through the recursion into a working implementation of the original task.
+
+### User Decisions
+
+- The task to bring to the framework.
+- During interrogation: how to clarify, refine, and bound the task.
+- Whether to accept the resulting implementation, request revisions, or stop.
+- (Post-v1) Configuration choices for the LLM backend and storage location.
+
+### System Decisions
+
+- The decomposition shape at each node (assembly pattern, sub-task structure, contracts).
+- The implementation of each leaf, given its contract.
+- Whether a leaf has satisfied its contract (verification verdict).
+- Whether to recurse further on an under-satisfied leaf or accept with explicit AI dependence.
+
+---
+
+## Scope
+
+### In Scope (v1)
+
+- A Claude Code skill (or small set of related skills) implementing the framework's pipeline end-to-end.
+- **Interrogator phase**: multi-turn dialog producing a structured task spec.
+- **Decomposition phase**: contract-first decomposition producing (assembly_pattern, glue_code, sub_task_contracts) at each node.
+- **Fixed assembly vocabulary**: sequential, parallel-and-combine, iterative, conditional, recursive-over-data, asymmetric-with-integration-subtask. Vocabulary is presented as **menu-as-hint** — the schema is fixed, the menu suggested, and novel patterns are allowed provided they satisfy the structural template.
+- **Codification phase**: generate code for each leaf, constrained by the leaf's contract, with instruction to minimize AI dependence.
+- **Verification phase**: check that generated code satisfies declared contracts.
+- **Composition phase**: assemble verified results upward through the recursion.
+- **Cleanly extractable per-stage prompts** — each stage's prompt can be lifted and run against a different model without rebuilding the framework.
+- **Optional subagent invocation** from decomposition stages downward, to validate contract discipline once prompts stabilize.
+
+### Explicitly Out of Scope (v1)
+
+- **Standalone MCP server.** v1 runs only inside Claude Code.
+- **Universal usability.** v1 requires Claude Code; non-Claude-Code users are not served.
+- **Pattern library — any form.** No outcome capture, no retrieval, no stubs. Pipeline seams kept clean so a library can be added later without architectural surgery.
+- **AI-delegation front door.** No structured invocation contract for external AI agents in v1.
+- **Iterative refinement of leaves to remove LLM calls.** The model writes each leaf once with the instruction to minimize AI dependence. Iterative reduction is deferred (the "post-codification feedback" loop into decomposition).
+- **Packaged outputs.** Generated code remains in-chat; not packaged into reusable MCP tools or installable artifacts.
+- **Weak-model support (real).** v1 will be designed in ways consistent with weak-model usability (menu-as-hint, structured prompting, extractable stage prompts), but no weak-model testing or adaptation is *in* v1. Gemma testing happens post-build, not as a v1 requirement.
+
+### Scope Risks
+
+- **Pull toward "just a little library."** The library's value is tempting; we may be tempted to add capture-only logging or stubs "for later." We've decided against. Watch for this drifting back in.
+- **Pull toward a privileged test case.** Ad-hoc runs during development are fine; enshrining one task as *the* validation target is not. Watch for "but it works great on X" being used to justify design choices.
+- **Pull toward implicit context.** Decomposition is interface-first; each stage is extractable. Watch for prompts that quietly accumulate context-dependent behavior, which would block weak-model testing and MCP portability simultaneously.
+- **LWE bias in the architecture.** The empirical input was a game-dev project. Post-build validation on diverse tasks is the check on how well we abstracted.
+- **Conflating "the skill works" with "the architecture works."** v1 is a prototype. Its working does not prove the MCP-port version will. Both validations matter, separately.
+
+---
+
+## Constraints
+
+- **v1 runs entirely inside Claude Code** under the user's Max plan. No external API calls, no per-token costs during development or use.
+- **v1 must be designed for clean conversion to a standalone MCP server later.** This implies: explicit stage boundaries, structured outputs at each stage, no implicit conversation-context dependence, extractable per-stage prompts. The eventual conversion is a *rebuild informed by the skill*, not a refactor.
+- **No new runtime dependencies for v1** beyond what Claude Code provides. The skill is markdown + structured prompting.
+- **Interrogator phase must operate as multi-turn dialog with a human.** Subagent isolation is incompatible with this phase; interrogator stays single-context.
+- **Decomposition and downstream stages may use subagents** to validate contract discipline once prompts stabilize. Default during early iteration is single-context; subagent invocation pulls in later.
+- **Contracts are the framework's load-bearing primitive.** Anything that determines what a leaf must do, what assembly must produce, or what verification must check, is expressed as a contract.
+
+---
+
+## Validation Criteria
+
+| Component | Validation Method |
+|-----------|-------------------|
+| Interrogator | Produces a structured task spec from vague input. The spec contains enough to drive decomposition without re-asking the user. |
+| Decomposition | At each node, output includes (assembly_pattern from the menu OR a novel pattern satisfying the template, glue_code, sub_task_contracts). Output is structurally valid even when contents are novel. |
+| Codification | Each leaf's generated code references only its declared inputs and produces its declared outputs, conforming to its contract. |
+| Verification | Detects contract violations: wrong output shape, AI calls in code that should be deterministic, missing required behavior. |
+| Composition | Assembled code runs end-to-end on the original task; results match the spec. |
+| Stage-prompt extractability | Each stage's prompt can be lifted out and run against a different LLM with the same expected input shape. |
+| MCP-portability | A human reviewer can mentally map each skill stage to a planned MCP tool with a clear input/output schema. |
+
+Validation does NOT include a privileged test task. Ad-hoc runs during development are ephemeral and should rotate through different tasks. Post-build validation runs multiple diverse tasks chosen *after* v1 stabilizes. Weak-model viability is checked by lifting per-stage prompts and running them against a local Gemma ~4B model, also post-build.
+
+---
+
+## Open Questions / Unknowns
+
+- [ ] **Tag vocabulary and consistency.** Tags are the load-bearing piece for any future pattern library. v1 doesn't need them, but the post-v1 library has to address: where the vocabulary comes from (fixed taxonomy / free-form / LLM-derived / multi-dimensional), how consistency is enforced across runs, who generates tags, how decomposition-time tag assignment couples to decomposition quality.
+- [ ] **Interrogator → decomposition handoff schema.** The shape of the structured spec the interrogator produces, and what decomposition consumes. Needs to be made concrete during build.
+- [ ] **Contract data structure.** "A contract" is treated as a primitive throughout this spec but its concrete shape — fields, types, expressivity — isn't decided.
+- [ ] **What counts as "the model cannot produce a deterministic implementation."** The decision rule for whether to recurse further or accept an AI-dependent leaf. Currently relies on the model's own judgment; may need a tighter check.
+- [ ] **Outcome-tracker library design.** The shape of the eventual v2 outcome-tracker — data model, storage location (per-project / per-user), integration points in the pipeline.
+- [ ] **Recursive self-application.** Whether the framework's own pipeline can produce parts of itself. Not a v1 goal but worth holding as a longer-term question.
+
+---
+
+## Assumptions
+
+- **For anything reliably accomplishable, a process exists.** The foundational philosophical premise behind the framework's value prop. If false, the framework's reach has a hard ceiling.
+- **A strong model (Claude Code's underlying model) can reliably perform decomposition, contract generation, and codification at the quality the architecture requires.** v1's pipeline assumes this.
+- **Accurate tagging of tasks is achievable, mostly, with LLM assistance.** (User-flagged.) The post-v1 pattern library depends on this; v1 does not, but the library's eventual usefulness is contingent on it.
+- **The fixed assembly vocabulary covers most real-world decomposition shapes.** If many real tasks require novel patterns, the menu-as-hint approach still works but loses much of its weak-model accessibility benefit.
+- **Generated code can be verified against contracts in a tractable way.** Verification is load-bearing in this architecture; if contract checking is hard or unreliable, the termination story falls apart.
+- **Claude Code's multi-turn dialog facility is suitable for the interrogator phase.** No UX work is in v1; the skill leans on Claude Code's existing dialog handling.
+
+---
+
+## Assumptions NOT Made
+
+- **The framework will work with weak models out of the box.** Designed for it (menu-as-hint, structured prompting), but not assumed; explicitly testable post-build.
+- **Novel assembly patterns will emerge frequently.** Allowed, but the bet is that most tasks fit the fixed vocabulary.
+- **Users have technical expertise.** Interrogator should handle vague, non-technical task descriptions; expertise is not a prerequisite.
+- **The pattern library is necessary for v1 to provide value.** v1 ships without one; the bet is that strong-model reasoning + clean architecture is enough for initial usefulness.
+- **The skill version will become the MCP server version through refactoring.** Acknowledged as a rebuild, not a refactor.
+- **Specific tasks define success.** No privileged test case; success is judged by post-build diverse-task validation.
+
+---
+
+## Notes
+
+Architecture and design emerged from a multi-turn interrogator session on 2026-06-04 with the project author. Empirical input was the author's prior project (latent-world-engine), particularly the experience of using structural skeletons + per-cell AI generation as a partial reduction of AI dependence in game-dev content generation. Many of the framework's load-bearing ideas — interface-first decomposition, contracts as termination criterion, the fixed assembly vocabulary, menu-as-hint prompting, MCP server as the long-term primitive, classical-recursion-only model — were resolved during that session.
+
+The full interrogation conversation contains additional context worth preserving for future reference, including: why MCP was chosen over Claude Code skills as the long-term primitive; why the pattern library was decomposed into "fixed vocabulary in v1" vs. "learned outcome-tracker post-v1"; why classical recursion was preferred over the originally-considered dual decomposition+reduction model; and why contract satisfaction replaces the criterion-(4) reduction heuristics.
