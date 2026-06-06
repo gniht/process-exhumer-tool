@@ -121,6 +121,96 @@ A framework that takes a task or goal and "unearths" a process for accomplishing
 
 ---
 
+## Core Data Model
+
+*Resolved 2026-06-05 (v1 build session). This section answers the **contract data structure** and **interrogator → decomposition handoff** Open Questions, fixes the **per-stage prompt extraction format**, and pins the recursion model. The reasoning is recorded alongside the conclusions because the load-bearing part — *why the contract is this small* — is the part that drifts back toward complexity if it isn't written down.*
+
+### The contract is the only primitive
+
+A **contract** is a declaration of identity — *what a node is* — and nothing else. It is the single primitive that flows through every pipeline stage, and it is deliberately minimal:
+
+```
+contract = {
+  inputs:  [ {name, type, description} ],   # resolvable; may be absent early
+  outputs: [ {name, type, description} ],   # resolvable; may be absent early
+  behavior                                   # REQUIRED: what must be true of outputs given inputs
+}
+```
+
+- **`behavior` is the only required field** — the irreducible seed. A node can be processed with behavior alone; decomposition resolves I/O *from* it (it aims at the behavior and, in doing so, proposes an output shape). With no behavior there is no target to aim at, which means there is no task.
+- **`inputs`/`outputs` are resolvable, monotonically.** A contract may enter a stage under-resolved and leave it more resolved; resolution only ever increases down the tree. By the time a leaf reaches codification its I/O must be concrete.
+- **The contract describes *shape*, never *content*.** "Find the interesting clusters" has output shape `set of {cluster, description}` even though the count and contents are unknown. Most "I don't know the output" is really "I don't know the contents" — which the contract never claimed to know.
+- **`type` may be prose** ("a list of integers") in v1. Formal types belong to the MCP / weak-model era.
+
+Each field earns its place by one test: *which downstream stage consumes it, and would that stage break without it?* Fields that failed the test were cut — and they live elsewhere (below), where they are actually produced.
+
+### What the contract deliberately does NOT contain
+
+- **No `id`.** Identity-of-position belongs to the **node**, not the declarative spec. A contract must stay liftable — runnable against another model with no tree context. A positional id would smuggle tree-context into the contract and break under re-decomposition (the framework's main loop).
+- **No `determinism` field.** Whether a unit reduces to deterministic code is *discovered during codification*, not authored up front (the abandoned `"undecided"` value was the tell). It is a result annotation.
+- **No `verification` field.** The `behavior` statement *is* the acceptance criterion. Verification is a stage that *reads* `behavior` and checks it — not data written twice.
+
+The rule: the contract is purely declarative ("what must be true"). Anything about *how it is checked*, *how it is built*, or *what happened when it ran* lives outside it.
+
+### Node and result records
+
+The contract is wrapped by a **node** — the tree element — which carries everything that is *not* identity:
+
+```
+node = {
+  id,                  # stable, opaque handle (NOT a positional path)
+  contract,            # the declarative spec above
+  # once decomposed:
+  assembly_pattern,    # how children combine (from the assembly vocabulary, or novel)
+  glue,                # wiring; references children by LOCAL names
+  children,            # each child is itself a node
+  # once codified (leaf):
+  code,                # generated implementation
+  result               # verification verdict, determinism outcome, failures
+}
+```
+
+- **`id` is on the node, opaque, position-independent.** Re-decomposition shifts positions; references must survive it. A display path can be computed by walking the tree — it is a *view*, never the identity.
+- **`glue` references children by local names** scoped to the parent, not global positions — so wiring also survives re-decomposition.
+- **`result` is where outcome / failure history lives** — keyed *to* the contract's handle, never stored *inside* the contract. The post-v1 outcome-tracker aggregates across result records at this seam, *by reference*. Complexity accretes *around* the contract, never *in* it. (This is the home for the user's "track failure modes and learn from them" intuition — outside the contract, by design.)
+
+### The recursion: one mechanism, two answers
+
+The contract tells a node *what it is*. The node then asks two questions, which are the two halves of decomposition:
+
+- **"What am I made of?"** → the parts → child contracts.
+- **"How do you build me?"** → the process → `assembly_pattern` + `glue`.
+
+They are distinct but produced together, and they feed each other bidirectionally: parts can reveal an assembly, **or an assembly pattern can generate the parts it needs** (choosing *iterative* yields "the per-item operation" as the child; choosing *asymmetric-with-integration* introduces an integrator child that is a product of the build strategy, not a piece of the goal). The assembly vocabulary is therefore a **generative lens**, not a post-hoc label.
+
+**Codify vs. decompose is one mechanism, different trigger** — the base and recursive cases of "how do you build me?":
+- answerable directly in code → **leaf** (codify),
+- answerable only as parts-plus-assembly → **node** (decompose, recurse).
+
+### Where the goal lives
+
+The declared goal — *minimize AI-call dependence* — does **not** shape the contract. The contract is goal-neutral. The goal lives in the recursion's **termination rule**: keep pushing "how do you build me?" downward until the answer is deterministic code, or you have isolated an irreducible AI-required leaf (accepted with an explicit annotation). Loading the goal into the contract would put it in the wrong place.
+
+### Handoff: there isn't a separate one
+
+The interrogator emits a **root contract**. Decomposition consumes a contract and emits `(assembly_pattern, glue, child_contracts)`. The same primitive flows end-to-end, so there is no distinct interrogator → decomposition handoff schema to define — **the contract *is* the handoff.**
+
+### Per-stage prompt extraction format
+
+Each pipeline stage is a self-contained, model-agnostic prompt expressed as a markdown file with three delimited sections:
+
+- **`## Input`** — the schema of what the stage consumes (in terms of the contract / node model above).
+- **`## Output`** — the schema of what the stage must produce.
+- **`## Prompt`** — the liftable instructions.
+
+A stage prompt restates the slice of the data model it needs so it stays liftable standalone (this prioritizes extractability over DRY, per the spec's stated requirement). In the v1 Claude Code skill, this prompt is `prompt.md`, and a thin `SKILL.md` wraps it for in-session invocation. The split is deliberate: `prompt.md` is the thing that ports to another model or a future MCP tool; `SKILL.md` is the Claude-Code-specific harness around it.
+
+### Recursion mechanism (post-v1 MCP) — kept open by design
+
+For the eventual MCP server, the recursion is **not** carried by the MCP re-invoking itself, nor by agents-all-the-way-down. The MCP stays **flat**: stateless stage-tools (`decompose` / `codify` / `verify` / `compose`) over contracts. The tree-walk is an **orchestration concern** the MCP does not own — the default carrier is a deterministic control loop (best for determinism, weak-model viability, cost, debuggability). Agents enter only as a possible *implementation of a hard stage* (where decomposing or codifying a node needs tool-use and experimentation), never as the recursion topology. This decision does not block v1: keeping v1 stages flat and typed keeps all orchestration architectures reachable later.
+
+---
+
 ## Validation Criteria
 
 | Component | Validation Method |
@@ -140,10 +230,11 @@ Validation does NOT include a privileged test task. Ad-hoc runs during developme
 ## Open Questions / Unknowns
 
 - [ ] **Tag vocabulary and consistency.** Tags are the load-bearing piece for any future pattern library. v1 doesn't need them, but the post-v1 library has to address: where the vocabulary comes from (fixed taxonomy / free-form / LLM-derived / multi-dimensional), how consistency is enforced across runs, who generates tags, how decomposition-time tag assignment couples to decomposition quality.
-- [ ] **Interrogator → decomposition handoff schema.** The shape of the structured spec the interrogator produces, and what decomposition consumes. Needs to be made concrete during build.
-- [ ] **Contract data structure.** "A contract" is treated as a primitive throughout this spec but its concrete shape — fields, types, expressivity — isn't decided.
-- [ ] **What counts as "the model cannot produce a deterministic implementation."** The decision rule for whether to recurse further or accept an AI-dependent leaf. Currently relies on the model's own judgment; may need a tighter check.
-- [ ] **Outcome-tracker library design.** The shape of the eventual v2 outcome-tracker — data model, storage location (per-project / per-user), integration points in the pipeline.
+- [x] **Interrogator → decomposition handoff schema.** ~~The shape of the structured spec the interrogator produces, and what decomposition consumes.~~ **Resolved (2026-06-05):** there is no separate handoff — the interrogator emits a root contract; decomposition consumes a contract; the contract is the handoff. See **Core Data Model**.
+- [x] **Contract data structure.** ~~"A contract" is treated as a primitive throughout this spec but its concrete shape isn't decided.~~ **Resolved (2026-06-05):** `behavior` (required) + resolvable `inputs`/`outputs`; identity only; no `id`/`determinism`/`verification` fields. See **Core Data Model**.
+- [ ] **What counts as "the model cannot produce a deterministic implementation."** The decision rule for whether to recurse further or accept an AI-dependent leaf. Now framed as the recursion's **termination rule** (see Core Data Model → *Where the goal lives*), but still relies on the model's own judgment; may need a tighter check.
+- [ ] **Outcome-tracker library design.** The shape of the eventual v2 outcome-tracker — data model, storage location (per-project / per-user), integration points. Its **seam is fixed**: it aggregates across node `result` records by reference (see Core Data Model → *Node and result records*); the internals remain open.
+- [ ] **Resolution / task-shape menu.** A post-v1 question surfaced 2026-06-05: recurring task or contract-resolution shapes may eventually warrant their own *menu-as-hint* (mirroring the assembly vocabulary), and later feed the outcome-tracker. Deliberately not built in v1 — kept on the right side of the "no pattern library" scope line.
 - [ ] **Recursive self-application.** Whether the framework's own pipeline can produce parts of itself. Not a v1 goal but worth holding as a longer-term question.
 
 ---

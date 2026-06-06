@@ -4,7 +4,7 @@ A framework that takes a task and "unearths" a programmatic process for accompli
 
 ## Status
 
-**Pre-build.** Architectural spec captured in [`spec.md`](spec.md) via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session on 2026-06-04. No implementation yet. v1 build begins in the next working session.
+**v1 build in progress.** Architectural spec captured in [`spec.md`](spec.md) via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session on 2026-06-04. The core data model (contract, node, recursion, per-stage prompt format) was resolved 2026-06-05 — see the **Core Data Model** section of the spec. Build of the first stage (interrogator) is underway.
 
 ## v1 in one sentence
 
@@ -12,12 +12,12 @@ A Claude Code skill that runs end-to-end *interrogator → decomposition → cod
 
 ## Next steps
 
-Before writing code, the following items in `spec.md`'s **Open Questions** need concrete answers:
+The three pre-build blockers are now resolved (see `spec.md` → **Core Data Model**):
 
-- Contract data structure (the framework's load-bearing primitive)
-- Interrogator → decomposition handoff schema
-- Per-stage prompt extraction format
+- ✅ Contract data structure — `behavior` (required) + resolvable `inputs`/`outputs`; identity only
+- ✅ Interrogator → decomposition handoff — none needed; the contract is the handoff
+- ✅ Per-stage prompt extraction format — each stage is a self-contained `prompt.md` (`## Input` / `## Output` / `## Prompt`), wrapped by a thin `SKILL.md`
 
-Then: build the interrogator stage as a skill, iterate prompts in single-context mode, and switch to subagent invocation once prompts stabilize.
+In progress: build the interrogator stage as a skill, iterate prompts in single-context mode, then switch to subagent invocation (as a contract-discipline test) once prompts stabilize.
 
 See [`spec.md`](spec.md) for full architectural commitments, scope decisions, assumptions, and open questions.
