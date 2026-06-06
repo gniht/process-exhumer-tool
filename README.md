@@ -18,6 +18,8 @@ The three pre-build blockers are now resolved (see `spec.md` → **Core Data Mod
 - ✅ Interrogator → decomposition handoff — none needed; the contract is the handoff
 - ✅ Per-stage prompt extraction format — each stage is a self-contained `prompt.md` (`## Input` / `## Output` / `## Prompt`), wrapped by a thin `SKILL.md`
 
-In progress: build the interrogator stage as a skill, iterate prompts in single-context mode, then switch to subagent invocation (as a contract-discipline test) once prompts stabilize.
+Stage 1 — **interrogator** — is built at `.claude/skills/process-exhumer-interrogator/` (single-context human dialog → root contract). It is untested; refinement is deferred until the pipeline shape is clearer.
+
+Next: **design the decomposition stage** — the load-bearing one, where the assembly vocabulary, the recurse-or-codify decision, and the termination rule all land. It consumes a root contract and emits `(assembly_pattern, glue, child_contracts)`. Stages after that, in pipeline order: codification, verification, composition — each a `prompt.md` + `SKILL.md` pair in the same extraction format.
 
 See [`spec.md`](spec.md) for full architectural commitments, scope decisions, assumptions, and open questions.
