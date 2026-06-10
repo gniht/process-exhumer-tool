@@ -4,7 +4,7 @@ A framework that takes a task and "unearths" a programmatic process for accompli
 
 ## Status
 
-**v1 build in progress.** Architectural spec captured in [`spec.md`](spec.md) via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session on 2026-06-04. The core data model (contract, node, recursion, per-stage prompt format) was resolved 2026-06-05 — see the **Core Data Model** section of the spec. Build of the first stage (interrogator) is underway.
+**v1 built — untested.** Architectural spec captured in [`spec.md`](spec.md) via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session on 2026-06-04. The core data model (contract, node, recursion, per-stage prompt format) was resolved 2026-06-05, and further commitments accreted during the stage builds (2026-06-09) — see the **Core Data Model** section of the spec. All five pipeline stages exist as skills; no stage has been exercised yet. The first end-to-end run is next.
 
 ## v1 in one sentence
 
@@ -26,6 +26,8 @@ Stage 3 — **codification** — is built at `.claude/skills/process-exhumer-cod
 
 Stage 4 — **verification** — is built at `.claude/skills/process-exhumer-verification/`. Flat stage prompt (one unit in → `verified` verdict | `reject` out), two unit types: leaves checked as code-against-contract, internal nodes checked **assume-guarantee** (granting each child its contract, does the glue satisfy the parent's?) — which is what makes the whole tree verifiable before composition exists. Commitments recorded in the spec's **Core Data Model**: verification checks *everything except the inside of the seam* (seam-interior truths are **deferred to the run** — named, never silently passed); verdicts are *fail-closed* with per-check `executed`/`static` evidence labels; and *any stage may reject the contract it is handed*, always indicting the upstream author. Untested, like the others.
 
-Next: **composition** — the last stage: binds local wiring names to verified leaf and glue code, supplies the v1 `ai()` implementation, assembles the tree upward into a runnable artifact, and runs it end-to-end on the original task — watching the deferred list verification produced.
+Stage 5 — **composition** — is built at `.claude/skills/process-exhumer-composition/`. The stage prompt is **deliberately mechanical**: one function per node (qualified `<wiring-name>__<id>` names), contract-derived signatures, leaf code nested verbatim, wiring names bound in parent bodies, `self` bound under `recursive-over-data`, a JSON-stdin shell on the root — and *composition never patches*: every hole is a reject naming the owning stage. The seam runtime is an **input** (v1 ships a `claude -p` reference implementation in the harness); the harness runs the artifact on real inputs, feeds seam observations back into result records by node id, and settles verification's deferred list. Recorded in the spec as the pipeline's own deterministic leaf — the first stage expected to become pure code in the MCP era.
+
+**The pipeline is complete.** Next: the **first ad-hoc end-to-end run** — rotate through small, diverse tasks (no privileged test case, per the spec's scope risks), exercise all five stages, and let the failures drive the first refinement pass. The deferred interrogator-refinement requirements (entry-boundary input concreteness, derivability check, AI-user front door) are queued behind that.
 
 See [`spec.md`](spec.md) for full architectural commitments, scope decisions, assumptions, and open questions.
