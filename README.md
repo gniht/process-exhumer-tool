@@ -20,6 +20,8 @@ The three pre-build blockers are now resolved (see `spec.md` → **Core Data Mod
 
 Stage 1 — **interrogator** — is built at `.claude/skills/process-exhumer-interrogator/` (single-context human dialog → root contract). It is untested; refinement is deferred until the pipeline shape is clearer.
 
-Next: **design the decomposition stage** — the load-bearing one, where the assembly vocabulary, the recurse-or-codify decision, and the termination rule all land. It consumes a root contract and emits `(assembly_pattern, glue, child_contracts)`. Stages after that, in pipeline order: codification, verification, composition — each a `prompt.md` + `SKILL.md` pair in the same extraction format.
+Stage 2 — **decomposition** — is built at `.claude/skills/process-exhumer-decomposition/`. The stage prompt is *flat* (one contract in → `codify` | `decompose` | `reject` out, no tree context); the recursion is a worklist loop owned by the `SKILL.md` harness, mirroring the planned MCP shape (stateless stage-tools, tree-walk as orchestration). Two commitments landed here and are recorded in the spec's **Core Data Model**: *glue is deterministic — judgment lives only in leaves*, and the codify-or-decompose decision is the *strict-progress test*. Untested, like Stage 1.
+
+Next: **codification** — consumes a leaf contract, emits code that satisfies it with minimal AI dependence, and discovers/annotates determinism in the node's `result` record. Then, in pipeline order: verification, composition — each a `prompt.md` + `SKILL.md` pair in the same extraction format.
 
 See [`spec.md`](spec.md) for full architectural commitments, scope decisions, assumptions, and open questions.
