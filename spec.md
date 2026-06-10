@@ -97,7 +97,7 @@ A framework that takes a task or goal and "unearths" a process for accomplishing
 - **Pattern library — any form.** No outcome capture, no retrieval, no stubs. Pipeline seams kept clean so a library can be added later without architectural surgery.
 - **AI-delegation front door.** No structured invocation contract for external AI agents in v1.
 - **Iterative refinement of leaves to remove LLM calls.** The model writes each leaf once with the instruction to minimize AI dependence. Iterative reduction is deferred (the "post-codification feedback" loop into decomposition).
-- **Packaged outputs.** Generated code remains in-chat; not packaged into reusable MCP tools or installable artifacts.
+- **Packaged/distributed outputs.** *(Corrected 2026-06-09 — an earlier phrasing, "generated code remains in-chat," misstated the goal. The composed artifact is **standalone by design**: a self-contained program that runs outside any chat session. The session is the factory, not the habitat — strong models help the user produce the code; the code then operates on its own. Showing code in chat is a review convenience, useful for simple cases, never the deliverable.)* What stays out of v1 scope is packaging and distribution: no installable packages, no MCP-tool registration, no dependency management, no deployment targets. The deliverable is one runnable file; making it *shippable* is post-v1.
 - **Weak-model support (real).** v1 will be designed in ways consistent with weak-model usability (menu-as-hint, structured prompting, extractable stage prompts), but no weak-model testing or adaptation is *in* v1. Gemma testing happens post-build, not as a v1 requirement.
 
 ### Scope Risks
@@ -112,7 +112,7 @@ A framework that takes a task or goal and "unearths" a process for accomplishing
 
 ## Constraints
 
-- **v1 runs entirely inside Claude Code** under the user's Max plan. No external API calls, no per-token costs during development or use.
+- **v1 runs entirely inside Claude Code** under the user's Max plan. No external API calls, no per-token costs during development or use. This binds the *pipeline*, not its product: the composed artifact is a standalone program, usable outside any session (a seam-bearing artifact carries a run-time dependency on whatever `ai()` implementation was inserted; a fully deterministic one runs anywhere its language does).
 - **v1 must be designed for clean conversion to a standalone MCP server later.** This implies: explicit stage boundaries, structured outputs at each stage, no implicit conversation-context dependence, extractable per-stage prompts. The eventual conversion is a *rebuild informed by the skill*, not a refactor.
 - **No new runtime dependencies for v1** beyond what Claude Code provides. The skill is markdown + structured prompting.
 - **Interrogator phase must operate as multi-turn dialog with a human.** Subagent isolation is incompatible with this phase; interrogator stays single-context.

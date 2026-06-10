@@ -43,8 +43,13 @@ MCP era.
    the reference seam runtime below iff any leaf is ai_required.
    `decision: "reject"` → surface it; the reason names the node and the
    owning stage — re-run that stage, never hand-patch the artifact.
-3. **Present and persist:** show the artifact in chat (the deliverable is
-   in-chat by scope) and write it to a file to run.
+3. **Persist the deliverable:** write the artifact to a file — *the file is
+   the product*, a standalone program that outlives the session (agree on
+   the path with the user). Show it in chat for review — useful, especially
+   for simple cases, but never the deliverable. Note its run-time footprint
+   honestly: a fully deterministic artifact runs anywhere its language
+   does; a seam-bearing one also depends on whatever `ai()` implementation
+   was inserted (the v1 reference runtime needs the `claude` CLI).
 4. **Collect real inputs:** ask the user for the actual values of the root
    contract's inputs — this is the original task, live. Build the JSON
    object the shell expects on stdin.
