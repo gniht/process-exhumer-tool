@@ -82,8 +82,11 @@ Rules that bind every output:
   never contain ids or names.
 - **Glue treats each child as a function** `name(inputs) -> outputs` per that
   child's contract — so each child's I/O must be wired at least to the names
-  and arity the glue uses. For `recursive-over-data` only, `self(inputs) ->
-  outputs` is also available: the node's own contract applied to smaller data.
+  and arity the glue uses. Return convention: a child with one declared
+  output returns it bare; one with several returns a map keyed by output
+  names (in python, a dict); one with none returns nothing. For
+  `recursive-over-data` only, `self(inputs) -> outputs` is also available:
+  the node's own contract applied to smaller data.
 
 ## Prompt
 
