@@ -201,6 +201,14 @@ The seam is what makes the framework's goal *operational* rather than aspiration
 
 The **calling convention** is fixed alongside it, shared by glue and leaf code: a codified leaf is one entry-point function whose parameters are the contract's input names in order; one declared output returns bare, several return a map keyed by output names, none returns nothing. Local wiring names bind at composition, so leaf code stays nameless — flat and liftable, like its contract.
 
+### Verification is local — assume-guarantee over contracts
+
+*(Resolved 2026-06-09, verification-stage build.)* Verification never needs the tree: every node is verified flat. A **leaf** is checked as code-against-contract (surface, closure, seam discipline, behavior — executed where an environment exists). An **internal node** is checked **assume-guarantee**: *granting each child its contract, does the glue satisfy the parent's?* Child implementations are not its input — the child's own verification covers them — which is what makes internal nodes verifiable before composition exists, from nothing but their own decomposition record. The original workflow's wrinkle ("check each composed node's code" before a composition stage has run) resolves to: local verification pre-composition, end-to-end observation at composition.
+
+Verification's boundary is the seam: it checks **everything except the inside of `ai()` calls** — including auditing codification's determinism claims as counts — and records seam-interior aspects as **deferred to the run**: named, attributed to their call sites, never silently passed. The deferred list is composition's watch list. Verdicts are **fail-closed** (a checkable aspect whose satisfaction cannot be determined fails, with the uncertainty recorded), and every check carries its `method` — `executed` vs. `static` — so a verdict's strength is its evidence.
+
+Two pipeline-wide patterns are now explicit: **every stage may reject the contract it is handed** (the interrogator's out-of-domain gate, decomposition's and codification's and verification's `reject`), and a rejection always indicts the upstream author, never the rejecting stage.
+
 ### Where the goal lives
 
 The declared goal — *minimize AI-call dependence* — does **not** shape the contract. The contract is goal-neutral. The goal lives in the recursion's **termination rule**: keep pushing "how do you build me?" downward until the answer is deterministic code, or you have isolated an irreducible AI-required leaf (accepted with an explicit annotation). Loading the goal into the contract would put it in the wrong place.
