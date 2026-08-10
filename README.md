@@ -1,33 +1,48 @@
 # process-exhumer-tool
 
-A framework that takes a task and "unearths" a programmatic process for accomplishing it — through recursive contract-first decomposition, codification of each unit, and structural composition of the results. The long-term ambition is that produced artifacts contain as little AI-call dependence as possible, so that work once done by judgment becomes reliably reproducible code.
+A framework that takes a task and "unearths" a programmatic process for accomplishing it.
+
+In plain terms: you describe a task; an interrogation dialog refines it into a precise contract; the framework recursively decomposes that contract into pieces small enough to implement directly, generates and verifies code for each piece, and mechanically assembles the results into a standalone program. The aim is that as much of the work as possible ends up as ordinary deterministic code, with AI judgment surviving only in explicitly marked spots — where it can be counted, audited, and targeted for further reduction.
+
+## Motivation
+
+This grew out of a problem I hit while working on latent-world-engine (LWE), a personal project for leveraging AI in game development. Even with what seemed a very well-articulated spec, I was getting output from AI that shouldn't happen — ever. Eventually I realized it stemmed from an internal bias of the models being used: they want to jump to an "answer" as quickly as possible. That isn't inherently a bad thing, but it is when it means the clear process outlined by the user isn't actually being followed. It became clear that merely insisting in the prompts that the process be followed wasn't enough to completely prevent this. If I couldn't prompt around the problem, I needed another approach.
+
+A short digression that turns out to matter: one of LWE's basic notions — a heuristic, really — is that complex things can generally be decomposed into simpler things, and that you can continue decomposing until you reach elements so simple that going further is infeasible or mostly unhelpful. At that point you have what amounts to an atomic component of a game. The motivation for this is that while gamedev is complex as a whole, an atomic component is relatively simple: it's easy to identify what objects of each component type look like, easy to construct new objects of that type, and — importantly — easy to verify correctness of form. Assuming that's right, and assuming the decomposition is possible, it follows that it should be possible to create games from the ground up leveraging AI, with the entire process supported by robust verification. I think the idea is valid — but AI's failure to consistently follow explicit procedure breaks it.
+
+The way forward was to change the goal. Following the same heuristics LWE was built on, plus one more — that for any repeatable process, there should exist a recipe for doing it — the goal became not to have AI create the atomic elements themselves, but to have it create code that would generate those artifacts. Then erroneous output produces code, not content — and a problem in code is deterministic and repeatable: it can be discovered and fixed. So the new idea was to codify, to the extent possible. This also has a useful side-effect: codified work no longer needs reasoning, so as a byproduct of a more deterministic and reliable system, you're also minimizing token expense.
+
+I can't be the only person running into problems like this, and generating code artifacts to do the thing — instead of just asking AI to do the thing — seemed like it could be useful in many situations, so I created this open-source tool. It uses a derivative of [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) to refine goals into contracts, then focuses on decomposition and the generation of code artifacts to build processes.
 
 ## Status
 
-**v1 built — untested.** Architectural spec captured in [`spec.md`](spec.md) via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session on 2026-06-04. The core data model (contract, node, recursion, per-stage prompt format) was resolved 2026-06-05, and further commitments accreted during the stage builds (2026-06-09) — see the **Core Data Model** section of the spec. All five pipeline stages exist as skills; no stage has been exercised yet. The first end-to-end run is next.
+All five pipeline stages are built as Claude Code skills. None has yet been exercised end-to-end; **the first complete run is the current milestone**, and its write-up will be linked here once it exists.
 
-## v1 in one sentence
+The architecture was captured in [`spec.md`](spec.md) on 2026-06-04 via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session — this project's stage-1 interrogator is itself a specialized derivative of that skill. The contemporaneous build record, including the design commitments that landed during each stage build, is in [`design-journal.md`](design-journal.md).
 
-A Claude Code skill that runs end-to-end *interrogator → decomposition → codification → verification → composition* on an arbitrary task, designed with clean stage boundaries so it can be ported to a standalone MCP server later.
+## The pipeline
 
-## Next steps
+1. **Interrogation** — a multi-turn dialog refines a vague task into a root *contract*: what must be true of the outputs, given the inputs.
+2. **Decomposition** — recursively splits each contract into child contracts plus deterministic glue describing how the children assemble. Judgment is only ever pushed downward into children, never into the wiring.
+3. **Codification** — generates code for each leaf contract, with any remaining judgment routed through a single named function.
+4. **Verification** — checks every node flat, against its own contract: leaves as code-against-contract, internal nodes by granting each child its contract and asking whether the glue satisfies the parent's.
+5. **Composition** — mechanically assembles the verified tree into one standalone, runnable program.
 
-The three pre-build blockers are now resolved (see `spec.md` → **Core Data Model**):
+The v1 skill is deliberately structured — flat stages, structured outputs, extractable per-stage prompts — so that it can later be rebuilt as a standalone MCP server. Full architectural detail is in [`spec.md`](spec.md).
 
-- ✅ Contract data structure — `behavior` (required) + resolvable `inputs`/`outputs`; identity only
-- ✅ Interrogator → decomposition handoff — none needed; the contract is the handoff
-- ✅ Per-stage prompt extraction format — each stage is a self-contained `prompt.md` (`## Input` / `## Output` / `## Prompt`), wrapped by a thin `SKILL.md`
+## Design highlights
 
-Stage 1 — **interrogator** — is built at `.claude/skills/process-exhumer-interrogator/` (single-context human dialog → root contract). First live exercise 2026-06-09, in a run aborted when the author withdrew the task mid-interrogation: the dialog phase behaved as designed per the author's assessment (pushback, surfacing the contract-shaping fork, probing input concreteness), and stopping rather than inventing a contract is a legitimate stage-1 exit. The out-of-domain gate, draft-confirm loop, and contract emission remain unexercised. Refinement is deferred until after a completed end-to-end run.
+A few of the ideas doing the most work:
 
-Stage 2 — **decomposition** — is built at `.claude/skills/process-exhumer-decomposition/`. The stage prompt is *flat* (one contract in → `codify` | `decompose` | `reject` out, no tree context); the recursion is a worklist loop owned by the `SKILL.md` harness, mirroring the planned MCP shape (stateless stage-tools, tree-walk as orchestration). Two commitments landed here and are recorded in the spec's **Core Data Model**: *glue is deterministic — judgment lives only in leaves*, and the codify-or-decompose decision is the *strict-progress test*. Untested, like Stage 1.
+- **The AI seam.** All judgment in generated code flows through one canonical function: `ai(instruction, payload)`. "How AI-dependent is this program?" stops being an opinion and becomes a count — determinism means zero seam calls, checkable mechanically and attributable per call site.
+- **Judgment lives only in leaves.** Glue — the code that wires components together — moves data and never interprets it. Any judgment a build needs is pushed into a child contract, where the recursion can keep working on it. Reducing AI dependence is therefore purely a question of how far decomposition pushes.
+- **The contract is the only primitive.** One small declarative structure — inputs, outputs, and a required behavior clause — flows through every stage. There is no separate handoff format anywhere in the pipeline: the contract *is* the handoff.
+- **Any stage may reject what it's handed.** A contract that can't be satisfied as wired is rejected rather than papered over, and a rejection always indicts the upstream author, never the rejecting stage. Errors surface where they were made.
 
-Stage 3 — **codification** — is built at `.claude/skills/process-exhumer-codification/`. Flat stage prompt (one leaf contract in → `codified` | `reject` out); the loop over leaves lives in the harness. The commitment that landed here, recorded in the spec's **Core Data Model**: the **AI seam** — all judgment in generated code flows through one canonical `ai(instruction, payload)` function, so *determinism = zero seam calls*, a count rather than an opinion. The calling convention (entry-point signature from the contract; bare / dict-by-name / nothing returns) is fixed alongside it. Untested, like the others.
+## Files
 
-Stage 4 — **verification** — is built at `.claude/skills/process-exhumer-verification/`. Flat stage prompt (one unit in → `verified` verdict | `reject` out), two unit types: leaves checked as code-against-contract, internal nodes checked **assume-guarantee** (granting each child its contract, does the glue satisfy the parent's?) — which is what makes the whole tree verifiable before composition exists. Commitments recorded in the spec's **Core Data Model**: verification checks *everything except the inside of the seam* (seam-interior truths are **deferred to the run** — named, never silently passed); verdicts are *fail-closed* with per-check `executed`/`static` evidence labels; and *any stage may reject the contract it is handed*, always indicting the upstream author. Untested, like the others.
+- [`spec.md`](spec.md) — the architectural spec: goals, scope, the core data model, validation criteria, open questions
+- [`design-journal.md`](design-journal.md) — contemporaneous record of the five stage builds and the commitments that landed during each
+- `.claude/skills/` — the five pipeline stages, each a self-contained stage prompt (`prompt.md`) wrapped by a thin Claude Code harness (`SKILL.md`)
 
-Stage 5 — **composition** — is built at `.claude/skills/process-exhumer-composition/`. The stage prompt is **deliberately mechanical**: one function per node (qualified `<wiring-name>__<id>` names), contract-derived signatures, leaf code nested verbatim, wiring names bound in parent bodies, `self` bound under `recursive-over-data`, a JSON-stdin shell on the root — and *composition never patches*: every hole is a reject naming the owning stage. The seam runtime is an **input** (v1 ships a `claude -p` reference implementation in the harness); the harness runs the artifact on real inputs, feeds seam observations back into result records by node id, and settles verification's deferred list. Recorded in the spec as the pipeline's own deterministic leaf — the first stage expected to become pure code in the MCP era.
-
-**The pipeline is complete.** Next: the **first ad-hoc end-to-end run** — rotate through small, diverse tasks (no privileged test case, per the spec's scope risks), exercise all five stages, and let the failures drive the first refinement pass. The deferred interrogator-refinement requirements (entry-boundary input concreteness, derivability check, AI-user front door) are queued behind that.
-
-See [`spec.md`](spec.md) for full architectural commitments, scope decisions, assumptions, and open questions.
+Usage documentation will follow the first validated end-to-end run.
