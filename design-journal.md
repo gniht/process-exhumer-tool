@@ -20,7 +20,9 @@ Further commitments accreted during the stage builds; each is recorded in the sp
 
 ### Stage 1 — interrogator
 
-Built at `.claude/skills/process-exhumer-interrogator/` (single-context human dialog → root contract). First live exercise 2026-06-09, in a run aborted when the author withdrew the task mid-interrogation: the dialog phase behaved as designed per the author's assessment (pushback, surfacing the contract-shaping fork, probing input concreteness), and stopping rather than inventing a contract is a legitimate stage-1 exit. The out-of-domain gate, draft-confirm loop, and contract emission remain unexercised. Refinement is deferred until after a completed end-to-end run.
+Built at `.claude/skills/process-exhumer-interrogator/` (single-context human dialog → root contract). First live exercise 2026-06-09, in a run aborted when the author withdrew the task mid-interrogation: the dialog phase behaved as designed per the author's assessment (pushback, surfacing the contract-shaping fork, probing input concreteness), and stopping rather than inventing a contract is a legitimate stage-1 exit. Refinement is deferred until after a completed end-to-end run.
+
+**Validated 2026-09-21** in the second e2e run (`runs/2026-09-09-job-search-triage/`), which exercised the parts run 1 never reached: the out-of-domain gate, the draft-confirm loop, and contract emission. The draft-confirm loop earned its keep — three drafts, each materially revised by author pushback. Two of the corrections came from the author rather than the stage, and both generalize: **destructive vs. reversible filtering** (a false negative is only permanent at acquisition, so keep the destructive side dumb and put the judgment on the reversible side — this collapsed three pieces of state into one), and the **leftover-reasoning test** ("the budget for reasoning is almost entirely up-front; any left-over budget in reasoning likely represents a failure of this skill"), which caught the stage pricing assessment as a per-run seam cost and deferring it to Stage 2 as a caching problem. That was the wrong architecture rather than a real constraint: the right shape — seam once per posting at intake to extract fields, deterministic code thereafter — was discoverable at Stage 1 and changed the contract'"'"'s outputs. Queued as the highest-value refinement item, and a candidate for the stage prompt itself rather than the backlog.
 
 ### Stage 2 — decomposition
 
@@ -41,3 +43,13 @@ Built at `.claude/skills/process-exhumer-composition/`. The stage prompt is **de
 ## Pipeline complete — next
 
 The pipeline is complete. Next: the **first ad-hoc end-to-end run** — rotate through small, diverse tasks (no privileged test case, per the spec's scope risks), exercise all five stages, and let the failures drive the first refinement pass. The deferred interrogator-refinement requirements (entry-boundary input concreteness, derivability check, AI-user front door) are queued behind that.
+
+## 2026-09-21 — Runs
+
+Run records live under `runs/`, one directory per end-to-end attempt: the dialog record and per-stage artifacts, including the emitted contract that hands off to the next stage.
+
+**Run 1** (2026-06-09, LWE content generation) — aborted at Stage 1 when the author withdrew the task mid-interrogation. Not kept as a directory; recorded in the Stage 1 note above.
+
+**Run 2** (`runs/2026-09-09-job-search-triage/`) — job-posting triage. Chosen deliberately as a modest task after the author could not find an ideal one, and started with no formed idea at all, which made the cold start itself a test of Stage 1. **Stage 1 cleared 2026-09-21**; `root-contract.json` is the handoff. Stages 2–5 are next and remain untested.
+
+The contract carries a prediction worth checking downstream: the criteria-evaluation subtree should come out **fully deterministic — zero seam calls** — with field extraction as the sole `ai()` leaf. That exercises the determinism claim and verification'"'"'s claims audit on a real case rather than a contrived one.

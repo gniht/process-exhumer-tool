@@ -1,0 +1,42 @@
+{
+  "behavior": "Given a set of configured sources, a recency specification, a set of criteria, and the corpus held from prior runs: every posting offered by a source that falls within that source's recency window and is not already held is retrieved and stored with its raw payload intact; every stored posting has fields extracted into a common schema, each extracted field carrying the location within its raw payload that it was derived from; every posting in the corpus is evaluated against the current criteria, each criterion yielding satisfied, not satisfied, or not answerable from this posting; every verdict names the extracted field and source location it rests on; postings the user has suppressed are withheld from the presented assessments but remain stored, with their suppression reversible; no posting is absent from the presented assessments without a recorded reason; and the returned corpus accounts for every posting the run retrieved together with the dispositions carried in.",
+  "inputs": [
+    {
+      "name": "sources",
+      "type": "a list of source definitions",
+      "description": "Each definition fixes where postings are fetched from and how to read what that source returns. Data rather than code, so the list can grow without the contract changing."
+    },
+    {
+      "name": "criteria",
+      "type": "a set of criteria, each evaluable against the extracted schema",
+      "description": "The user's editable statement of what makes a posting worth their attention. Evaluated over extracted fields, not raw prose. Each criterion is three-valued: satisfied, not satisfied, or not answerable from a given posting. This is the input the user refines between runs."
+    },
+    {
+      "name": "recency_spec",
+      "type": "a recency specification",
+      "description": "How far back to reach for a source, used when nothing is yet held from that source. Where postings are already held, the window follows from what the corpus contains."
+    },
+    {
+      "name": "corpus",
+      "type": "a store of previously retrieved postings, possibly empty",
+      "description": "Each entry carries the raw payload as retrieved, the fields extracted from it with their provenance, and the dispositions the user has set on it. Empty on a first run. This store is the run's only memory."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "assessments",
+      "type": "a set of per-posting assessment records",
+      "description": "One record per posting presented, carrying its extracted fields and, for each criterion, the verdict together with the field and source location that verdict rests on."
+    },
+    {
+      "name": "criteria_diagnostics",
+      "type": "a record per criterion",
+      "description": "Whether the criterion discriminated between postings this run, and which postings it could not answer. The material the user refines their criteria with."
+    },
+    {
+      "name": "updated_corpus",
+      "type": "a store of retrieved postings, same shape as the corpus input",
+      "description": "The successor to the incoming corpus: everything carried in, plus everything retrieved this run, with extractions and dispositions intact."
+    }
+  ]
+}
