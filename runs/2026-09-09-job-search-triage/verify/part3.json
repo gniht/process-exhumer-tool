@@ -1,0 +1,250 @@
+[
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'acquire_new_postings': 3, 'merge_corpus': 2, 'extract_fields': 3, 'assess_postings': 2, 'summarize_criteria': 2}); 3 declared output(s) -> map keyed by output names; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'sequential' -- glue implements 5 sequential child calls, no loop"
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'retrieve_from_source': 3}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over sources"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'extract_entry_fields': 3}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over corpus entries"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'derive_field': 3}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over required_fields"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'pluck_mapped_field': 3, 'infer_field_from_text': 2}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'conditional' -- glue implements branch on field_map membership"
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'assess_entry': 2}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over corpus entries"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'evaluate_criterion': 2}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over criteria"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "granting all five child contracts: returns a map keyed by the 3 declared outputs ['assessments', 'criteria_diagnostics', 'updated_corpus']; the suppressed posting (a,2) is withheld from assessments [('a', '1'), ('a', '9')] yet retained in updated_corpus [('a', '1'), ('a', '2'), ('a', '9')] -- 'withheld from presented, remains stored, reversible' holds"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "root behavior clause 'no posting is absent from the presented assessments without a recorded reason': satisfied as written -- the only omissions are suppressions, whose reason is the recorded disposition. NOTE this is weaker than it reads: postings a source offers but never yields (e.g. no parseable timestamp, see n7) are outside the clause's reach entirely, because 'falls within that source's recency window' is undefined for them. Contract-level gap, not a code defect."
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "each of 3 sources queried exactly once; source 'a' window_start = newest held published (2026-09-05T00:00:00+00:00) with held ids ('1', '2') passed through; source 'c' holds nothing so its window falls back to the lookback (2026-08-23); results concatenated across sources (3)"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "happy path: required_fields deduped and sorted from criteria ['remote','salary']; every entry passed to the child"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "DEFECT: corpus holds an entry from source 'gone' which is no longer in the configured sources list; glue does source_by_id[entry['source_id']] and raises KeyError('gone'). Removing a source is ordinary use, and the parent contract requires entry count and dispositions to be preserved for ALL entries -- a run that dies on previously-stored postings cannot satisfy it. Assume-guarantee: children were granted their contracts and the glue still fails."
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "record count equals entry count (3==3); the suppressed entry IS assessed here -- suppression is applied by the root, not by this node, exactly as its contract says"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "already-present field 'salary' returned untouched and NOT recomputed (child called only for ['remote']); non-required field 'extra' preserved; raw_payload and dispositions unchanged"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "one verdict per criterion in the order given, none skipped or doubled: ['c1', 'c2', 'c3']; posting identity and fields carried onto the assessment record"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "mapped field routes to the deterministic pluck with the source's locator; unmapped field routes to the seam branch; the branch predicate is `field in field_map`, a membership test -- mechanical, not judgment. route=[('pluck', 'salary', 'comp.amount'), ('infer', 'remote')]"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "behavior",
+  "method": "static",
+  "outcome": "deferred",
+  "detail": "SEAM INTERIOR: whether infer_field_from_text's judgment returns a correct value for an unmapped field cannot be known before the run environment supplies ai(). Deferred to composition's run. Call site: n13 infer_field_from_text."
+ }
+]

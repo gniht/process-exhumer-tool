@@ -1,0 +1,170 @@
+[
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "window+held filtering: id2 outside window dropped, id1 held dropped, id3 returned; raw_payload preserved byte-identical. got=['3']"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "bare-array envelope + epoch-millis timestamps normalise to UTC ISO: 2025-09-04T15:33:20+00:00"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit check: nested list_path 'd.items' and dotted id_locator 'k.i' work on shapes unlike the first two; contract leaves locators variable and they are not load-bearing. got=q"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: postings whose published timestamp is absent or null are omitted (0 returned). Consistent with this contract, which is written wholly in window terms -- a timestamp-less posting is not demonstrably 'at or after window_start'. Flagged as a cross-contract concern: the ROOT behavior forbids silent drops, and this leaf's contract cannot see that."
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "pre-existing entry returned untouched (fields+dispositions+raw preserved, NOT overwritten by the colliding new posting); duplicate (a,1) not re-added; distinct (b,1) added. entries=2"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "new entry gets empty fields map and all-false dispositions: {'viewed': False, 'suppressed': False}"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: empty corpus, absent entries key, and None new_postings all yield an empty entries list"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "dotted locator with list index resolves (20); unresolvable locator -> stated False; JSON null -> stated False. provenance names the locator in all three: 'a.b.1'"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit check: arbitrary field and locator strings (spaces, unseen names) are not load-bearing"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "given a conforming judgment, HTML is stripped and the evidence is located verbatim -> char span 0..20 with value '$120k'"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "fabricated evidence not present in the payload is DEMOTED to not-stated (stated=False, value=None) -- the seam cannot manufacture provenance"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "silent payload -> stated False with provenance kind 'not_stated'"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "malformed seam return (non-JSON string) degrades to not-stated rather than crashing"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit check: text is collected from arbitrary nested JSON, not an assumed 'content' key"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "three-valued outcomes exactly as the behavior requires: ['satisfied', 'not_satisfied', 'not_answerable', 'not_answerable']. A field the payload never stated (remote) is NOT reported as failing -- the behavior's explicit prohibition holds."
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every verdict carries the field name and that field's provenance"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "incomparable stated value (str vs int under gte) -> not_answerable, not a false negative. Defensible but an interpretation the contract did not dictate."
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "unknown operator raises ValueError (malformed criterion) rather than silently returning an outcome"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "operator table spans the declared space, not one imagined operator: eq/ne/lt/gt/in all satisfied -> [True, True, True, True, True]"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "one record per criterion including c3 which no verdict mentions; discriminated true only for c1 (both outcomes present); c2's not-answerable posting listed. counts c1={'satisfied': 1, 'not_satisfied': 1, 'not_answerable': 0}"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: zero assessments still yields a record for every criterion, all counts zero"
+ }
+]

@@ -1,0 +1,146 @@
+[
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `retrieve_from_source` params ['source', 'window_start', 'held_posting_ids'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `merge_corpus` params ['corpus', 'new_postings'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `pluck_mapped_field` params ['raw_payload', 'field', 'locator'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `infer_field_from_text` params ['raw_payload', 'field'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 1 ai() call site(s); claim=ai_required; annotations=1"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `evaluate_criterion` params ['fields', 'criterion'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `summarize_criteria` params ['assessments', 'criteria'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "effectful calls ['?.urlopen']: urlopen only. The behavior declares the request ('the source definition alone determines the request to issue'), so network is a declared effect. datetime used for parsing, not for the clock. No globals, no env."
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "ran twice on identical inputs; retrieved_at differed ('2026-09-22T01:22:29.666259+00:00' vs '2026-09-22T01:22:29.666274+00:00') -> reads the wall clock. Contract grants no clock input and the behavior declares no such effect, yet the entry shape requires retrieved_at. Undeclared effect."
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ }
+]

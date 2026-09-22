@@ -1,0 +1,562 @@
+[
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `retrieve_from_source` params ['source', 'window_start', 'held_posting_ids'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `merge_corpus` params ['corpus', 'new_postings'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `pluck_mapped_field` params ['raw_payload', 'field', 'locator'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `infer_field_from_text` params ['raw_payload', 'field'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 1 ai() call site(s); claim=ai_required; annotations=1"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `evaluate_criterion` params ['fields', 'criterion'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "entry `summarize_criteria` params ['assessments', 'criteria'] match contract inputs in order; 1 public def(s); 1 declared output -> bare return"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 ai() call site(s); claim=deterministic; annotations=0"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "effectful calls ['?.urlopen']: urlopen only. The behavior declares the request ('the source definition alone determines the request to issue'), so network is a declared effect. datetime used for parsing, not for the clock. No globals, no env."
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "ran twice on identical inputs; retrieved_at differed ('2026-09-22T01:22:29.666259+00:00' vs '2026-09-22T01:22:29.666274+00:00') -> reads the wall clock. Contract grants no clock input and the behavior declares no such effect, yet the entry shape requires retrieved_at. Undeclared effect."
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "no clock/env/network calls; references only declared inputs, imports and local constants (effectful attribute calls found: none)"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "window+held filtering: id2 outside window dropped, id1 held dropped, id3 returned; raw_payload preserved byte-identical. got=['3']"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "bare-array envelope + epoch-millis timestamps normalise to UTC ISO: 2025-09-04T15:33:20+00:00"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit check: nested list_path 'd.items' and dotted id_locator 'k.i' work on shapes unlike the first two; contract leaves locators variable and they are not load-bearing. got=q"
+ },
+ {
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: postings whose published timestamp is absent or null are omitted (0 returned). Consistent with this contract, which is written wholly in window terms -- a timestamp-less posting is not demonstrably 'at or after window_start'. Flagged as a cross-contract concern: the ROOT behavior forbids silent drops, and this leaf's contract cannot see that."
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "pre-existing entry returned untouched (fields+dispositions+raw preserved, NOT overwritten by the colliding new posting); duplicate (a,1) not re-added; distinct (b,1) added. entries=2"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "new entry gets empty fields map and all-false dispositions: {'viewed': False, 'suppressed': False}"
+ },
+ {
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: empty corpus, absent entries key, and None new_postings all yield an empty entries list"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "dotted locator with list index resolves (20); unresolvable locator -> stated False; JSON null -> stated False. provenance names the locator in all three: 'a.b.1'"
+ },
+ {
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit check: arbitrary field and locator strings (spaces, unseen names) are not load-bearing"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "given a conforming judgment, HTML is stripped and the evidence is located verbatim -> char span 0..20 with value '$120k'"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "fabricated evidence not present in the payload is DEMOTED to not-stated (stated=False, value=None) -- the seam cannot manufacture provenance"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "silent payload -> stated False with provenance kind 'not_stated'"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "malformed seam return (non-JSON string) degrades to not-stated rather than crashing"
+ },
+ {
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit check: text is collected from arbitrary nested JSON, not an assumed 'content' key"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "three-valued outcomes exactly as the behavior requires: ['satisfied', 'not_satisfied', 'not_answerable', 'not_answerable']. A field the payload never stated (remote) is NOT reported as failing -- the behavior's explicit prohibition holds."
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every verdict carries the field name and that field's provenance"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "incomparable stated value (str vs int under gte) -> not_answerable, not a false negative. Defensible but an interpretation the contract did not dictate."
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "unknown operator raises ValueError (malformed criterion) rather than silently returning an outcome"
+ },
+ {
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "operator table spans the declared space, not one imagined operator: eq/ne/lt/gt/in all satisfied -> [True, True, True, True, True]"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "one record per criterion including c3 which no verdict mentions; discriminated true only for c1 (both outcomes present); c2's not-answerable posting listed. counts c1={'satisfied': 1, 'not_satisfied': 1, 'not_answerable': 0}"
+ },
+ {
+  "node": "n6",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: zero assessments still yields a record for every criterion, all counts zero"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'acquire_new_postings': 3, 'merge_corpus': 2, 'extract_fields': 3, 'assess_postings': 2, 'summarize_criteria': 2}); 3 declared output(s) -> map keyed by output names; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'sequential' -- glue implements 5 sequential child calls, no loop"
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'retrieve_from_source': 3}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over sources"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'extract_entry_fields': 3}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over corpus entries"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'derive_field': 3}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over required_fields"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'pluck_mapped_field': 3, 'infer_field_from_text': 2}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'conditional' -- glue implements branch on field_map membership"
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'assess_entry': 2}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over corpus entries"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST over glue: 0 ai() call sites; control flow is loops/branches/assignment and dict+set operations only -- no interpretive logic, nothing chosen by meaning"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every child invoked at its declared arity ({'evaluate_criterion': 2}); 1 declared output(s) -> bare; 1 return stmt. no mismatches"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "assembly_pattern 'iterative' -- glue implements loop over criteria"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "granting all five child contracts: returns a map keyed by the 3 declared outputs ['assessments', 'criteria_diagnostics', 'updated_corpus']; the suppressed posting (a,2) is withheld from assessments [('a', '1'), ('a', '9')] yet retained in updated_corpus [('a', '1'), ('a', '2'), ('a', '9')] -- 'withheld from presented, remains stored, reversible' holds"
+ },
+ {
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "root behavior clause 'no posting is absent from the presented assessments without a recorded reason': satisfied as written -- the only omissions are suppressions, whose reason is the recorded disposition. NOTE this is weaker than it reads: postings a source offers but never yields (e.g. no parseable timestamp, see n7) are outside the clause's reach entirely, because 'falls within that source's recency window' is undefined for them. Contract-level gap, not a code defect."
+ },
+ {
+  "node": "n2",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "each of 3 sources queried exactly once; source 'a' window_start = newest held published (2026-09-05T00:00:00+00:00) with held ids ('1', '2') passed through; source 'c' holds nothing so its window falls back to the lookback (2026-08-23); results concatenated across sources (3)"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "happy path: required_fields deduped and sorted from criteria ['remote','salary']; every entry passed to the child"
+ },
+ {
+  "node": "n4",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "DEFECT: corpus holds an entry from source 'gone' which is no longer in the configured sources list; glue does source_by_id[entry['source_id']] and raises KeyError('gone'). Removing a source is ordinary use, and the parent contract requires entry count and dispositions to be preserved for ALL entries -- a run that dies on previously-stored postings cannot satisfy it. Assume-guarantee: children were granted their contracts and the glue still fails."
+ },
+ {
+  "node": "n5",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "record count equals entry count (3==3); the suppressed entry IS assessed here -- suppression is applied by the root, not by this node, exactly as its contract says"
+ },
+ {
+  "node": "n8",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "already-present field 'salary' returned untouched and NOT recomputed (child called only for ['remote']); non-required field 'extra' preserved; raw_payload and dispositions unchanged"
+ },
+ {
+  "node": "n9",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "one verdict per criterion in the order given, none skipped or doubled: ['c1', 'c2', 'c3']; posting identity and fields carried onto the assessment record"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "mapped field routes to the deterministic pluck with the source's locator; unmapped field routes to the seam branch; the branch predicate is `field in field_map`, a membership test -- mechanical, not judgment. route=[('pluck', 'salary', 'comp.amount'), ('infer', 'remote')]"
+ },
+ {
+  "node": "n10",
+  "unit": "node",
+  "category": "behavior",
+  "method": "static",
+  "outcome": "deferred",
+  "detail": "SEAM INTERIOR: whether infer_field_from_text's judgment returns a correct value for an unmapped field cannot be known before the run environment supplies ai(). Deferred to composition's run. Call site: n13 infer_field_from_text."
+ }
+]
