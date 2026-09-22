@@ -105,11 +105,12 @@ try:
 except KeyError as ex: failed=repr(ex)
 except Exception as ex: failed=repr(ex)
 rec("n4","behavior","executed","fail" if failed else "pass",
-    f"DEFECT: corpus holds an entry from source 'gone' which is no longer in the configured sources "
-    f"list; glue does source_by_id[entry['source_id']] and raises {failed}. Removing a source is "
-    f"ordinary use, and the parent contract requires entry count and dispositions to be preserved "
-    f"for ALL entries -- a run that dies on previously-stored postings cannot satisfy it. "
-    f"Assume-guarantee: children were granted their contracts and the glue still fails.")
+    f"regression check for the stage-2 defect: corpus holds an entry from source 'gone', no longer in "
+    f"the configured sources list. Glue now does source_by_id.get(...) with an empty field_map fallback "
+    f"and completes without raising ({failed or 'no exception'}); the orphaned entry is still passed to "
+    f"the child, so entry count and dispositions are preserved as the contract requires. Its unmapped "
+    f"fields route to the seam branch, which is correct -- the source definition that once stated them "
+    f"structurally is gone, but the raw payload it was retrieved with is not.")
 
 # n5
 def s_ae(entry,criteria): return dict(source_id=entry["source_id"],source_posting_id=entry["source_posting_id"],fields=entry["fields"],verdicts=[])

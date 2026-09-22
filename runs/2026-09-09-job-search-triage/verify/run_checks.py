@@ -66,12 +66,12 @@ for nid, L in LEAVES.items():
     if nid == "n3":
         ns = load(L["code"]); fn = ns["merge_corpus"]
         p = [dict(source_id="s", source_posting_id="1", published_at="2026-01-01T00:00:00+00:00", raw_payload={})]
-        a = fn({"entries": []}, p)["entries"][0]["retrieved_at"]
-        b = fn({"entries": []}, p)["entries"][0]["retrieved_at"]
-        rec(nid, "leaf", "closure", "executed", "fail",
-            f"ran twice on identical inputs; retrieved_at differed ({a!r} vs {b!r}) -> reads the "
-            f"wall clock. Contract grants no clock input and the behavior declares no such effect, "
-            f"yet the entry shape requires retrieved_at. Undeclared effect.")
+        a = fn({"entries": []}, p); b = fn({"entries": []}, p)
+        clockfree = (a == b) and not eff
+        rec(nid, "leaf", "closure", "executed", "pass" if clockfree else "fail",
+            f"ran twice on identical inputs; outputs identical ({a == b}) and no clock/env/network "
+            f"attribute calls remain ({eff or 'none'}). Entry shape no longer carries retrieved_at, "
+            f"so no clock is needed and none is read. Re-verified after re-decomposition.")
     elif nid == "n7":
         rec(nid, "leaf", "closure", "static", "pass",
             f"effectful calls {eff}: urlopen only. The behavior declares the request "

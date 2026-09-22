@@ -204,8 +204,8 @@
   "unit": "node",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "DEFECT: corpus holds an entry from source 'gone' which is no longer in the configured sources list; glue does source_by_id[entry['source_id']] and raises KeyError('gone'). Removing a source is ordinary use, and the parent contract requires entry count and dispositions to be preserved for ALL entries -- a run that dies on previously-stored postings cannot satisfy it. Assume-guarantee: children were granted their contracts and the glue still fails."
+  "outcome": "pass",
+  "detail": "regression check for the stage-2 defect: corpus holds an entry from source 'gone', no longer in the configured sources list. Glue now does source_by_id.get(...) with an empty field_map fallback and completes without raising (no exception); the orphaned entry is still passed to the child, so entry count and dispositions are preserved as the contract requires. Its unmapped fields route to the seam branch, which is correct -- the source definition that once stated them structurally is gone, but the raw payload it was retrieved with is not."
  },
  {
   "node": "n5",

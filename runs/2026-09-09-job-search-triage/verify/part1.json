@@ -108,8 +108,8 @@
   "unit": "leaf",
   "category": "closure",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "ran twice on identical inputs; retrieved_at differed ('2026-09-22T01:22:29.666259+00:00' vs '2026-09-22T01:22:29.666274+00:00') -> reads the wall clock. Contract grants no clock input and the behavior declares no such effect, yet the entry shape requires retrieved_at. Undeclared effect."
+  "outcome": "pass",
+  "detail": "ran twice on identical inputs; outputs identical (True) and no clock/env/network attribute calls remain (none). Entry shape no longer carries retrieved_at, so no clock is needed and none is read. Re-verified after re-decomposition."
  },
  {
   "node": "n12",

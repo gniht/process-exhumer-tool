@@ -20,7 +20,7 @@
    },
    {
     "name": "corpus",
-    "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+    "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
     "description": "Empty on a first run. This store is the run's only memory."
    }
   ],
@@ -37,7 +37,7 @@
    },
    {
     "name": "updated_corpus",
-    "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+    "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
     "description": "The successor to the incoming corpus: everything carried in, plus everything retrieved this run, with extractions and dispositions intact."
    }
   ]
@@ -63,7 +63,7 @@
      },
      {
       "name": "corpus",
-      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
       "description": "Supplies each source's watermark and held ids."
      }
     ],
@@ -124,7 +124,7 @@
     "inputs": [
      {
       "name": "corpus",
-      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
       "description": "Possibly empty on a first run."
      },
      {
@@ -136,12 +136,12 @@
     "outputs": [
      {
       "name": "corpus_with_new",
-      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
       "description": "Prior corpus plus this run's retrievals; extractions and dispositions carried through untouched."
      }
     ]
    },
-   "code": "\"\"\"Leaf n3 - merge_corpus.\"\"\"\n\nfrom datetime import datetime, timezone\n\n\ndef merge_corpus(corpus, new_postings):\n    entries = []\n    seen = set()\n\n    for entry in (corpus or {}).get(\"entries\") or []:\n        key = (entry[\"source_id\"], entry[\"source_posting_id\"])\n        if key in seen:\n            continue\n        seen.add(key)\n        entries.append(entry)\n\n    retrieved_at = datetime.now(timezone.utc).isoformat()\n    for posting in new_postings or []:\n        key = (posting[\"source_id\"], posting[\"source_posting_id\"])\n        if key in seen:\n            continue\n        seen.add(key)\n        entries.append(\n            {\n                \"source_id\": posting[\"source_id\"],\n                \"source_posting_id\": posting[\"source_posting_id\"],\n                \"retrieved_at\": retrieved_at,\n                \"published_at\": posting.get(\"published_at\"),\n                \"raw_payload\": posting[\"raw_payload\"],\n                \"fields\": {},\n                \"dispositions\": {\"viewed\": False, \"suppressed\": False},\n            }\n        )\n\n    corpus_with_new = dict(corpus or {})\n    corpus_with_new[\"entries\"] = entries\n    return corpus_with_new\n",
+   "code": "\"\"\"Leaf n3 - merge_corpus.\"\"\"\n\n\ndef merge_corpus(corpus, new_postings):\n    entries = []\n    seen = set()\n\n    for entry in (corpus or {}).get(\"entries\") or []:\n        key = (entry[\"source_id\"], entry[\"source_posting_id\"])\n        if key in seen:\n            continue\n        seen.add(key)\n        entries.append(entry)\n\n    for posting in new_postings or []:\n        key = (posting[\"source_id\"], posting[\"source_posting_id\"])\n        if key in seen:\n            continue\n        seen.add(key)\n        entries.append(\n            {\n                \"source_id\": posting[\"source_id\"],\n                \"source_posting_id\": posting[\"source_posting_id\"],\n                \"published_at\": posting.get(\"published_at\"),\n                \"raw_payload\": posting[\"raw_payload\"],\n                \"fields\": {},\n                \"dispositions\": {\"viewed\": False, \"suppressed\": False},\n            }\n        )\n\n    corpus_with_new = dict(corpus or {})\n    corpus_with_new[\"entries\"] = entries\n    return corpus_with_new\n",
    "result": {
     "determinism": "deterministic",
     "ai_dependence": []
@@ -155,7 +155,7 @@
     "inputs": [
      {
       "name": "corpus_with_new",
-      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
       "description": "Entries may carry fields from earlier runs, or none."
      },
      {
@@ -172,13 +172,13 @@
     "outputs": [
      {
       "name": "extracted_corpus",
-      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
       "description": "Same entries, every criterion-named field populated."
      }
     ]
    },
    "assembly_pattern": "iterative",
-   "glue": "required_fields = sorted({criterion[\"field\"] for criterion in criteria})\nsource_by_id = {source[\"id\"]: source for source in sources}\nentries = []\nfor entry in corpus_with_new[\"entries\"]:\n    entries.append(\n        extract_entry_fields(entry, required_fields, source_by_id[entry[\"source_id\"]])\n    )\nextracted_corpus = dict(corpus_with_new)\nextracted_corpus[\"entries\"] = entries\nreturn extracted_corpus",
+   "glue": "required_fields = sorted({criterion[\"field\"] for criterion in criteria})\nsource_by_id = {source[\"id\"]: source for source in sources}\nentries = []\nfor entry in corpus_with_new[\"entries\"]:\n    entries.append(\n        extract_entry_fields(\n            entry,\n            required_fields,\n            source_by_id.get(\n                entry[\"source_id\"], {\"id\": entry[\"source_id\"], \"field_map\": {}}\n            ),\n        )\n    )\nextracted_corpus = dict(corpus_with_new)\nextracted_corpus[\"entries\"] = entries\nreturn extracted_corpus",
    "children": [
     {
      "name": "extract_entry_fields",
@@ -188,7 +188,7 @@
       "inputs": [
        {
         "name": "entry",
-        "type": "one corpus entry: an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+        "type": "one corpus entry: an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
         "description": "May already carry fields from earlier runs."
        },
        {
@@ -205,7 +205,7 @@
       "outputs": [
        {
         "name": "entry_with_fields",
-        "type": "one corpus entry, an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+        "type": "one corpus entry, an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
         "description": "Same entry with every required field populated."
        }
       ]
@@ -221,7 +221,7 @@
         "inputs": [
          {
           "name": "entry",
-          "type": "one corpus entry: an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+          "type": "one corpus entry: an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
           "description": "The posting whose field is being derived."
          },
          {
@@ -333,7 +333,7 @@
     "inputs": [
      {
       "name": "extracted_corpus",
-      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
       "description": "Every entry already carries the fields the criteria name."
      },
      {
@@ -361,7 +361,7 @@
       "inputs": [
        {
         "name": "entry",
-        "type": "one corpus entry: an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+        "type": "one corpus entry: an object with source_id, source_posting_id, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
         "description": "The posting being assessed; its fields are already extracted."
        },
        {

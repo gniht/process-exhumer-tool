@@ -69,3 +69,42 @@ Worth keeping as a standing example: three suspected defects went into this stag
 that were *code* defects were caught by execution while the one that was a *contract* defect
 passed every check. That is the system working as designed, and also the clearest statement of
 what it does not do for you.
+
+---
+
+## Re-decomposition pass — both failures resolved, 2026-09-21
+
+Author's call on both: re-decompose. No auto-fix, no hand-patching.
+
+**`n3` — the cause was upstream of the leaf, and upstream of decomposition's own invention.**
+`retrieved_at` was never in the root contract: Stage 1 described a corpus entry as raw payload,
+extracted fields with provenance, and dispositions. Decomposition introduced `retrieved_at`
+into the entry shape on its own authority, and nothing anywhere in the tree ever reads it. It
+was a field invented to be populated. Removing it from the entry shape restores fidelity to the
+root contract, makes the clock unnecessary rather than merely unavailable, and cascades no
+further — Stage 1 never needed revisiting.
+
+The leaf was then re-codified without the clock. Re-verified by execution: two runs on
+identical inputs now return identical output, and no clock, environment or network call
+remains.
+
+**`n4` — glue is decomposition's to own, so decomposition fixed it.** The lookup became
+`source_by_id.get(entry["source_id"], {"id": ..., "field_map": {}})`. An entry whose source has
+been removed is still passed to the child, so entry count and dispositions survive as the
+contract requires; its unmapped fields simply route to the seam branch. That is the right
+answer rather than a convenient one: the source definition that once stated those fields
+structurally is gone, but the raw payload the posting was retrieved with is not, so the
+information is still there to be read — just by the more expensive path.
+
+**Re-verified state: 70 checks, 64 executed (91%), 0 failures, 1 deferred, 13 of 13 nodes pass.**
+
+One check had to be rewritten rather than merely re-run: `n3`'s closure probe asserted that
+`retrieved_at` varied between runs, which crashed once the field was gone. The replacement
+asserts what now matters — identical inputs produce identical outputs, no clock call remains.
+Worth noting as a property of this stage: **verification checks are written against a contract
+and do not survive that contract changing.** A future refinement loop that re-runs stages
+automatically will need to regenerate checks, not replay them.
+
+The third finding is untouched and still open: `n7` dropping timestamp-less postings passes
+every check because the root contract's no-silent-drop clause does not reach them. That is
+interrogator work and is deliberately not fixed here.

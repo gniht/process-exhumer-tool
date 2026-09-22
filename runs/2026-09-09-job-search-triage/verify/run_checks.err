@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/gniht/projects/process-exhumer-tool/runs/2026-09-09-job-search-triage/verify/run_checks.py", line 69, in <module>
+    a = fn({"entries": []}, p)["entries"][0]["retrieved_at"]
+KeyError: 'retrieved_at'
