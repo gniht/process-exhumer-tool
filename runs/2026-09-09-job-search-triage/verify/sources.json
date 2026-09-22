@@ -1,0 +1,43 @@
+[
+ {
+  "id": "greenhouse:gitlab",
+  "endpoint": "https://boards-api.greenhouse.io/v1/boards/gitlab/jobs?content=true",
+  "list_path": "jobs",
+  "id_locator": "id",
+  "published_locator": "first_published",
+  "published_format": "iso8601",
+  "field_map": {
+   "title": "title",
+   "location": "location.name",
+   "url": "absolute_url"
+  }
+ },
+ {
+  "id": "ashby:linear",
+  "endpoint": "https://api.ashbyhq.com/posting-api/job-board/linear?includeCompensation=true",
+  "list_path": "jobs",
+  "id_locator": "id",
+  "published_locator": "publishedAt",
+  "published_format": "iso8601",
+  "field_map": {
+   "title": "title",
+   "location": "location",
+   "remote": "isRemote",
+   "url": "jobUrl"
+  }
+ },
+ {
+  "id": "lever:spotify",
+  "endpoint": "https://api.lever.co/v0/postings/spotify?mode=json",
+  "list_path": null,
+  "id_locator": "id",
+  "published_locator": "createdAt",
+  "published_format": "epoch_millis",
+  "field_map": {
+   "title": "text",
+   "location": "categories.location",
+   "remote": "workplaceType",
+   "url": "hostedUrl"
+  }
+ }
+]

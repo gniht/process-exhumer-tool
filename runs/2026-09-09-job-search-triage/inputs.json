@@ -1,0 +1,57 @@
+{
+ "sources": [
+  {
+   "id": "greenhouse:gitlab",
+   "endpoint": "https://boards-api.greenhouse.io/v1/boards/gitlab/jobs?content=true",
+   "list_path": "jobs",
+   "id_locator": "id",
+   "published_locator": "first_published",
+   "published_format": "iso8601",
+   "field_map": {
+    "title": "title",
+    "location": "location.name",
+    "url": "absolute_url"
+   }
+  },
+  {
+   "id": "lever:spotify",
+   "endpoint": "https://api.lever.co/v0/postings/spotify?mode=json",
+   "list_path": null,
+   "id_locator": "id",
+   "published_locator": "createdAt",
+   "published_format": "epoch_millis",
+   "field_map": {
+    "title": "text",
+    "location": "categories.location",
+    "remote": "workplaceType",
+    "url": "hostedUrl"
+   }
+  }
+ ],
+ "criteria": [
+  {
+   "id": "c1",
+   "field": "title",
+   "operator": "contains",
+   "value": "Engineer"
+  },
+  {
+   "id": "c2",
+   "field": "remote",
+   "operator": "eq",
+   "value": true
+  },
+  {
+   "id": "c3",
+   "field": "salary_floor",
+   "operator": "gte",
+   "value": 150000
+  }
+ ],
+ "recency_spec": {
+  "lookback_days": 7
+ },
+ "corpus": {
+  "entries": []
+ }
+}
