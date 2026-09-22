@@ -1,0 +1,451 @@
+{
+ "id": "n1",
+ "contract": {
+  "behavior": "Given a set of configured sources, a recency specification, a set of criteria, and the corpus held from prior runs: every posting offered by a source that falls within that source's recency window and is not already held is retrieved and stored with its raw payload intact; every stored posting has fields extracted into a common schema, each extracted field carrying the location within its raw payload that it was derived from; every posting in the corpus is evaluated against the current criteria, each criterion yielding satisfied, not satisfied, or not answerable from this posting; every verdict names the extracted field and source location it rests on; postings the user has suppressed are withheld from the presented assessments but remain stored, with their suppression reversible; no posting is absent from the presented assessments without a recorded reason; and the returned corpus accounts for every posting the run retrieved together with the dispositions carried in.",
+  "inputs": [
+   {
+    "name": "sources",
+    "type": "a list of source definitions, each with an id, an endpoint template, the path to the posting list within the response, locators for the posting's id and published timestamp, that timestamp's format, and a field_map from common-schema field names to response locators",
+    "description": "Each definition fixes where postings are fetched from and how to read what that source returns. Data rather than code, so the list can grow without the contract changing."
+   },
+   {
+    "name": "criteria",
+    "type": "a set of criteria, each naming a field of the extracted schema, an operator, and a value",
+    "description": "The user's editable statement of what makes a posting worth their attention. Evaluated over extracted fields, not raw prose. Each criterion is three-valued: satisfied, not satisfied, or not answerable from a given posting. This is the input the user refines between runs."
+   },
+   {
+    "name": "recency_spec",
+    "type": "an object with lookback_days",
+    "description": "How far back to reach for a source, used when nothing is yet held from that source. Where postings are already held, the window follows from what the corpus contains."
+   },
+   {
+    "name": "corpus",
+    "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+    "description": "Empty on a first run. This store is the run's only memory."
+   }
+  ],
+  "outputs": [
+   {
+    "name": "assessments",
+    "type": "list of per-posting assessment records, each with source_id, source_posting_id, fields, and verdicts",
+    "description": "One record per posting presented, carrying its extracted fields and, for each criterion, the verdict together with the field and provenance that verdict rests on. Suppressed postings are withheld."
+   },
+   {
+    "name": "criteria_diagnostics",
+    "type": "list of per-criterion records with criterion id, discriminated, outcome counts, and not-answerable posting ids",
+    "description": "Whether the criterion discriminated between postings this run, and which postings it could not answer. The material the user refines their criteria with."
+   },
+   {
+    "name": "updated_corpus",
+    "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+    "description": "The successor to the incoming corpus: everything carried in, plus everything retrieved this run, with extractions and dispositions intact."
+   }
+  ]
+ },
+ "assembly_pattern": "sequential",
+ "glue": "new_postings = acquire_new_postings(sources, recency_spec, corpus)\ncorpus_with_new = merge_corpus(corpus, new_postings)\nextracted_corpus = extract_fields(corpus_with_new, criteria, sources)\nall_assessments = assess_postings(extracted_corpus, criteria)\ncriteria_diagnostics = summarize_criteria(all_assessments, criteria)\n\nsuppressed = {\n    (e[\"source_id\"], e[\"source_posting_id\"])\n    for e in extracted_corpus[\"entries\"]\n    if e[\"dispositions\"].get(\"suppressed\")\n}\nassessments = [\n    a for a in all_assessments\n    if (a[\"source_id\"], a[\"source_posting_id\"]) not in suppressed\n]\n\nreturn {\n    \"assessments\": assessments,\n    \"criteria_diagnostics\": criteria_diagnostics,\n    \"updated_corpus\": extracted_corpus,\n}",
+ "children": [
+  {
+   "name": "acquire_new_postings",
+   "id": "n2",
+   "contract": {
+    "behavior": "Every configured source is queried exactly once. For each, the window begins at the newest published timestamp already held from that source, or \u2014 where nothing is held from it \u2014 at the recency spec's lookback before now. Postings already held from a source are not returned again. Returned postings carry the source's response for them unmodified.",
+    "inputs": [
+     {
+      "name": "sources",
+      "type": "list of source definitions",
+      "description": "Each queried once."
+     },
+     {
+      "name": "recency_spec",
+      "type": "an object with lookback_days",
+      "description": "How far back to reach for a source nothing is held from."
+     },
+     {
+      "name": "corpus",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "description": "Supplies each source's watermark and held ids."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "new_postings",
+      "type": "list of objects with source_id, source_posting_id, published_at, raw_payload",
+      "description": "This run's retrievals across all sources."
+     }
+    ]
+   },
+   "assembly_pattern": "iterative",
+   "glue": "from datetime import datetime, timedelta, timezone\n\nfloor = (\n    datetime.now(timezone.utc) - timedelta(days=recency_spec[\"lookback_days\"])\n).isoformat()\n\nnew_postings = []\nfor source in sources:\n    held = [e for e in corpus[\"entries\"] if e[\"source_id\"] == source[\"id\"]]\n    held_posting_ids = sorted({e[\"source_posting_id\"] for e in held})\n    published = [e[\"published_at\"] for e in held if e.get(\"published_at\")]\n    window_start = max(published) if published else floor\n    new_postings.extend(\n        retrieve_from_source(source, window_start, held_posting_ids)\n    )\nreturn new_postings",
+   "children": [
+    {
+     "name": "retrieve_from_source",
+     "id": "n7",
+     "contract": {
+      "behavior": "Every posting the source offers whose published timestamp is at or after window_start and whose source-local id is not in held_posting_ids is returned, each carrying the source's response for that posting unmodified, its source-local id, and its published timestamp normalised to UTC ISO-8601. Postings at or after the window that are already held are omitted; nothing outside the window is returned. The source definition alone determines the request to issue, where the posting list sits in the response, and which response locations carry the id and timestamp.",
+      "inputs": [
+       {
+        "name": "source",
+        "type": "a source definition: id, endpoint template, path to the posting list within the response, locators for the posting's id and published timestamp, that timestamp's format, and a field_map from common-schema field names to response locators",
+        "description": "Data, not code. One entry per configured source."
+       },
+       {
+        "name": "window_start",
+        "type": "UTC ISO-8601 timestamp",
+        "description": "Earliest published timestamp to retrieve."
+       },
+       {
+        "name": "held_posting_ids",
+        "type": "list of source-local posting id strings",
+        "description": "Already held from this source; to be skipped."
+       }
+      ],
+      "outputs": [
+       {
+        "name": "postings",
+        "type": "list of objects with source_id, source_posting_id, published_at, raw_payload",
+        "description": "Retrieved postings not previously held, raw response preserved per posting."
+       }
+      ]
+     },
+     "code": "\"\"\"Leaf n7 - retrieve_from_source.\"\"\"\n\nimport json\nimport urllib.request\nfrom datetime import datetime, timezone\n\n\ndef _resolve(payload, locator):\n    \"\"\"Walk a dotted locator (numeric segments index lists); None if it does not resolve.\"\"\"\n    if locator in (None, \"\", \".\"):\n        return payload\n    current = payload\n    for part in str(locator).split(\".\"):\n        if isinstance(current, list):\n            try:\n                index = int(part)\n            except ValueError:\n                return None\n            if not -len(current) <= index < len(current):\n                return None\n            current = current[index]\n        elif isinstance(current, dict):\n            if part not in current:\n                return None\n            current = current[part]\n        else:\n            return None\n    return current\n\n\ndef _to_moment(raw, fmt):\n    \"\"\"Normalise a timestamp in the source's declared format to an aware UTC datetime.\"\"\"\n    if raw is None:\n        return None\n    name = str(fmt or \"iso8601\").strip().lower()\n    if name in (\"epoch_millis\", \"epoch_milliseconds\", \"unix_millis\"):\n        moment = datetime.fromtimestamp(float(raw) / 1000.0, tz=timezone.utc)\n    elif name in (\"epoch\", \"epoch_seconds\", \"unix\", \"unix_seconds\"):\n        moment = datetime.fromtimestamp(float(raw), tz=timezone.utc)\n    elif name in (\"iso8601\", \"iso\", \"rfc3339\"):\n        text = str(raw).strip()\n        if text.endswith((\"Z\", \"z\")):\n            text = text[:-1] + \"+00:00\"\n        moment = datetime.fromisoformat(text)\n    else:\n        moment = datetime.strptime(str(raw), str(fmt))\n    if moment.tzinfo is None:\n        moment = moment.replace(tzinfo=timezone.utc)\n    return moment.astimezone(timezone.utc)\n\n\ndef _request_url(source):\n    endpoint = source[\"endpoint\"]\n    if \"{\" in endpoint:\n        try:\n            return endpoint.format(**source)\n        except (KeyError, IndexError):\n            return endpoint\n    return endpoint\n\n\ndef retrieve_from_source(source, window_start, held_posting_ids):\n    request = urllib.request.Request(\n        _request_url(source), headers={\"Accept\": \"application/json\"}\n    )\n    with urllib.request.urlopen(request) as response:\n        body = json.loads(response.read().decode(\"utf-8\"))\n\n    listing = _resolve(body, source.get(\"list_path\"))\n    if listing is None:\n        listing = body\n    if not isinstance(listing, list):\n        listing = []\n\n    floor = _to_moment(window_start, \"iso8601\")\n    already_held = set(held_posting_ids or ())\n\n    postings = []\n    for item in listing:\n        raw_id = _resolve(item, source.get(\"id_locator\"))\n        if raw_id is None:\n            continue\n        posting_id = str(raw_id)\n        if posting_id in already_held:\n            continue\n        published = _to_moment(\n            _resolve(item, source.get(\"published_locator\")),\n            source.get(\"published_format\"),\n        )\n        if published is None or (floor is not None and published < floor):\n            continue\n        postings.append(\n            {\n                \"source_id\": source[\"id\"],\n                \"source_posting_id\": posting_id,\n                \"published_at\": published.isoformat(),\n                \"raw_payload\": item,\n            }\n        )\n    return postings\n",
+     "result": {
+      "determinism": "deterministic",
+      "ai_dependence": []
+     }
+    }
+   ]
+  },
+  {
+   "name": "merge_corpus",
+   "id": "n3",
+   "contract": {
+    "behavior": "The returned corpus contains one entry per posting held before the run plus one per posting in new_postings, with no duplicate (source_id, source_posting_id) pair. Pre-existing entries are returned with their raw_payload, fields and dispositions unchanged. Each new posting becomes an entry carrying its raw payload, an empty fields map, and default dispositions with every flag false.",
+    "inputs": [
+     {
+      "name": "corpus",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "description": "Possibly empty on a first run."
+     },
+     {
+      "name": "new_postings",
+      "type": "list of objects with source_id, source_posting_id, published_at, raw_payload",
+      "description": "This run's retrievals."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "corpus_with_new",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "description": "Prior corpus plus this run's retrievals; extractions and dispositions carried through untouched."
+     }
+    ]
+   },
+   "code": "\"\"\"Leaf n3 - merge_corpus.\"\"\"\n\nfrom datetime import datetime, timezone\n\n\ndef merge_corpus(corpus, new_postings):\n    entries = []\n    seen = set()\n\n    for entry in (corpus or {}).get(\"entries\") or []:\n        key = (entry[\"source_id\"], entry[\"source_posting_id\"])\n        if key in seen:\n            continue\n        seen.add(key)\n        entries.append(entry)\n\n    retrieved_at = datetime.now(timezone.utc).isoformat()\n    for posting in new_postings or []:\n        key = (posting[\"source_id\"], posting[\"source_posting_id\"])\n        if key in seen:\n            continue\n        seen.add(key)\n        entries.append(\n            {\n                \"source_id\": posting[\"source_id\"],\n                \"source_posting_id\": posting[\"source_posting_id\"],\n                \"retrieved_at\": retrieved_at,\n                \"published_at\": posting.get(\"published_at\"),\n                \"raw_payload\": posting[\"raw_payload\"],\n                \"fields\": {},\n                \"dispositions\": {\"viewed\": False, \"suppressed\": False},\n            }\n        )\n\n    corpus_with_new = dict(corpus or {})\n    corpus_with_new[\"entries\"] = entries\n    return corpus_with_new\n",
+   "result": {
+    "determinism": "deterministic",
+    "ai_dependence": []
+   }
+  },
+  {
+   "name": "extract_fields",
+   "id": "n4",
+   "contract": {
+    "behavior": "Every entry in the returned corpus carries a value for each field named by any criterion, derived from that entry's own raw payload and recording whether the payload stated it plus provenance for the evidence used. Extractions already held are preserved rather than recomputed. Entry count, raw payloads and dispositions are unchanged.",
+    "inputs": [
+     {
+      "name": "corpus_with_new",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "description": "Entries may carry fields from earlier runs, or none."
+     },
+     {
+      "name": "criteria",
+      "type": "list of criteria, each naming a field, an operator, and a value",
+      "description": "Determines which fields must exist."
+     },
+     {
+      "name": "sources",
+      "type": "list of source definitions, each with an id and a field_map",
+      "description": "Supplies each entry's locators by source id."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "extracted_corpus",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "description": "Same entries, every criterion-named field populated."
+     }
+    ]
+   },
+   "assembly_pattern": "iterative",
+   "glue": "required_fields = sorted({criterion[\"field\"] for criterion in criteria})\nsource_by_id = {source[\"id\"]: source for source in sources}\nentries = []\nfor entry in corpus_with_new[\"entries\"]:\n    entries.append(\n        extract_entry_fields(entry, required_fields, source_by_id[entry[\"source_id\"]])\n    )\nextracted_corpus = dict(corpus_with_new)\nextracted_corpus[\"entries\"] = entries\nreturn extracted_corpus",
+   "children": [
+    {
+     "name": "extract_entry_fields",
+     "id": "n8",
+     "contract": {
+      "behavior": "The returned entry carries a value for every field in required_fields. Fields already present are returned untouched; fields absent are derived from the entry's raw payload, each recording whether the payload stated it and provenance locating the evidence. Fields outside required_fields that the entry already carried are preserved. raw_payload and dispositions are returned unchanged.",
+      "inputs": [
+       {
+        "name": "entry",
+        "type": "one corpus entry: an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+        "description": "May already carry fields from earlier runs."
+       },
+       {
+        "name": "required_fields",
+        "type": "list of field names from the common schema",
+        "description": "The fields the current criteria need."
+       },
+       {
+        "name": "source_definition",
+        "type": "the definition of the source this entry came from, including its field_map",
+        "description": "Passed through to field derivation."
+       }
+      ],
+      "outputs": [
+       {
+        "name": "entry_with_fields",
+        "type": "one corpus entry, an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+        "description": "Same entry with every required field populated."
+       }
+      ]
+     },
+     "assembly_pattern": "iterative",
+     "glue": "fields = dict(entry.get(\"fields\") or {})\nfor field in required_fields:\n    if field in fields:\n        continue\n    fields[field] = derive_field(entry, field, source_definition)\nentry_with_fields = dict(entry)\nentry_with_fields[\"fields\"] = fields\nreturn entry_with_fields",
+     "children": [
+      {
+       "name": "derive_field",
+       "id": "n10",
+       "contract": {
+        "behavior": "The field is derived from the posting's raw payload and returned with its value, whether the payload stated it, and provenance locating the evidence within the payload. Where the source definition declares a locator for the field, that locator is the sole evidence used; where it does not, the payload's text is. Provenance is recorded in both cases.",
+        "inputs": [
+         {
+          "name": "entry",
+          "type": "one corpus entry: an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+          "description": "The posting whose field is being derived."
+         },
+         {
+          "name": "field",
+          "type": "field name from the common schema",
+          "description": "Which field is being derived."
+         },
+         {
+          "name": "source_definition",
+          "type": "the definition of the source this entry came from, including its field_map",
+          "description": "Supplies the locator when this source states the field."
+         }
+        ],
+        "outputs": [
+         {
+          "name": "field_record",
+          "type": "an object with value, stated, and provenance",
+          "description": "Provenance names either the locator or the text span used."
+         }
+        ]
+       },
+       "assembly_pattern": "conditional",
+       "glue": "field_map = source_definition.get(\"field_map\") or {}\nif field in field_map:\n    field_record = pluck_mapped_field(entry[\"raw_payload\"], field, field_map[field])\nelse:\n    field_record = infer_field_from_text(entry[\"raw_payload\"], field)\nreturn field_record",
+       "children": [
+        {
+         "name": "pluck_mapped_field",
+         "id": "n12",
+         "contract": {
+          "behavior": "The value at the locator within raw_payload is returned as the field's value with stated true and provenance naming that locator. If the locator resolves to nothing, the field is returned with stated false, a null value, and provenance naming the locator that failed to resolve.",
+          "inputs": [
+           {
+            "name": "raw_payload",
+            "type": "the source's response for one posting, unmodified",
+            "description": "Navigated, never mutated."
+           },
+           {
+            "name": "field",
+            "type": "field name from the common schema",
+            "description": "Which field is being derived."
+           },
+           {
+            "name": "locator",
+            "type": "a locator into raw_payload, from the source definition's field_map",
+            "description": "Where this source states this field."
+           }
+          ],
+          "outputs": [
+           {
+            "name": "field_record",
+            "type": "an object with value, stated, and provenance",
+            "description": "Provenance names the locator the value came from."
+           }
+          ]
+         },
+         "code": "\"\"\"Leaf n12 - pluck_mapped_field.\"\"\"\n\n\ndef _resolve(payload, locator):\n    \"\"\"Walk a dotted locator (numeric segments index lists); None if it does not resolve.\"\"\"\n    if locator in (None, \"\", \".\"):\n        return payload\n    current = payload\n    for part in str(locator).split(\".\"):\n        if isinstance(current, list):\n            try:\n                index = int(part)\n            except ValueError:\n                return None\n            if not -len(current) <= index < len(current):\n                return None\n            current = current[index]\n        elif isinstance(current, dict):\n            if part not in current:\n                return None\n            current = current[part]\n        else:\n            return None\n    return current\n\n\ndef pluck_mapped_field(raw_payload, field, locator):\n    value = _resolve(raw_payload, locator)\n    resolved = value is not None\n    return {\n        \"value\": value if resolved else None,\n        \"stated\": resolved,\n        \"provenance\": {\n            \"kind\": \"locator\",\n            \"field\": field,\n            \"locator\": locator,\n            \"resolved\": resolved,\n        },\n    }\n",
+         "result": {
+          "determinism": "deterministic",
+          "ai_dependence": []
+         }
+        },
+        {
+         "name": "infer_field_from_text",
+         "id": "n13",
+         "contract": {
+          "behavior": "The field's value is derived from the text of raw_payload and returned with stated true and provenance naming the span of that text it was read from. Where the text does not state the field, the field is returned with stated false, a null value, and provenance recording that the payload does not state it. A value is returned only when the payload supports it; nothing is inferred from outside the payload.",
+          "inputs": [
+           {
+            "name": "raw_payload",
+            "type": "the source's response for one posting, unmodified",
+            "description": "The only evidence available."
+           },
+           {
+            "name": "field",
+            "type": "field name from the common schema",
+            "description": "Which field is being derived."
+           }
+          ],
+          "outputs": [
+           {
+            "name": "field_record",
+            "type": "an object with value, stated, and provenance",
+            "description": "Provenance names the span read, or records the payload as silent."
+           }
+          ]
+         },
+         "code": "\"\"\"Leaf n13 - infer_field_from_text.\"\"\"\n\nimport html\nimport json\nimport re\n\n_INSTRUCTION = (\n    \"You are given the plain text of a single job posting and the name of one field. \"\n    \"Determine that field's value as stated by this posting text, and nothing else.\\n\\n\"\n    \"Return a JSON object with exactly these three keys:\\n\"\n    \"  value    - the field's value as the text states it, or null if the text does not state it\\n\"\n    \"  stated   - true only if the posting text states this field; false otherwise\\n\"\n    \"  evidence - the shortest verbatim substring of the posting text that states the value, \"\n    \"or null when stated is false\\n\\n\"\n    \"Rules: never infer a value the text does not support; when the text is silent about the \"\n    \"field, stated must be false and value must be null. When stated is true, evidence must \"\n    \"appear verbatim in the posting text. Return the JSON object and nothing else.\"\n)\n\n\ndef _collect_strings(value, out):\n    if isinstance(value, str):\n        out.append(value)\n    elif isinstance(value, dict):\n        for item in value.values():\n            _collect_strings(item, out)\n    elif isinstance(value, list):\n        for item in value:\n            _collect_strings(item, out)\n\n\ndef _plain_text(raw_payload):\n    if isinstance(raw_payload, str):\n        pieces = [raw_payload]\n    else:\n        pieces = []\n        _collect_strings(raw_payload, pieces)\n    text = \"\\n\".join(pieces)\n    text = html.unescape(text)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    text = html.unescape(text)\n    return re.sub(r\"[ \\t\\r\\f\\v]+\", \" \", text).strip()\n\n\ndef _as_object(answer):\n    if isinstance(answer, dict):\n        return answer\n    if isinstance(answer, str):\n        try:\n            parsed = json.loads(answer)\n        except ValueError:\n            return {}\n        return parsed if isinstance(parsed, dict) else {}\n    return {}\n\n\ndef infer_field_from_text(raw_payload, field):\n    text = _plain_text(raw_payload)\n\n    answer = _as_object(ai(_INSTRUCTION, {\"field\": field, \"posting_text\": text}))\n\n    if not answer.get(\"stated\"):\n        return {\n            \"value\": None,\n            \"stated\": False,\n            \"provenance\": {\n                \"kind\": \"not_stated\",\n                \"field\": field,\n                \"searched\": \"posting_text\",\n            },\n        }\n\n    evidence = answer.get(\"evidence\")\n    start = text.find(evidence) if isinstance(evidence, str) and evidence else -1\n    if start < 0:\n        return {\n            \"value\": None,\n            \"stated\": False,\n            \"provenance\": {\n                \"kind\": \"not_stated\",\n                \"field\": field,\n                \"searched\": \"posting_text\",\n                \"note\": \"no verbatim evidence located in the payload text\",\n            },\n        }\n\n    return {\n        \"value\": answer.get(\"value\"),\n        \"stated\": True,\n        \"provenance\": {\n            \"kind\": \"text_span\",\n            \"field\": field,\n            \"start\": start,\n            \"end\": start + len(evidence),\n            \"quote\": evidence,\n        },\n    }\n",
+         "result": {
+          "determinism": "ai_required",
+          "ai_dependence": [
+           {
+            "site": "infer_field_from_text",
+            "judgment": "Reading one named field's value out of a job posting's prose, deciding whether the posting states it at all, and quoting the span that states it.",
+            "why_irreducible": "The field is one the source did not declare a locator for, so no structural path to it exists; only the posting's free text carries it, and postings phrase the same fact arbitrarily. A pattern-matching implementation would enumerate the phrasings imagined at authoring time and silently report 'not stated' for the rest -- reporting absence where the text in fact speaks, which is the one failure the behavior forbids."
+           }
+          ]
+         }
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "assess_postings",
+   "id": "n5",
+   "contract": {
+    "behavior": "Every entry in the corpus is assessed against the criteria and yields exactly one assessment record, whatever its dispositions. The count of records equals the count of entries; no entry is skipped and none is assessed twice.",
+    "inputs": [
+     {
+      "name": "extracted_corpus",
+      "type": "an object with an entries list, each entry an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+      "description": "Every entry already carries the fields the criteria name."
+     },
+     {
+      "name": "criteria",
+      "type": "list of criteria, each naming a field, an operator, and a value",
+      "description": "Applied to every entry."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "assessments",
+      "type": "list of per-posting assessment records",
+      "description": "One per corpus entry, suppression not yet applied."
+     }
+    ]
+   },
+   "assembly_pattern": "iterative",
+   "glue": "assessments = []\nfor entry in extracted_corpus[\"entries\"]:\n    assessments.append(assess_entry(entry, criteria))\nreturn assessments",
+   "children": [
+    {
+     "name": "assess_entry",
+     "id": "n9",
+     "contract": {
+      "behavior": "One verdict is returned for every criterion, in the order the criteria were given, together with the posting's identity and its extracted fields. No criterion is skipped and none is evaluated twice.",
+      "inputs": [
+       {
+        "name": "entry",
+        "type": "one corpus entry: an object with source_id, source_posting_id, retrieved_at, published_at, raw_payload (the source's response for this posting, unmodified), fields (map of field name to {value, stated, provenance}), and dispositions (map of flag name to boolean)",
+        "description": "The posting being assessed; its fields are already extracted."
+       },
+       {
+        "name": "criteria",
+        "type": "list of criteria, each naming a field, an operator, and a value",
+        "description": "Applied in full to this posting."
+       }
+      ],
+      "outputs": [
+       {
+        "name": "assessment",
+        "type": "an object with source_id, source_posting_id, fields, and a verdicts list",
+        "description": "One assessment record for this posting."
+       }
+      ]
+     },
+     "assembly_pattern": "iterative",
+     "glue": "verdicts = []\nfor criterion in criteria:\n    verdicts.append(evaluate_criterion(entry[\"fields\"], criterion))\nassessment = {\n    \"source_id\": entry[\"source_id\"],\n    \"source_posting_id\": entry[\"source_posting_id\"],\n    \"fields\": entry[\"fields\"],\n    \"verdicts\": verdicts,\n}\nreturn assessment",
+     "children": [
+      {
+       "name": "evaluate_criterion",
+       "id": "n11",
+       "contract": {
+        "behavior": "The criterion is evaluated against the field it names and returns exactly one outcome: satisfied, not_satisfied, or not_answerable. The outcome is not_answerable whenever the named field is absent from fields or is present with stated false \u2014 a field the payload never stated is never reported as failing. Otherwise the criterion's operator and value are applied to the field's value, yielding satisfied or not_satisfied. Every verdict carries the field name and that field's provenance.",
+        "inputs": [
+         {
+          "name": "fields",
+          "type": "map of field name to {value, stated, provenance} for one posting",
+          "description": "The extracted schema for this posting."
+         },
+         {
+          "name": "criterion",
+          "type": "an object naming a field, an operator, and a value",
+          "description": "One of the user's criteria."
+         }
+        ],
+        "outputs": [
+         {
+          "name": "verdict",
+          "type": "an object with criterion id, outcome, field, provenance, and reason",
+          "description": "Outcome is one of satisfied, not_satisfied, not_answerable."
+         }
+        ]
+       },
+       "code": "\"\"\"Leaf n11 - evaluate_criterion.\"\"\"\n\nimport re\n\n_UNKNOWN = object()\n\n\ndef _compare(operator, actual, expected):\n    name = str(operator).strip().lower()\n    if name in (\"eq\", \"==\"):\n        return actual == expected\n    if name in (\"ne\", \"!=\"):\n        return actual != expected\n    if name in (\"lt\", \"<\"):\n        return actual < expected\n    if name in (\"lte\", \"le\", \"<=\"):\n        return actual <= expected\n    if name in (\"gt\", \">\"):\n        return actual > expected\n    if name in (\"gte\", \"ge\", \">=\"):\n        return actual >= expected\n    if name == \"in\":\n        return actual in expected\n    if name == \"not_in\":\n        return actual not in expected\n    if name == \"contains\":\n        return expected in actual\n    if name == \"not_contains\":\n        return expected not in actual\n    if name == \"matches\":\n        return re.search(str(expected), str(actual)) is not None\n    if name == \"not_matches\":\n        return re.search(str(expected), str(actual)) is None\n    return _UNKNOWN\n\n\ndef evaluate_criterion(fields, criterion):\n    field_name = criterion[\"field\"]\n    record = (fields or {}).get(field_name)\n\n    if record is None or not record.get(\"stated\", False):\n        return {\n            \"criterion_id\": criterion.get(\"id\"),\n            \"outcome\": \"not_answerable\",\n            \"field\": field_name,\n            \"provenance\": (record or {}).get(\"provenance\"),\n            \"reason\": \"the posting does not state this field\",\n        }\n\n    try:\n        verdict = _compare(criterion[\"operator\"], record.get(\"value\"), criterion.get(\"value\"))\n    except TypeError:\n        return {\n            \"criterion_id\": criterion.get(\"id\"),\n            \"outcome\": \"not_answerable\",\n            \"field\": field_name,\n            \"provenance\": record.get(\"provenance\"),\n            \"reason\": \"the stated value cannot be compared with this operator\",\n        }\n\n    if verdict is _UNKNOWN:\n        raise ValueError(\"unknown criterion operator: {!r}\".format(criterion[\"operator\"]))\n\n    return {\n        \"criterion_id\": criterion.get(\"id\"),\n        \"outcome\": \"satisfied\" if verdict else \"not_satisfied\",\n        \"field\": field_name,\n        \"provenance\": record.get(\"provenance\"),\n        \"reason\": \"operator {} applied to the stated value\".format(criterion[\"operator\"]),\n    }\n",
+       "result": {
+        "determinism": "deterministic",
+        "ai_dependence": []
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "summarize_criteria",
+   "id": "n6",
+   "contract": {
+    "behavior": "One record is returned per criterion. Each reports whether that criterion discriminated this run \u2014 true iff satisfied and not_satisfied both occur among its verdicts \u2014 a count per outcome, and the postings whose verdict for it was not_answerable. Every criterion appears, including those that discriminated nothing.",
+    "inputs": [
+     {
+      "name": "assessments",
+      "type": "list of per-posting assessment records, each with source_id, source_posting_id, fields, verdicts",
+      "description": "Every posting assessed this run."
+     },
+     {
+      "name": "criteria",
+      "type": "list of criteria, each naming a field, an operator, and a value",
+      "description": "The criteria evaluated."
+     }
+    ],
+    "outputs": [
+     {
+      "name": "criteria_diagnostics",
+      "type": "list of per-criterion records with criterion id, discriminated, outcome counts, and not-answerable posting ids",
+      "description": "The material the user refines criteria with."
+     }
+    ]
+   },
+   "code": "\"\"\"Leaf n6 - summarize_criteria.\"\"\"\n\n\ndef summarize_criteria(assessments, criteria):\n    diagnostics = []\n\n    for criterion in criteria or []:\n        criterion_id = criterion.get(\"id\")\n        counts = {\"satisfied\": 0, \"not_satisfied\": 0, \"not_answerable\": 0}\n        not_answerable = []\n\n        for assessment in assessments or []:\n            for verdict in assessment.get(\"verdicts\") or []:\n                if verdict.get(\"criterion_id\") != criterion_id:\n                    continue\n                outcome = verdict.get(\"outcome\")\n                if outcome in counts:\n                    counts[outcome] += 1\n                if outcome == \"not_answerable\":\n                    not_answerable.append(\n                        {\n                            \"source_id\": assessment.get(\"source_id\"),\n                            \"source_posting_id\": assessment.get(\"source_posting_id\"),\n                        }\n                    )\n\n        diagnostics.append(\n            {\n                \"criterion_id\": criterion_id,\n                \"discriminated\": counts[\"satisfied\"] > 0 and counts[\"not_satisfied\"] > 0,\n                \"outcome_counts\": counts,\n                \"not_answerable_posting_ids\": not_answerable,\n            }\n        )\n\n    return diagnostics\n",
+   "result": {
+    "determinism": "deterministic",
+    "ai_dependence": []
+   }
+  }
+ ]
+}
