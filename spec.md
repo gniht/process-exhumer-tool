@@ -9,6 +9,8 @@
 
 A framework that takes a task or goal and "unearths" a process for accomplishing it programmatically — through recursive decomposition into atomic, contract-bound units of work, codification of each unit, and structural composition of the results. The longer-term ambition is that produced artifacts contain as little AI-call dependence as possible (ideally zero), so that work that was once judgment-based becomes reliably reproducible code.
 
+A run therefore yields **two** deliverables. The first is the codified process. The second is the **residue** — the specific judgments that resisted codification, each carrying the argument for why. The first is the stated purpose; the second characterises the task itself, showing where judgment genuinely lives and where it only appeared to. See *The residue is a deliverable*.
+
 ---
 
 ## Success Criteria
@@ -20,7 +22,8 @@ A framework that takes a task or goal and "unearths" a process for accomplishing
 - [ ] Each pipeline stage (interrogator, decomposition, codification, verification, composition) produces a cleanly extractable, structured output that does not depend on conversation context.
 - [ ] The decomposition step explicitly produces (assembly_pattern, glue_code, sub_task_contracts) at each node — not just a list of sub-tasks.
 - [ ] Verification operates on contract satisfaction — a leaf "passes" iff its generated code satisfies its declared contract.
-- [ ] When a leaf cannot satisfy a deterministic contract, the framework either recurses on it or accepts the leaf with an explicit "requires AI" annotation in the contract. No fuzzy reducibility heuristics.
+- [ ] When a leaf cannot satisfy a deterministic contract, the framework either recurses on it or accepts the leaf with an explicit "requires AI" annotation in the leaf's **result record** — never in the contract, which stays goal-neutral. No fuzzy reducibility heuristics.
+- [ ] A completed run reports its **residue** as a first-class output, not as a list of shortfalls: every seam site with the judgment it holds, the argument for its irreducibility, the nearest codifiable alternative and what that alternative would trade away, and the call count the run actually incurred.
 - [ ] The skill is structured to map cleanly onto a future MCP server architecture (explicit stage boundaries, structured outputs, no implicit context).
 - [ ] At least one ad-hoc end-to-end run produces a result a non-technical observer would recognize as "the framework did what it was supposed to do."
 
@@ -106,6 +109,7 @@ A framework that takes a task or goal and "unearths" a process for accomplishing
 - **Pull toward a privileged test case.** Ad-hoc runs during development are fine; enshrining one task as *the* validation target is not. Watch for "but it works great on X" being used to justify design choices.
 - **Pull toward implicit context.** Decomposition is interface-first; each stage is extractable. Watch for prompts that quietly accumulate context-dependent behavior, which would block weak-model testing and MCP portability simultaneously.
 - **LWE bias in the architecture.** The empirical input was a game-dev project. Post-build validation on diverse tasks is the check on how well we abstracted.
+- **Pull toward residue-as-alibi.** Naming the residue a deliverable makes failing to codify feel like a result. Watch for decomposition stopping early, seam counts drifting upward between runs, and "this one is irreducible" arriving without the strict-progress test having actually failed.
 - **Conflating "the skill works" with "the architecture works."** v1 is a prototype. Its working does not prove the MCP-port version will. Both validations matter, separately.
 
 ---
@@ -219,6 +223,64 @@ The **seam runtime is composition's input, not its invention**: `ai_runtime` cod
 
 The declared goal — *minimize AI-call dependence* — does **not** shape the contract. The contract is goal-neutral. The goal lives in the recursion's **termination rule**: keep pushing "how do you build me?" downward until the answer is deterministic code, or you have isolated an irreducible AI-required leaf (accepted with an explicit annotation). Loading the goal into the contract would put it in the wrong place.
 
+### The residue is a deliverable
+
+Every place a run gives out is currently treated as an exception — surfaced, and implicitly
+apologised for. Three of them are not failures of the framework but findings about the task,
+and they are the same family: places where *process* gives out.
+
+- **out of domain** — the task has no stable output shape (interrogator gate)
+- **reject** — a contract is ill-posed (any stage may emit one; it indicts the stage that authored the contract)
+- **seam residue** — an irreducible judgment, isolated in a leaf and annotated (discovered at codification)
+
+Taken together, these are the second deliverable.
+
+**Why it is durable.** A judgment survives the seam when its input does not determine its
+output by any stable rule — the same fact phrased arbitrarily across instances, so no parser
+reaches it. That is a property of the *information*, not of the model reading it, so a stronger
+model does not shrink the residue. The codified half ages as better implementations appear; the
+residue does not. This is the part of a run's output that outlives the model that produced it.
+
+**Why it is informative.** Seam load can vary *across inputs to the same contract* — one input
+source states a field structurally while another leaves it to prose, making the same field
+deterministic for the first and judgment for the second. That separates judgment **essential to
+the task** from judgment that is an **artifact of how an input happens to be shaped**, and the
+two call for opposite responses: accept the first, fix the source for the second. A framework
+that only reported a total would conflate them.
+
+**The residue must be earned, never claimed.** A run that stops decomposing early produces a
+large residue and a flattering story about how much judgment the task requires. Two constraints
+hold it honest:
+
+1. A residue entry is admissible only where decomposition was pushed to **exhaustion** — the
+   strict-progress test genuinely failed, rather than merely got hard.
+2. **Several judgments tangled in one leaf is an under-decomposition smell,** and it discounts
+   that entry's weight. One narrow judgment per leaf is a credible datum; four in a leaf is
+   probably a decomposition that stopped too soon, and its claim to irreducibility is unearned.
+
+The second application is **earned by** the first, and is never a consolation for failing at it.
+
+**Residue is ratified, not asserted.** A model's *claim* that something is irreducible is worth
+little; a model's *argument* that a human examined and declined to beat is worth a great deal. So
+a residue entry is not final until the user has agreed no acceptable way around it exists —
+entries are `provisional` until ratified, which is also what lets an autonomous run accumulate
+residue it has no authority to finalize.
+
+**Every entry records why it resisted**, drawn from a closed set of causes, because the causes
+have different remedies and some are not remedies for the framework at all — one points at the
+shape of the input, another at a missing contract input, and another at a value judgment where a
+human rather than a model is the honest answer. The vocabulary lives in the codification stage
+prompt.
+
+**Not-derivable is a reject, never residue.** If the outputs are not determined by the granted
+inputs by any means, no seam call repairs it: a model asked to judge what its payload cannot
+answer will **confabulate**, and accepting that as irreducible judgment launders a contract
+defect into a ratified entry. This is the derivability question the interrogator asks at the
+root, arriving again at the far end of the pipeline; the answer is the same both times.
+
+Mechanics — the dialog, the entry schema, the cause vocabulary — belong to the stage prompts and
+harnesses, not here.
+
 ### Handoff: there isn't a separate one
 
 The interrogator emits a **root contract**. Decomposition consumes a contract and emits `(assembly_pattern, glue, child_contracts)`. The same primitive flows end-to-end, so there is no distinct interrogator → decomposition handoff schema to define — **the contract *is* the handoff.**
@@ -261,6 +323,7 @@ Validation does NOT include a privileged test task. Ad-hoc runs during developme
 - [x] **Interrogator → decomposition handoff schema.** ~~The shape of the structured spec the interrogator produces, and what decomposition consumes.~~ **Resolved (2026-06-05):** there is no separate handoff — the interrogator emits a root contract; decomposition consumes a contract; the contract is the handoff. See **Core Data Model**.
 - [x] **Contract data structure.** ~~"A contract" is treated as a primitive throughout this spec but its concrete shape isn't decided.~~ **Resolved (2026-06-05):** `behavior` (required) + resolvable `inputs`/`outputs`; identity only; no `id`/`determinism`/`verification` fields. See **Core Data Model**.
 - [ ] **What counts as "the model cannot produce a deterministic implementation."** The decision rule for whether to recurse further or accept an AI-dependent leaf. Now framed as the recursion's **termination rule** (see Core Data Model → *Where the goal lives*). **Partially addressed (2026-06-09):** the v1 rule ships in the decomposition stage prompt as the *strict-progress test* — decompose only if glue is deterministic, every child's behavior is strictly narrower than the parent's, and remaining judgment is confined to strictly narrower children; degenerate decompositions (restated parent, re-partitioned judgment, "everything else" child) force a leaf. The *measurement* side is now crisp (2026-06-09, codification build): determinism = zero `ai()` seam calls, counted mechanically. The *decision* side — whether a given seam call is genuinely irreducible — still relies on the model's own judgment; a tighter check remains open.
+- [ ] **Residue log across runs.** A residue accumulated over many tasks is a far stronger claim than any single run's, and is the natural feeder for the post-v1 pattern library. Proposed shape, kept deliberately severe: one append-only file at repo root, one short entry per *ratified* site, pointing at the run rather than copying it — the per-run residue already lives in node `result` records, so the log is an index, not a second store. **Note the tension, unresolved:** Scope Risks rejects "capture-only logging ... for later," and this is capture for later. The counter-argument is that the rejection predates the residue being a deliverable, so this is where a product output accumulates rather than speculative infrastructure. Decide before building it.
 - [ ] **Outcome-tracker library design.** The shape of the eventual v2 outcome-tracker — data model, storage location (per-project / per-user), integration points. Its **seam is fixed**: it aggregates across node `result` records by reference (see Core Data Model → *Node and result records*); the internals remain open.
 - [ ] **Resolution / task-shape menu.** A post-v1 question surfaced 2026-06-05: recurring task or contract-resolution shapes may eventually warrant their own *menu-as-hint* (mirroring the assembly vocabulary), and later feed the outcome-tracker. Deliberately not built in v1 — kept on the right side of the "no pattern library" scope line.
 - [ ] **Recursive self-application.** Whether the framework's own pipeline can produce parts of itself. Not a v1 goal but worth holding as a longer-term question. **First concrete instance identified (2026-06-09):** the composition stage is specified as a fully deterministic algorithm — the pipeline's own "irreducible leaf" that turned out to be codifiable — and is the natural first candidate to be replaced by generated code.

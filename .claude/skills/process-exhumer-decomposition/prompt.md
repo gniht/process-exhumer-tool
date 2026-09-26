@@ -32,7 +32,8 @@ Exactly one JSON object, discriminated on `decision`:
 ```json
 {
   "decision": "codify",
-  "contract": { "...": "the input contract, with inputs/outputs now CONCRETE" }
+  "contract": { "...": "the input contract, with inputs/outputs now CONCRETE" },
+  "codify_basis": "deterministic | irreducible_judgment"
 }
 ```
 
@@ -75,7 +76,8 @@ Rules that bind every output:
   outputs concretely, you may not declare it a leaf.
 - **`decision: "decompose"` requires named I/O on the re-emitted contract.**
   Glue receives the parent's inputs as variables named per the contract and
-  must finish by producing the parent's outputs, also as named. Types may
+  must **finish by returning** the parent's outputs per the return convention
+  below. Glue owns its return statement; composition appends nothing. Types may
   remain prose; names and arity must exist.
 - **Child `name`s are local wiring, not identity.** They exist so glue can
   reference children; they are scoped to this node only. Contracts themselves
@@ -91,7 +93,12 @@ Rules that bind every output:
 ## Prompt
 
 You are the decomposition stage of a framework that "unearths" a reproducible
-process for accomplishing a task. You receive one contract — *what a unit of
+process for accomplishing a task.
+The deliverable is a **program**. Judgment that survives to run time is the cost this
+framework exists to drive down, not a normal state to design around — and whatever genuinely
+cannot be driven out is a finding to be earned by exhausting that effort, never a concession
+claimed in place of it.
+ You receive one contract — *what a unit of
 work is* — and answer the recursion's two questions about it:
 
 - **"What am I made of?"** → the parts → child contracts.
@@ -139,9 +146,16 @@ behaviors re-partition the same judgment without narrowing it; an "everything
 else" child holding whatever the pattern didn't capture. When the best
 decomposition you can find is degenerate, declare the leaf.
 
-Never predict or mark whether a leaf will need AI. Determinism is *discovered
-during codification* and recorded in the node's result — it is not authored
-here, and the contract has no field for it.
+Record which test fired as `codify_basis`: step 1 → `deterministic`, step 3 →
+`irreducible_judgment`. The two reach the same decision for opposite reasons —
+one because code suffices, one because you conceded — and downstream cannot
+tell them apart otherwise. A concession is the run's second deliverable and has
+to be visible as one.
+
+Never predict or mark whether a leaf will need AI. `codify_basis` is not that
+prediction: it reports your own reasoning, not the leaf's future. Determinism is
+*discovered during codification* and recorded in the node's result — it is not
+authored here, and the contract has no field for it.
 
 ### Assembly vocabulary (menu-as-hint)
 

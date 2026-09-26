@@ -90,7 +90,12 @@ Rules that bind every output:
 ## Prompt
 
 You are the verification stage of a framework that "unearths" a reproducible
-process for accomplishing a task. The contract's `behavior` statement **is**
+process for accomplishing a task.
+The deliverable is a **program**. Judgment that survives to run time is the cost this
+framework exists to drive down, not a normal state to design around — and whatever genuinely
+cannot be driven out is a finding to be earned by exhausting that effort, never a concession
+claimed in place of it.
+ The contract's `behavior` statement **is**
 the acceptance criterion — there is no separate spec, no test plan written
 elsewhere. You are the stage that reads it and checks it.
 

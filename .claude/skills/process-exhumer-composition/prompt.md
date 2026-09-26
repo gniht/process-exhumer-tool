@@ -69,7 +69,12 @@ Rules that bind every output:
 ## Prompt
 
 You are the composition stage of a framework that "unearths" a reproducible
-process for accomplishing a task. Decomposition asked each node "how do you
+process for accomplishing a task.
+The deliverable is a **program**. Judgment that survives to run time is the cost this
+framework exists to drive down, not a normal state to design around — and whatever genuinely
+cannot be driven out is a finding to be earned by exhausting that effort, never a concession
+claimed in place of it.
+ Decomposition asked each node "how do you
 build me?" — you are the build. Every step below is deterministic: naming,
 wrapping, binding, ordering. If you find yourself deciding anything by
 meaning, stop — the tree is incomplete, and the answer is reject, not
@@ -112,8 +117,8 @@ reject. Nesting the code verbatim makes helper-name collisions between
 leaves impossible.
 
 **Internal-node wrapper.** Body = child bindings, then the `self` binding
-iff the pattern is `recursive-over-data`, then the glue verbatim, then the
-return:
+iff the pattern is `recursive-over-data`, then the glue verbatim. **Glue carries
+its own return** — append nothing after it:
 
 ```python
 def root__n1(documents):
@@ -126,11 +131,11 @@ def root__n1(documents):
     return {"report": report, "index": index}
 ```
 
-**Return construction** (both wrappers), from the contract's outputs:
-none → no return; one → `return <name>`; several → return a map keyed by
-output names (in python, a dict literal of `name: name`). The leaf wrapper's
-pass-through call already conforms, because leaf code follows the same
-convention.
+**Return construction** applies to the **leaf wrapper only**: call the entry
+point and return what it gives, which already conforms because leaf code follows
+the same convention. Internal nodes need none — decomposition owns the glue's
+return statement, so constructing a second one here would either be dead code or
+silently disagree with the glue about what the node produces.
 
 ### The seam runtime
 
@@ -179,6 +184,8 @@ Reject — naming the node and the hole — when:
 - glue references a name that is not a declared child, a parent input, or
   (under `recursive-over-data` only) `self`;
 - the entry point of a leaf cannot be identified mechanically;
+- glue does not end by returning the parent's declared outputs per the return
+  convention — that is decomposition's hole, not yours to close;
 - seam calls exist and no `ai_runtime` was supplied;
 - the tree's language and the requested `language` disagree.
 

@@ -52,7 +52,11 @@ MCP era.
    was inserted (the v1 reference runtime needs the `claude` CLI).
 4. **Collect real inputs:** ask the user for the actual values of the root
    contract's inputs — this is the original task, live. Build the JSON
-   object the shell expects on stdin.
+   object the shell expects on stdin. Where the root consumes a collection of
+   instances, gather **at least two that are structurally different** — two
+   sources, two formats, two providers. A contract defect that survived
+   verification usually shows up as an inconsistency *between* instances, and
+   a single-instance run cannot see it.
 5. **Run:** `python artifact.py < inputs.json`, capturing stdout (the
    outputs) and stderr (the seam log). Report crashes verbatim — a crash is
    data about which contract lied.
@@ -69,17 +73,32 @@ MCP era.
    - the deferred list, settled: each deferred aspect observed (with your
      assessment) or not exercised by this run's inputs (say so);
    - claim mismatches: anything the run contradicted (a "deterministic"
-     leaf that misbehaved, a seam return that broke its declared shape).
+     leaf that misbehaved, a seam return that broke its declared shape);
+   - **the residue**, as a deliverable rather than a list of shortfalls: each
+     seam site with its judgment, `cause`, `nearest_codifiable_alternative`,
+     ratified-or-provisional status, and the calls it actually incurred. Say
+     where seam load differed *across* instances of the same contract — a field
+     one source states structurally and another leaves to prose is judgment
+     caused by the input's shape, not by the task, and is removable by changing
+     the source;
+   - **differential check:** compare values that should be commensurable across
+     the instances you ran. Fields sharing a name but not a value space are the
+     signature of a contract that specified names without specifying meaning.
 8. **Emit** the final tree (results now carrying run observations) as a
    fenced ```json block, alongside the artifact. The pipeline is complete.
 
 ## v1 reference seam runtime (`claude -p`, Max plan — no API cost)
 
 ```python
-import inspect, json, subprocess, sys
+import inspect, json, re, subprocess, sys
+
+_QUALIFIED = re.compile(r"__n\d+$")
 
 def ai(instruction, payload):
-    caller = inspect.stack()[1].function
+    caller = next(
+        (f.function for f in inspect.stack()[1:] if _QUALIFIED.search(f.function)),
+        inspect.stack()[1].function,
+    )
     prompt = (instruction
               + "\n\nPayload (JSON):\n" + json.dumps(payload)
               + "\n\nRespond with ONLY the return value, as JSON.")
@@ -96,8 +115,15 @@ def ai(instruction, payload):
 ```
 
 Adjust mechanics (timeout, fence-stripping) as the environment demands, but
-keep the contract: declared-shape returns, one JSON log line per call with
-the enclosing function name, loud failure — never silent coercion.
+keep the contract: declared-shape returns, one JSON log line per call carrying
+**the node's qualified name**, loud failure — never silent coercion.
+
+Note why `caller` walks the stack rather than taking the immediate frame. Leaf
+code is nested *verbatim* inside its wrapper, so the function that calls `ai()`
+is the leaf's own inner entry point — an unqualified name carrying no node id.
+Taking `inspect.stack()[1]` breaks node attribution silently, and two leaves
+whose inner entry points share a name become indistinguishable in the log.
+Walking outward to the nearest `__n<id>` frame restores it mechanically.
 
 `prompt.md` is the real artifact — self-contained and model-agnostic, so it
 can be lifted, run against another model, or — fitting, for this stage —

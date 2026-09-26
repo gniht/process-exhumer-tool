@@ -50,6 +50,11 @@ verdict out. The loop over nodes lives here, in the harness.
    a temp dir, stub `ai()` with canned returns of the declared shape, run
    it, report what happened. Same for glue with contract-conformant child
    stubs. Do not simulate execution mentally and label it `executed`.
+
+   Checks are written against a contract and **do not survive that contract
+   changing**. After a re-codification or re-decomposition, regenerate the
+   affected checks rather than replaying them — a check asserting on a field the
+   new contract dropped will crash, or worse, pass for the wrong reason.
 4. **Record verdicts** in result records:
    - leaf → merge into the existing record:
      `result: { determinism, ai_dependence, verdict, failures }`,

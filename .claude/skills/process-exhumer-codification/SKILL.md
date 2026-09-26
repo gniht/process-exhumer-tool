@@ -55,7 +55,17 @@ in the harness.
    framework exists to drive: leaves deterministic vs. ai_required, total
    seam call sites, and which judgments they hold. Leaves with several seam
    calls are under-decomposition smells — name them, don't fix them.
-5. **Emit** the updated tree as a single fenced ```json block — the handoff
+5. **Ratify the residue — stop and ask.** Every seam call is a claim that some
+   judgment cannot be made reproducible, and that claim is the run's second
+   deliverable. Do not finalize it alone. Put each site to the user: the
+   judgment, its `cause`, why deterministic code is claimed not to reach it,
+   and the `nearest_codifiable_alternative` with what adopting it would trade
+   away. Ask directly whether any of those trade-offs is acceptable — often one
+   is, and a seam disappears for the price of a narrower contract. Entries stand
+   as `provisional` until the user agrees no acceptable way around exists; mark
+   the ones they ratify. An autonomous run with no user to ask leaves every
+   entry provisional rather than promoting its own claims.
+6. **Emit** the updated tree as a single fenced ```json block — the handoff
    to verification. Leaf nodes now carry `code` and `result`:
 
    ```json
