@@ -124,7 +124,7 @@ author pushback), and contract emission. Stage 1 is now validated end-to-end.
   code. Evidence-citation moves to extraction-time provenance (field ← span), which the
   deterministic criteria path inherits for free. Dispositions (viewed/suppressed) join the
   record; suppression hides from presentation, never from storage, and is reversible by
-  construction.
+  construction. *(The intake seam misreads the author; see the 2026-10-04 correction below.)*
 
 ## Decisions the author made against stage-1 recommendation
 
@@ -164,3 +164,11 @@ author pushback), and contract emission. Stage 1 is now validated end-to-end.
   **Candidate stage-1 probe: "which parts of this must a model still decide at run time, and
   can that judgment be moved to a one-time extraction?"** Highest-value refinement item from
   this run; arguably belongs in the stage prompt rather than the backlog.
+
+  *Correction, 2026-10-04.* This misreads the author. "Up-front" meant **while the program is
+  being built**: reasoning belongs in the pipeline, and a finished program should make no model
+  calls unless the author expressly permits one. "Seam once at intake" was this stage's
+  interpretation, not the author's. It cut run-time calls from every criterion on every run to
+  one per unstated field per posting, but it left them in the program, which by the author's
+  test is still left-over reasoning. The probe should read: *which parts of this must a model
+  still decide at run time, and how can that judgment be moved into the build?*

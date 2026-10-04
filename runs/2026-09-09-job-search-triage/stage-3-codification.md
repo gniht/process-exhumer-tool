@@ -27,6 +27,11 @@ This is the author's leftover-reasoning test surviving contact with implementati
 composed program should spend model calls only on fields a source left to prose, once per
 posting per unstated field, and never again on any later criteria change.
 
+*Correction, 2026-10-04.* The author's test is stricter than this reading. "Up-front" meant
+while the program is being built, so a finished program should make no model calls unless the
+author expressly permits one. Confining the calls to one leaf was progress; it did not pass the
+test. See the correction in `stage-1-interrogation.md`.
+
 ## The seam
 
 One instruction, static, contract-shaped. Payload carries `field` and `posting_text`; the

@@ -39,6 +39,11 @@ posting per field that posting's source does not state structurally, and **zero 
 criteria evaluation**. Re-running against changed criteria over the same corpus costs nothing
 unless the criteria name a field never extracted. The leftover-reasoning test, measured.
 
+*Correction, 2026-10-04.* Measured, and failed rather than passed. The author's "up-front"
+meant while the program is being built, so the test asks for zero model calls at run time
+unless the author expressly permits them. This run made 46 that nobody permitted. See the
+correction in `stage-1-interrogation.md`.
+
 ### The deferred item, settled
 
 Seam-interior correctness was the one thing verification could not check. Observed, and it

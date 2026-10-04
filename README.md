@@ -16,9 +16,12 @@ I can't be the only person running into problems like this, and generating code 
 
 ## Status
 
-All five pipeline stages are built as Claude Code skills, and **the first complete end-to-end run finished on 2026-09-21**: [`runs/2026-09-09-job-search-triage/`](runs/2026-09-09-job-search-triage/). A loose wish, for something that finds jobs worth applying to without reading every posting, became a root contract, a 13-node tree with six leaves, 70 verification checks, and a standalone 581-line Python program. That program ran on live job boards and made exactly the number of model calls predicted in advance, all at the one leaf that reads prose and none during criteria evaluation.
+All five pipeline stages are built as Claude Code skills, and **the first complete end-to-end run finished on 2026-09-21**: [`runs/2026-09-09-job-search-triage/`](runs/2026-09-09-job-search-triage/). A loose wish, for something that finds jobs worth applying to without reading every posting, became a root contract, a 13-node tree with six leaves, 70 verification checks, and a standalone 581-line Python program. That program ran on live job boards. It confined its model calls to one leaf, which reads fields that some boards state only in prose, and made none during criteria evaluation.
 
-The pipeline did its job; the program it produced is not yet correct. The live run found four remote jobs silently judged not remote, because the contract required a common field *schema* but never said what a field's *values* may be. That passed all 70 checks, since every node satisfied its own contract. Verification checks code against contracts. It cannot check a contract against what its author meant, and only running on real data from two differently shaped sources exposed the gap. The [Stage 5 write-up](runs/2026-09-09-job-search-triage/stage-5-composition.md) has the details.
+The pipeline ran end to end, but the program it produced falls short in two ways.
+
+- **It isn't fully codified.** It still made 46 model calls at run time, and a finished program should make none unless the user expressly permits them. Nobody permitted these.
+- **It isn't correct.** The live run found four remote jobs silently judged not remote, because the contract required a common field *schema* but never said what a field's *values* may be. That passed all 70 checks, since every node satisfied its own contract. Verification checks code against contracts. It cannot check a contract against what its author meant, and only running on real data from two differently shaped sources exposed the gap. The [Stage 5 write-up](runs/2026-09-09-job-search-triage/stage-5-composition.md) has the details.
 
 The run's findings were folded back into the spec and the stage prompts on 2026-09-25. Those revisions have not been exercised yet; the next run, on a different task, is what tests them.
 

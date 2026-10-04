@@ -49,6 +49,11 @@ cheapest correct design pays the model *only* for what the source failed to stat
 the author's leftover-reasoning test applied one level down, and codification should be held
 to it.
 
+*Correction, 2026-10-04.* Field-mapping first is right; "seam second" is not the author's test.
+"Up-front" meant while the program is being built: what a source leaves to prose should be
+reached by code, narrowed, or handed to the user, and a model call is acceptable only where the
+author expressly permits it. See the correction in `stage-1-interrogation.md`.
+
 **Sources-as-data is validated.** A source definition has to carry: endpoint template, the
 envelope path to the posting list, per-field mappings into the common schema, and a date
 format. That is the author's "ruleset" idea, now grounded in three real divergences rather
