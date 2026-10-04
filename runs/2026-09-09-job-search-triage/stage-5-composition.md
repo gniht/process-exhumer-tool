@@ -21,6 +21,12 @@ criteria chosen to exercise both branches of `derive_field`: `title contains "En
 (mapped on both sources), `remote eq True` (mapped on Lever, unmapped on Greenhouse),
 `salary_floor gte 150000` (unmapped on both).
 
+*Environment, added 2026-10-04.* The run did not record what it ran on. It ran under
+**CPython 3.10**, which is recovered from the `cpython-310` bytecode caches it left behind and
+recorded nowhere else. **The model behind the 46 seam calls is unknown.** The runtime calls
+`claude -p` without `--model`, so it used the CLI's default that day, and `seam.log` records
+caller, instruction, payload and return but not the model.
+
 **29 postings retrieved, stored, extracted, assessed. 46 seam calls — exactly the predicted
 count** (17 Greenhouse × remote + 29 × salary_floor). All 46 returns conformed to the declared
 three-key shape. Every criterion discriminated; `salary_floor` came back not-answerable on all
