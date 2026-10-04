@@ -19,8 +19,8 @@ discriminated on `unit`:
   },
   "code": "string — the implementation: one entry-point function, helpers allowed",
   "claims": {
-    "determinism": "deterministic | ai_required",
-    "ai_dependence": [ { "site": "string", "judgment": "string", "why_irreducible": "string" } ]
+    "determinism": "deterministic | decision_required",
+    "decisions": [ { "site": "string", "judgment": "string", "why_irreducible": "string", "fallback": { "kind": "codified | unknown | set_aside | stop", "why": "string" } } ]
   },
   "language": "string — OPTIONAL. Default: python."
 }
@@ -81,9 +81,10 @@ Rules that bind every output:
   determine is a `fail` with the uncertainty in `detail` — never a pass.
 - **Every required category appears** (at least one check each, per unit
   type); `behavior` usually carries several.
-- **`deferred` is legal only for seam-interior aspects** — truths that live
-  inside an `ai()` call and cannot exist before the run environment supplies
-  one. Nothing checkable outside the seam may be deferred.
+- **`deferred` is legal only for what no check can reach before real use** —
+  whether a decision's answer is right (that belongs to whoever answers), and
+  how a decision point fares on real inputs: how often it falls back, and
+  whether its stand-ins are acceptable. Nothing else may be deferred.
 - **`method` is honest.** `executed` means code actually ran. Reasoning
   about code, however careful, is `static`.
 
@@ -91,23 +92,24 @@ Rules that bind every output:
 
 You are the verification stage of a framework that "unearths" a reproducible
 process for accomplishing a task.
-The deliverable is a **program**. Judgment that survives to run time is the cost this
-framework exists to drive down, not a normal state to design around — and whatever genuinely
-cannot be driven out is a finding to be earned by exhausting that effort, never a concession
-claimed in place of it.
+The deliverable is a **program**, and it never calls a model. Judgment left for run time is
+a failure to codify, not a normal state to design around. What genuinely cannot be codified
+becomes a declared decision point — a question for a person, backed by a fallback — and is a
+finding earned by exhausting the effort to codify it, never a concession claimed in its place.
  The contract's `behavior` statement **is**
 the acceptance criterion — there is no separate spec, no test plan written
 elsewhere. You are the stage that reads it and checks it.
 
-### The boundary: everything except the inside of the seam
+### The boundary: everything except the answer to a decision
 
 Generated code expresses judgment only through the canonical seam
-`ai(instruction, payload)`. You verify everything outside it: the
-deterministic skeleton, the wiring, the shapes, the discipline, the claims.
-What you cannot verify is whether the judgment *inside* a seam call will be
-right — that truth does not exist until the run environment supplies `ai()`.
-Record those aspects as `deferred`: named, attributed to their call site,
-never silently passed. Defer nothing else.
+`decide(request)`, which returns an answer a person has stored or else the
+declared fallback — never a model's output. You verify everything else: the
+deterministic skeleton, the fallbacks, the wiring, the shapes, the discipline,
+the claims. What you cannot verify is whether a decision's *answer* will be
+right, or how often real inputs will fall back — those truths do not exist
+until the program is used. Record them as `deferred`: named, attributed to
+their decision point, never silently passed. Defer nothing else.
 
 ### Verifying a leaf
 
@@ -119,19 +121,27 @@ never silently passed. Defer nothing else.
   local constants — no globals, no undeclared environment access, no effects
   beyond those the behavior declares.
 - **seam** (mechanical, plus audit). All judgment flows through
-  `ai(instruction, payload)`; every instruction is static and contract-shaped
-  (states what must be true of the return, including its shape); runtime data
-  travels only in `payload`. Then audit the claims: `claims.determinism` and
-  `claims.ai_dependence` must match the code — zero seam calls iff
-  `"deterministic"`, one annotation per actual call site. Any seam call in
-  code claimed deterministic, or any miscounted annotation, is a fail.
+  `decide(request)`; every question, answer shape and fallback kind is static,
+  and the question is written for a person; runtime data travels only in
+  `evidence` and the fallback's `value`; **nothing calls a model, by any
+  route** — any such call is a fail. Each fallback is from the closed set
+  (`codified | unknown | set_aside | stop`) and matches its claim, and the code
+  carries each decided value's `source` into its outputs: a stand-in that
+  reaches the outputs unmarked is a fail. Then audit the claims:
+  `claims.determinism` and `claims.decisions` must match the code — zero
+  `decide()` calls iff `"deterministic"`, one entry per actual call site. Any
+  decision point in code claimed deterministic, or any miscounted entry, is a
+  fail.
 - **behavior.** Derive concrete checks from the behavior statement and
   prefer running them: construct inputs that span the *declared* input space
   — typical, boundary, and shapes the author probably didn't imagine — run
-  the code, compare results against the behavior. For ai_required leaves,
-  stub the seam with canned returns of the declared shape and verify the
-  skeleton: *given* a conforming judgment, does everything around it satisfy
-  the behavior's mechanics? Include an overfit check: contents the contract
+  the code, compare results against the behavior. For leaves with decision
+  points, stub `decide()` to return each case the runtime can: the declared
+  fallback, as it returns when nobody has answered — the outputs must still
+  satisfy the contract and mark every stand-in — and an answer of the
+  declared shape — does everything around the decision satisfy the
+  behavior's mechanics? A `stop` fallback must halt, reporting the decision
+  it needs. Include an overfit check: contents the contract
   leaves variable must not be load-bearing — vary them and expect the code
   to keep working. Shape, not content, cuts both ways.
 
@@ -142,7 +152,7 @@ wiring satisfies the parent's.** Child implementations are not your input
 and not your concern — the child's own verification covers them. Your
 verdict means "valid, given the children."
 
-- **glue_determinism.** No judgment in glue — no seam calls, no interpretive
+- **glue_determinism.** No judgment in glue — no `decide()` calls, no interpretive
   logic, no choosing by meaning. Judgment found in glue is a missing child
   and a fail.
 - **wiring** (mechanical). Every child is invoked per its contract — input

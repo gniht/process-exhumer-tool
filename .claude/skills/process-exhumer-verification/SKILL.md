@@ -6,7 +6,8 @@ description: >
   assume-guarantee (granting each child its contract, does the glue satisfy
   the parent's?). Audits codification's determinism claims, executes checks
   for real where possible, records verdicts in node result records, and
-  surfaces the seam-interior aspects deferred to run time. Use after
+  surfaces what is deferred to real use (how decision points fare on real
+  inputs). Use after
   codification, or on any single leaf or node. Produces the verified tree
   that composition consumes.
 ---
@@ -40,15 +41,15 @@ verdict out. The loop over nodes lives here, in the harness.
    (default: python).
 2. **Walk every node, any order** — each check is local:
    - leaf → `{ unit: "leaf", contract, code, claims: {determinism,
-     ai_dependence} }` (claims come from the node's `result`);
+     decisions} }` (claims come from the node's `result`);
    - internal node → `{ unit: "node", contract, assembly_pattern, glue,
      children: [{name, contract}] }`.
    Apply `prompt.md` to that unit *alone*. Never pass the rest of the tree —
    flatness is the portability discipline.
 3. **Execute for real.** In Claude Code an execution environment exists, so
    `executed` must mean executed: write the leaf code and a small harness to
-   a temp dir, stub `ai()` with canned returns of the declared shape, run
-   it, report what happened. Same for glue with contract-conformant child
+   a temp dir, stub `decide()` to return both the declared fallback and an
+   answer of the declared shape, run it, report what happened. Same for glue with contract-conformant child
    stubs. Do not simulate execution mentally and label it `executed`.
 
    Checks are written against a contract and **do not survive that contract
@@ -57,7 +58,7 @@ verdict out. The loop over nodes lives here, in the harness.
    new contract dropped will crash, or worse, pass for the wrong reason.
 4. **Record verdicts** in result records:
    - leaf → merge into the existing record:
-     `result: { determinism, ai_dependence, verdict, failures }`,
+     `result: { determinism, decisions, verdict, failures }`,
      where `failures` is the checks that did not pass (fail + deferred);
    - internal node → create `result: { verdict, failures }`.
    Full check logs stay in the stage output; the tree carries verdict plus

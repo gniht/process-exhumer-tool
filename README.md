@@ -2,7 +2,7 @@
 
 A framework that takes a task and "unearths" a programmatic process for accomplishing it.
 
-In plain terms: you describe a task; an interrogation dialog refines it into a precise contract; the framework recursively decomposes that contract into pieces small enough to implement directly, generates and verifies code for each piece, and mechanically assembles the results into a standalone program. The aim is that as much of the work as possible ends up as ordinary deterministic code, with AI judgment surviving only in explicitly marked spots — where it can be counted, audited, and targeted for further reduction.
+In plain terms: you describe a task; an interrogation dialog refines it into a precise contract; the framework recursively decomposes that contract into pieces small enough to implement directly, generates and verifies code for each piece, and mechanically assembles the results into a standalone program. The aim is that all of the work ends up as ordinary deterministic code. A produced program never calls a model: where a judgment genuinely resists codification, it becomes an explicitly marked *decision point* — a question for a person, with a fallback the program uses until it is answered — where it can be counted, audited, and targeted for further reduction.
 
 ## Motivation
 
@@ -41,8 +41,8 @@ The v1 skill is deliberately structured — flat stages, structured outputs, ext
 
 A few of the ideas doing the most work:
 
-- **The AI seam.** All judgment in generated code flows through one canonical function: `ai(instruction, payload)`. "How AI-dependent is this program?" stops being an opinion and becomes a count — determinism means zero seam calls, checkable mechanically and attributable per call site.
-- **Judgment lives only in leaves.** Glue — the code that wires components together — moves data and never interprets it. Any judgment a build needs is pushed into a child contract, where the recursion can keep working on it. Reducing AI dependence is therefore purely a question of how far decomposition pushes.
+- **The decision seam.** All judgment in generated code flows through one canonical function, `decide(request)`, which returns an answer a person has stored and never consults a model. Until a decision is answered, the program uses a declared fallback, and every value that came from one is marked as such. "How much judgment is left in this program?" stops being an opinion and becomes a count — determinism means zero decision points, checkable mechanically and attributable per site.
+- **Judgment lives only in leaves.** Glue — the code that wires components together — moves data and never interprets it. Any judgment a build needs is pushed into a child contract, where the recursion can keep working on it. Codifying it away is therefore purely a question of how far decomposition pushes.
 - **The contract is the only primitive.** One small declarative structure — inputs, outputs, and a required behavior clause — flows through every stage. There is no separate handoff format anywhere in the pipeline: the contract *is* the handoff.
 - **Any stage may reject what it's handed.** A contract that can't be satisfied as wired is rejected rather than papered over, and a rejection always indicts the upstream author, never the rejecting stage. Errors surface where they were made.
 - **The residue is a deliverable.** A run yields two things: the codified process, and the *residue* — the judgments that resisted codification, each with the argument for why. Irreducibility is a property of the information rather than of the model reading it, so the residue says something durable about the task itself. An entry must be earned (decomposition pushed to exhaustion) and is provisional until the user agrees there is no acceptable way around it.

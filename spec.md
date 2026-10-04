@@ -7,7 +7,7 @@
 
 ## Goal
 
-A framework that takes a task or goal and "unearths" a process for accomplishing it programmatically — through recursive decomposition into atomic, contract-bound units of work, codification of each unit, and structural composition of the results. The longer-term ambition is that produced artifacts contain as little AI-call dependence as possible (ideally zero), so that work that was once judgment-based becomes reliably reproducible code.
+A framework that takes a task or goal and "unearths" a process for accomplishing it programmatically — through recursive decomposition into atomic, contract-bound units of work, codification of each unit, and structural composition of the results. The aim is that produced programs contain no judgment at all, so that work that was once judgment-based becomes reliably reproducible code. **A produced program never calls a model.** Where a judgment genuinely resists codification, the program declares a *decision point*: a question for a person, backed by a fallback the program uses until it is answered. See *The decision seam*.
 
 A run therefore yields **two** deliverables. The first is the codified process. The second is the **residue** — the specific judgments that resisted codification, each carrying the argument for why. The first is the stated purpose; the second characterises the task itself, showing where judgment genuinely lives and where it only appeared to. See *The residue is a deliverable*.
 
@@ -22,8 +22,8 @@ A run therefore yields **two** deliverables. The first is the codified process. 
 - [ ] Each pipeline stage (interrogator, decomposition, codification, verification, composition) produces a cleanly extractable, structured output that does not depend on conversation context.
 - [ ] The decomposition step explicitly produces (assembly_pattern, glue_code, sub_task_contracts) at each node — not just a list of sub-tasks.
 - [ ] Verification operates on contract satisfaction — a leaf "passes" iff its generated code satisfies its declared contract.
-- [ ] When a leaf cannot satisfy a deterministic contract, the framework either recurses on it or accepts the leaf with an explicit "requires AI" annotation in the leaf's **result record** — never in the contract, which stays goal-neutral. No fuzzy reducibility heuristics.
-- [ ] A completed run reports its **residue** as a first-class output, not as a list of shortfalls: every seam site with the judgment it holds, the argument for its irreducibility, the nearest codifiable alternative and what that alternative would trade away, and the call count the run actually incurred.
+- [ ] When a leaf cannot satisfy a deterministic contract, the framework either recurses on it or confines the judgment to a declared **decision point**, annotated in the leaf's **result record** — never in the contract, which stays goal-neutral. A produced program never calls a model. No fuzzy reducibility heuristics.
+- [ ] A completed run reports its **residue** as a first-class output, not as a list of shortfalls: every decision point with the judgment it holds, the argument for its irreducibility, the nearest codifiable alternative and what that alternative would trade away, its fallback, and how many of its decisions the run actually had answered and how many fell back.
 - [ ] The skill is structured to map cleanly onto a future MCP server architecture (explicit stage boundaries, structured outputs, no implicit context).
 - [ ] At least one ad-hoc end-to-end run produces a result a non-technical observer would recognize as "the framework did what it was supposed to do."
 
@@ -68,6 +68,7 @@ A run therefore yields **two** deliverables. The first is the codified process. 
 - The task to bring to the framework.
 - During interrogation: how to clarify, refine, and bound the task.
 - Whether to accept the resulting implementation, request revisions, or stop.
+- For each decision point: adopt its nearest codifiable alternative (narrowing the contract), or keep it with its fallback.
 - (Post-v1) Configuration choices for the LLM backend and storage location.
 
 ### System Decisions
@@ -75,7 +76,7 @@ A run therefore yields **two** deliverables. The first is the codified process. 
 - The decomposition shape at each node (assembly pattern, sub-task structure, contracts).
 - The implementation of each leaf, given its contract.
 - Whether a leaf has satisfied its contract (verification verdict).
-- Whether to recurse further on an under-satisfied leaf or accept with explicit AI dependence.
+- Whether to recurse further on an under-satisfied leaf or confine its judgment to a decision point, which the user then ratifies.
 
 ---
 
@@ -87,7 +88,7 @@ A run therefore yields **two** deliverables. The first is the codified process. 
 - **Interrogator phase**: multi-turn dialog producing a structured task spec.
 - **Decomposition phase**: contract-first decomposition producing (assembly_pattern, glue_code, sub_task_contracts) at each node.
 - **Fixed assembly vocabulary**: sequential, parallel-and-combine, iterative, conditional, recursive-over-data, asymmetric-with-integration-subtask. Vocabulary is presented as **menu-as-hint** — the schema is fixed, the menu suggested, and novel patterns are allowed provided they satisfy the structural template.
-- **Codification phase**: generate code for each leaf, constrained by the leaf's contract, with instruction to minimize AI dependence.
+- **Codification phase**: generate code for each leaf, constrained by the leaf's contract, with instruction to codify fully and to confine any irreducible judgment to a declared decision point.
 - **Verification phase**: check that generated code satisfies declared contracts.
 - **Composition phase**: assemble verified results upward through the recursion.
 - **Cleanly extractable per-stage prompts** — each stage's prompt can be lifted and run against a different model without rebuilding the framework.
@@ -99,7 +100,7 @@ A run therefore yields **two** deliverables. The first is the codified process. 
 - **Universal usability.** v1 requires Claude Code; non-Claude-Code users are not served.
 - **Pattern library — any form.** No outcome capture, no retrieval, no stubs. Pipeline seams kept clean so a library can be added later without architectural surgery.
 - **AI-delegation front door.** No structured invocation contract for external AI agents in v1.
-- **Iterative refinement of leaves to remove LLM calls.** The model writes each leaf once with the instruction to minimize AI dependence. Iterative reduction is deferred (the "post-codification feedback" loop into decomposition).
+- **Iterative refinement of leaves to remove decision points.** The model writes each leaf once with the instruction to codify fully. Iterative reduction is deferred (the "post-codification feedback" loop into decomposition).
 - **Packaged/distributed outputs.** *(Corrected 2026-06-09 — an earlier phrasing, "generated code remains in-chat," misstated the goal. The composed artifact is **standalone by design**: a self-contained program that runs outside any chat session. The session is the factory, not the habitat — strong models help the user produce the code; the code then operates on its own. Showing code in chat is a review convenience, useful for simple cases, never the deliverable.)* What stays out of v1 scope is packaging and distribution: no installable packages, no MCP-tool registration, no dependency management, no deployment targets. The deliverable is one runnable file; making it *shippable* is post-v1.
 - **Weak-model support (real).** v1 will be designed in ways consistent with weak-model usability (menu-as-hint, structured prompting, extractable stage prompts), but no weak-model testing or adaptation is *in* v1. Gemma testing happens post-build, not as a v1 requirement.
 
@@ -109,14 +110,14 @@ A run therefore yields **two** deliverables. The first is the codified process. 
 - **Pull toward a privileged test case.** Ad-hoc runs during development are fine; enshrining one task as *the* validation target is not. Watch for "but it works great on X" being used to justify design choices.
 - **Pull toward implicit context.** Decomposition is interface-first; each stage is extractable. Watch for prompts that quietly accumulate context-dependent behavior, which would block weak-model testing and MCP portability simultaneously.
 - **LWE bias in the architecture.** The empirical input was a game-dev project. Post-build validation on diverse tasks is the check on how well we abstracted.
-- **Pull toward residue-as-alibi.** Naming the residue a deliverable makes failing to codify feel like a result. Watch for decomposition stopping early, seam counts drifting upward between runs, and "this one is irreducible" arriving without the strict-progress test having actually failed.
+- **Pull toward residue-as-alibi.** Naming the residue a deliverable makes failing to codify feel like a result. Watch for decomposition stopping early, decision-point counts drifting upward between runs, and "this one is irreducible" arriving without the strict-progress test having actually failed.
 - **Conflating "the skill works" with "the architecture works."** v1 is a prototype. Its working does not prove the MCP-port version will. Both validations matter, separately.
 
 ---
 
 ## Constraints
 
-- **v1 runs entirely inside Claude Code** under the user's Max plan. No external API calls, no per-token costs during development or use. This binds the *pipeline*, not its product: the composed artifact is a standalone program, usable outside any session (a seam-bearing artifact carries a run-time dependency on whatever `ai()` implementation was inserted; a fully deterministic one runs anywhere its language does).
+- **v1 runs entirely inside Claude Code** under the user's Max plan. No external API calls, no per-token costs during development or use. This binds the *pipeline*, not its product: the composed artifact is a standalone program, usable outside any session (no artifact depends on a model at run time: one with decision points also reads an optional file of stored answers; a fully deterministic one runs anywhere its language does).
 - **v1 must be designed for clean conversion to a standalone MCP server later.** This implies: explicit stage boundaries, structured outputs at each stage, no implicit conversation-context dependence, extractable per-stage prompts. The eventual conversion is a *rebuild informed by the skill*, not a refactor.
 - **No new runtime dependencies for v1** beyond what Claude Code provides. The skill is markdown + structured prompting.
 - **Interrogator phase must operate as multi-turn dialog with a human.** Subagent isolation is incompatible with this phase; interrogator stays single-context.
@@ -193,15 +194,30 @@ They are distinct but produced together, and they feed each other bidirectionall
 
 ### Glue is deterministic — judgment lives only in leaves
 
-*(Resolved 2026-06-09, decomposition-stage build.)* Glue moves data: it calls children, loops, branches on mechanical predicates, reshapes results. It never interprets, scores, or chooses by meaning — any judgment the build needs is pushed into a child contract, where it stays contract-bound and the recursion can keep working on it. This is what makes the termination rule meaningful: AI-dependence can only ever live in leaves, so reducing it is purely a question of how far decomposition pushes.
+*(Resolved 2026-06-09, decomposition-stage build.)* Glue moves data: it calls children, loops, branches on mechanical predicates, reshapes results. It never interprets, scores, or chooses by meaning — any judgment the build needs is pushed into a child contract, where it stays contract-bound and the recursion can keep working on it. This is what makes the termination rule meaningful: judgment can only ever live in leaves, so codifying it away is purely a question of how far decomposition pushes.
 
 A corollary pins **monotonic resolution** concretely: a contract's I/O *surface* (entry names and arity) is fixed by whoever wires it — the parent's glue, at child creation; only a root contract may arrive with absent I/O for a stage to propose. Downstream stages sharpen types and descriptions but never add, remove, or rename entries. A contract that cannot be satisfied with the I/O it was granted is **rejected** (a third stage outcome alongside codify/decompose), sending the caller back to re-decompose the parent rather than papering over the mis-wiring.
 
-### The AI seam — judgment in code has one name
+### The decision seam — judgment in code has one name
 
-*(Resolved 2026-06-09, codification-stage build.)* All judgment in generated code flows through a single canonical function: `ai(instruction, payload) -> value`. The `instruction` is **static** — written at codification time, contract-shaped (what must be true of the return given the payload, including the return's shape); runtime data travels only in `payload`. Codification never implements `ai()`; the run environment supplies it at composition time (in v1, e.g., a `claude -p` subprocess under the Max plan — preserving the no-API-cost constraint).
+*(Resolved 2026-06-09, codification-stage build. Revised 2026-10-04: the seam was `ai(instruction, payload)`, answered by a model at run time; it is now `decide(request)`, and a produced program never calls a model.)* All judgment in generated code flows through a single canonical function, `decide(request)`. A request carries a **question** written for a person, the exact **shape** an answer must take, the **evidence** the decision is about, and a **fallback**. The question, the shape and the fallback's kind are **static**, written at codification time; runtime data travels only in the evidence and in the fallback's computed value. Codification never implements `decide()`; composition inserts the decision runtime.
 
-The seam is what makes the framework's goal *operational* rather than aspirational: **determinism outcome = zero seam calls** — a count, not an opinion. AI-dependence becomes visible per call site, mechanically detectable by verification, and annotatable in the node's `result` record (one entry per site: the judgment, and why it is irreducible). "Deterministic" means *free of judgment*, not free of declared effects — a leaf that fetches a URL its contract declares is deterministic in this sense.
+**The runtime answers from stored answers, never from a model.** If the user has answered this decision — identified by its node, its question and its evidence — the stored answer is returned. Otherwise the declared fallback applies and the decision is recorded as pending: questions go out with a run, and answers come back in on the next. A program with decision points is therefore still deterministic: the same inputs and the same stored answers always give the same outputs.
+
+**Every decision point declares its fallback**, from a closed set:
+
+- **codified** — the nearest codifiable alternative, run as a stand-in. The usual case: by the time a decision point exists, the user has weighed that alternative and declined it as the primary path, so it is already worked out and its trade-off is on record.
+- **unknown** — an explicit unknown the contract can carry.
+- **set aside** — the item is withheld from the main result and listed with the reason.
+- **stop** — the run halts and reports the decision it needs. The last resort, for when any stand-in could do irreversible harm.
+
+A fallback the contract cannot carry is a contract defect, and codification rejects it.
+
+**A fallback must never look like a decision.** Every value obtained through `decide()` carries its source — answered, or which fallback — into the outputs, and every run reports, per decision point, how many decisions were answered and how many fell back. A codified stand-in is a plausible value, which is exactly why it must be marked: an unmarked stand-in is the silent failure this framework exists to prevent.
+
+**Wiring in a model is possible, deliberate, and outside the program.** A request is structured rather than a pre-written prompt, so it can be rendered as a form for a person or as a prompt for a model. A user who wants a model to answer some decisions builds an answerer that reads the pending decisions and writes stored answers. The framework ships none, and generated code never contains one.
+
+The seam is what makes the framework's goal *operational* rather than aspirational: **determinism outcome = zero decision points** — a count, not an opinion. Judgment becomes visible per decision point, mechanically detectable by verification, and annotatable in the node's `result` record (one entry per site: the judgment, why it is irreducible, and its fallback). "Deterministic" means *free of judgment*, not free of declared effects — a leaf that fetches a URL its contract declares is deterministic in this sense.
 
 The **calling convention** is fixed alongside it, shared by glue and leaf code: a codified leaf is one entry-point function whose parameters are the contract's input names in order; one declared output returns bare, several return a map keyed by output names, none returns nothing. Local wiring names bind at composition, so leaf code stays nameless — flat and liftable, like its contract.
 
@@ -209,7 +225,7 @@ The **calling convention** is fixed alongside it, shared by glue and leaf code: 
 
 *(Resolved 2026-06-09, verification-stage build.)* Verification never needs the tree: every node is verified flat. A **leaf** is checked as code-against-contract (surface, closure, seam discipline, behavior — executed where an environment exists). An **internal node** is checked **assume-guarantee**: *granting each child its contract, does the glue satisfy the parent's?* Child implementations are not its input — the child's own verification covers them — which is what makes internal nodes verifiable before composition exists, from nothing but their own decomposition record. The original workflow's wrinkle ("check each composed node's code" before a composition stage has run) resolves to: local verification pre-composition, end-to-end observation at composition.
 
-Verification's boundary is the seam: it checks **everything except the inside of `ai()` calls** — including auditing codification's determinism claims as counts — and records seam-interior aspects as **deferred to the run**: named, attributed to their call sites, never silently passed. The deferred list is composition's watch list. Verdicts are **fail-closed** (a checkable aspect whose satisfaction cannot be determined fails, with the uncertainty recorded), and every check carries its `method` — `executed` vs. `static` — so a verdict's strength is its evidence.
+Verification's boundary is the seam: it checks **everything except whether a decision's answer is right** — that belongs to whoever answers — including auditing codification's determinism claims as counts. Because the runtime answers only from stored answers or the declared fallback, every leaf can be executed, decision points included: with no stored answers, so every fallback fires, and with sample answers of the declared shape. What remains is recorded as **deferred to the run**: how each decision point fares on real inputs — how often it falls back, and whether its stand-ins are acceptable — named, attributed to its site, never silently passed. The deferred list is composition's watch list. Verdicts are **fail-closed** (a checkable aspect whose satisfaction cannot be determined fails, with the uncertainty recorded), and every check carries its `method` — `executed` vs. `static` — so a verdict's strength is its evidence.
 
 Two pipeline-wide patterns are now explicit: **every stage may reject the contract it is handed** (the interrogator's out-of-domain gate, decomposition's and codification's and verification's `reject`), and a rejection always indicts the upstream author, never the rejecting stage.
 
@@ -217,11 +233,11 @@ Two pipeline-wide patterns are now explicit: **every stage may reject the contra
 
 *(Resolved 2026-06-09, composition-stage build.)* Composition is specified as a deterministic algorithm, not a judgment task: one module-level function per node (qualified name = `<wiring-name>__<node-id>`, root uses `root`), signatures derived from contracts, leaf code nested verbatim inside its wrapper (helper collisions impossible), child wiring names bound to qualified names in the parent's body, `self` bound to the node's own function under `recursive-over-data`, returns appended per the calling convention, and a JSON-stdin/stdout shell on the root. The leaf entry point is identified mechanically — the function whose parameter list equals the contract's input names in order. **Composition never patches:** any structural hole is a reject naming the node and the owning stage. A model executes the algorithm in v1, but this is the first stage expected to become pure code in the MCP era.
 
-The **seam runtime is composition's input, not its invention**: `ai_runtime` code satisfying the seam-runtime contract — return the instruction-declared shape; log every call as one JSON line `{caller, instruction, payload, return}` (the caller's qualified name carries the node id, so attributing run-time judgments to nodes is mechanical); fail loudly on nonconformance, never coerce. v1 ships a `claude -p` reference runtime in the stage harness (Max plan — the no-API-cost constraint holds at run time too). **Assembling is the stage; running is the orchestrator's** — the MCP-era `compose` tool returns an artifact, and executing it on real inputs (feeding seam observations back into result records, settling verification's deferred list) is harness work, like the tree-walk.
+The **decision runtime is composition's input, not its invention**: `decision_runtime` code satisfying the decision-runtime contract — return a stored answer when one exists for the decision, otherwise apply the declared fallback (a `stop` halts the run, reporting the decision it needs); log every call as one JSON line carrying the caller, the decision's key, its question and evidence, and the value with its source (the caller's qualified name carries the node id, so attributing decisions to nodes is mechanical); never consult a model; never coerce. v1 ships a reference runtime in the stage harness. **Assembling is the stage; running is the orchestrator's** — the MCP-era `compose` tool returns an artifact, and executing it on real inputs (feeding decision observations back into result records, settling verification's deferred list) is harness work, like the tree-walk.
 
 ### Where the goal lives
 
-The declared goal — *minimize AI-call dependence* — does **not** shape the contract. The contract is goal-neutral. The goal lives in the recursion's **termination rule**: keep pushing "how do you build me?" downward until the answer is deterministic code, or you have isolated an irreducible AI-required leaf (accepted with an explicit annotation). Loading the goal into the contract would put it in the wrong place.
+The declared goal — *codify the process entirely* — does **not** shape the contract. The contract is goal-neutral. The goal lives in the recursion's **termination rule**: keep pushing "how do you build me?" downward until the answer is deterministic code, or you have isolated an irreducible judgment in a leaf, where it becomes a declared decision point the user ratifies. Loading the goal into the contract would put it in the wrong place.
 
 ### The residue is a deliverable
 
@@ -231,7 +247,7 @@ and they are the same family: places where *process* gives out.
 
 - **out of domain** — the task has no stable output shape (interrogator gate)
 - **reject** — a contract is ill-posed (any stage may emit one; it indicts the stage that authored the contract)
-- **seam residue** — an irreducible judgment, isolated in a leaf and annotated (discovered at codification)
+- **decision points** — an irreducible judgment, isolated in a leaf as a question for a person (discovered at codification)
 
 Taken together, these are the second deliverable.
 
@@ -241,7 +257,7 @@ reaches it. That is a property of the *information*, not of the model reading it
 model does not shrink the residue. The codified half ages as better implementations appear; the
 residue does not. This is the part of a run's output that outlives the model that produced it.
 
-**Why it is informative.** Seam load can vary *across inputs to the same contract* — one input
+**Why it is informative.** Decision load can vary *across inputs to the same contract* — one input
 source states a field structurally while another leaves it to prose, making the same field
 deterministic for the first and judgment for the second. That separates judgment **essential to
 the task** from judgment that is an **artifact of how an input happens to be shaped**, and the
@@ -262,9 +278,11 @@ The second application is **earned by** the first, and is never a consolation fo
 
 **Residue is ratified, not asserted.** A model's *claim* that something is irreducible is worth
 little; a model's *argument* that a human examined and declined to beat is worth a great deal. So
-a residue entry is not final until the user has agreed no acceptable way around it exists —
-entries are `provisional` until ratified, which is also what lets an autonomous run accumulate
-residue it has no authority to finalize.
+a decision point is not final until the user has weighed its nearest codifiable alternative and
+chosen: adopt the alternative as the implementation, narrowing the contract to what it honestly
+satisfies, or keep the decision point with its declared fallback. Entries are `provisional` until
+the user chooses, which is also what lets an autonomous run accumulate residue it has no
+authority to finalize.
 
 **Every entry records why it resisted**, drawn from a closed set of causes, because the causes
 have different remedies and some are not remedies for the framework at all — one points at the
@@ -273,9 +291,9 @@ human rather than a model is the honest answer. The vocabulary lives in the codi
 prompt.
 
 **Not-derivable is a reject, never residue.** If the outputs are not determined by the granted
-inputs by any means, no seam call repairs it: a model asked to judge what its payload cannot
-answer will **confabulate**, and accepting that as irreducible judgment launders a contract
-defect into a ratified entry. This is the derivability question the interrogator asks at the
+inputs by any means, no decision point repairs it: whoever answers is being asked what the
+evidence cannot tell them, and a model, if one were ever wired in, will **confabulate**.
+Accepting that as irreducible judgment launders a contract defect into a ratified entry. This is the derivability question the interrogator asks at the
 root, arriving again at the far end of the pipeline; the answer is the same both times.
 
 Mechanics — the dialog, the entry schema, the cause vocabulary — belong to the stage prompts and
@@ -322,7 +340,7 @@ Validation does NOT include a privileged test task. Ad-hoc runs during developme
 - [ ] **Tag vocabulary and consistency.** Tags are the load-bearing piece for any future pattern library. v1 doesn't need them, but the post-v1 library has to address: where the vocabulary comes from (fixed taxonomy / free-form / LLM-derived / multi-dimensional), how consistency is enforced across runs, who generates tags, how decomposition-time tag assignment couples to decomposition quality.
 - [x] **Interrogator → decomposition handoff schema.** ~~The shape of the structured spec the interrogator produces, and what decomposition consumes.~~ **Resolved (2026-06-05):** there is no separate handoff — the interrogator emits a root contract; decomposition consumes a contract; the contract is the handoff. See **Core Data Model**.
 - [x] **Contract data structure.** ~~"A contract" is treated as a primitive throughout this spec but its concrete shape isn't decided.~~ **Resolved (2026-06-05):** `behavior` (required) + resolvable `inputs`/`outputs`; identity only; no `id`/`determinism`/`verification` fields. See **Core Data Model**.
-- [ ] **What counts as "the model cannot produce a deterministic implementation."** The decision rule for whether to recurse further or accept an AI-dependent leaf. Now framed as the recursion's **termination rule** (see Core Data Model → *Where the goal lives*). **Partially addressed (2026-06-09):** the v1 rule ships in the decomposition stage prompt as the *strict-progress test* — decompose only if glue is deterministic, every child's behavior is strictly narrower than the parent's, and remaining judgment is confined to strictly narrower children; degenerate decompositions (restated parent, re-partitioned judgment, "everything else" child) force a leaf. The *measurement* side is now crisp (2026-06-09, codification build): determinism = zero `ai()` seam calls, counted mechanically. The *decision* side — whether a given seam call is genuinely irreducible — still relies on the model's own judgment; a tighter check remains open.
+- [ ] **What counts as "the model cannot produce a deterministic implementation."** The decision rule for whether to recurse further or confine the judgment to a decision point. Now framed as the recursion's **termination rule** (see Core Data Model → *Where the goal lives*). **Partially addressed (2026-06-09):** the v1 rule ships in the decomposition stage prompt as the *strict-progress test* — decompose only if glue is deterministic, every child's behavior is strictly narrower than the parent's, and remaining judgment is confined to strictly narrower children; degenerate decompositions (restated parent, re-partitioned judgment, "everything else" child) force a leaf. The *measurement* side is now crisp (2026-06-09, codification build): determinism = zero decision points (originally zero `ai()` calls), counted mechanically. The *decision* side — whether a given decision point is genuinely irreducible — still starts from the model's own judgment, now put to the user at ratification; a tighter check remains open.
 - [ ] **Residue log across runs.** A residue accumulated over many tasks is a far stronger claim than any single run's, and is the natural feeder for the post-v1 pattern library. Proposed shape, kept deliberately severe: one append-only file at repo root, one short entry per *ratified* site, pointing at the run rather than copying it — the per-run residue already lives in node `result` records, so the log is an index, not a second store. **Note the tension, unresolved:** Scope Risks rejects "capture-only logging ... for later," and this is capture for later. The counter-argument is that the rejection predates the residue being a deliverable, so this is where a product output accumulates rather than speculative infrastructure. Decide before building it.
 - [ ] **Outcome-tracker library design.** The shape of the eventual v2 outcome-tracker — data model, storage location (per-project / per-user), integration points. Its **seam is fixed**: it aggregates across node `result` records by reference (see Core Data Model → *Node and result records*); the internals remain open.
 - [ ] **Resolution / task-shape menu.** A post-v1 question surfaced 2026-06-05: recurring task or contract-resolution shapes may eventually warrant their own *menu-as-hint* (mirroring the assembly vocabulary), and later feed the outcome-tracker. Deliberately not built in v1 — kept on the right side of the "no pattern library" scope line.

@@ -87,11 +87,24 @@ Commit `beee5ff`. The spec states the principle; the stage prompts and harnesses
 
 None of this has been exercised yet.
 
+## 2026-10-04 — The decision seam replaces `ai()`
+
+Prompted by correcting run 2's reading of the leftover-reasoning test. The author's principle, now stated outright: **a produced program never calls a model**, and codifying the whole process is always the aim. The `ai(instruction, payload)` seam, answered by a model at run time, is retired.
+
+- **`decide(request)`** takes its place. A request carries a question written for a person, the shape an answer must take, the evidence, and a fallback. The runtime returns an answer the user has stored, or else applies the fallback; it never consults a model. Questions go out with a run and answers come back in on the next, so a program with decision points is still deterministic given its inputs and its stored answers.
+- **Fallbacks are declared at codification**, from a closed set: `codified` (the nearest codifiable alternative, run as a stand-in, and the usual case, since by then the user has already declined it as the primary path), `unknown`, `set_aside`, and `stop` as the last resort. A fallback the contract cannot carry is a reject, and decomposition now gives conceded leaves outputs that can carry one.
+- **A fallback must never look like a decision.** Every value obtained through `decide()` carries its source into the outputs, and every run reports how each decision point's decisions went.
+- **Ratification becomes a choice**: adopt the nearest codifiable alternative (narrowing the contract), or keep the decision point with its fallback.
+- **Wiring in a model is the user's act, outside the program.** Requests are structured, so they can be rendered for a person or for a model, and an answerer the user builds can fill the stored answers. The framework ships none.
+- **Verification gets stronger.** With no model behind the seam, every leaf can be executed, decision points included; only how decision points fare on real inputs is deferred.
+- **The interviewer asks the corrected question**: which judgment would still be needed at run time, and how it can be settled while the program is being built.
+
+Not yet exercised. The job-triage redo will be the first run under it.
+
 ## Next
 
-**Run 3, on a different task**, to exercise the 2026-09-25 revisions. It should not be a re-run of run 2, whose known defects would leak into the dialog. Still queued behind it:
+**First, the job-triage program made usable**: revise run 2's root contract (its three defects, the user's show/hide rules, no decision the user must answer on every run) and re-run stages 2–5 under the decision seam, with a way to use it day to day (a local web page is the current direction). **Then run 3, on a different task**, to exercise the 2026-09-25 and 2026-10-04 revisions on something whose defects aren't already known. Still queued:
 
-- Fixing run 2's program, starting from the root contract (the three defects above).
 - The subagent-isolation experiment: decompose run 2's root contract in an isolated context and diff the trees.
 - The deferred interrogator refinements: entry-boundary input concreteness, a derivability check, and an AI-user front door.
 - The residue-log decision (spec, Open Questions).

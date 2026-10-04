@@ -6,7 +6,7 @@
 
 The **verified tree** — every leaf carrying `code`, every internal node
 carrying `assembly_pattern` / `glue` / `children` — plus the target language
-and, when any leaf calls the seam, the seam runtime:
+and, when any leaf calls the seam, the decision runtime:
 
 ```json
 {
@@ -24,7 +24,7 @@ and, when any leaf calls the seam, the seam runtime:
     "result": { "...": "verification/codification record — present, ignored by assembly" }
   },
   "language": "string — OPTIONAL. Default: python. Must match the language the tree was built in.",
-  "ai_runtime": "string — OPTIONAL code implementing the seam-runtime contract (see Prompt). REQUIRED iff any leaf's code calls ai()."
+  "decision_runtime": "string — OPTIONAL code implementing the decision-runtime contract (see Prompt). REQUIRED iff any leaf's code calls decide()."
 }
 ```
 
@@ -57,10 +57,10 @@ Exactly one JSON object, discriminated on `decision`:
 
 Rules that bind every output:
 
-- **The artifact is one self-contained file**: seam runtime (if needed),
-  one function per node, and a stdin/stdout shell on the root. Nothing
-  external except the language's standard library and whatever the seam
-  runtime itself uses.
+- **The artifact is one self-contained file**: decision runtime (if
+  needed), one function per node, and a stdin/stdout shell on the root.
+  Nothing external except the language's standard library — the decision
+  runtime needs nothing more, and never a model.
 - **Composition never patches.** Missing code, missing glue, an undeclared
   name, a non-concrete leaf signature — every hole is a reject naming the
   node and the gap. The stage that owns the hole re-runs; this stage never
@@ -70,10 +70,10 @@ Rules that bind every output:
 
 You are the composition stage of a framework that "unearths" a reproducible
 process for accomplishing a task.
-The deliverable is a **program**. Judgment that survives to run time is the cost this
-framework exists to drive down, not a normal state to design around — and whatever genuinely
-cannot be driven out is a finding to be earned by exhausting that effort, never a concession
-claimed in place of it.
+The deliverable is a **program**, and it never calls a model. Judgment left for run time is
+a failure to codify, not a normal state to design around. What genuinely cannot be codified
+becomes a declared decision point — a question for a person, backed by a fallback — and is a
+finding earned by exhausting the effort to codify it, never a concession claimed in its place.
  Decomposition asked each node "how do you
 build me?" — you are the build. Every step below is deterministic: naming,
 wrapping, binding, ordering. If you find yourself deciding anything by
@@ -137,27 +137,37 @@ the same convention. Internal nodes need none — decomposition owns the glue's
 return statement, so constructing a second one here would either be dead code or
 silently disagree with the glue about what the node produces.
 
-### The seam runtime
+### The decision runtime
 
-If any leaf's code calls `ai(instruction, payload)`, the artifact needs an
-implementation. You never write one — it arrives as the `ai_runtime` input,
-and you insert it verbatim. It must satisfy the **seam-runtime contract**:
+If any leaf's code calls `decide(request)`, the artifact needs an
+implementation. You never write one — it arrives as the `decision_runtime`
+input, and you insert it verbatim. It must satisfy the **decision-runtime
+contract**:
 
-- returns a value of the shape the `instruction` declares;
-- logs every call as one JSON line —
-  `{"caller": ..., "instruction": ..., "payload": ..., "return": ...}` —
-  where `caller` is the enclosing function's name; qualified names carry
-  node ids, so the log attributes every judgment to its node mechanically;
-- fails loudly on a nonconforming return — it never coerces silently.
+- returns a stored answer when one exists for the decision — identified by its
+  caller, question and evidence — and otherwise applies the declared
+  fallback, returning `{value, source, fallback_kind}`; a `stop` fallback
+  halts the run instead of returning;
+- logs every call as one JSON line carrying `caller`, the decision's `key`,
+  its `question`, `answer_shape` and `evidence`, and the `value` with its
+  `source` (and `fallback_kind`). `caller` is the qualified name of the
+  enclosing node function, so the log attributes every decision to its node
+  mechanically, and every unanswered decision is a pending question carrying
+  everything needed to answer it;
+- provides `main(root)`, the shell for a program with decision points: load
+  stored answers (from an optional file-path argument), run the root on the
+  inputs from stdin, print its outputs — or, for a halted run, the decision
+  it needs;
+- never consults a model, and never coerces a stored answer silently.
 
-Seam calls present but `ai_runtime` absent is a reject. `ai_runtime` present
-but no seam calls: omit it — a fully deterministic artifact carries no
-runtime.
+Decision points present but `decision_runtime` absent is a reject.
+`decision_runtime` present but no decision points: omit it — a fully
+deterministic artifact carries no runtime.
 
 ### File layout
 
 1. Header comment: the root contract's `behavior` — what this program is.
-2. Standard-library imports and the seam runtime (if needed).
+2. Standard-library imports and the decision runtime (if needed).
 3. Node functions, children before parents, root last. (In python
    correctness does not depend on definition order; the bottom-up order is
    for the reader.)
@@ -169,6 +179,14 @@ if __name__ == "__main__":
     import sys, json
     args = json.loads(sys.stdin.read())
     print(json.dumps(root__n1(**args), default=str))
+```
+
+With the decision runtime present, the shell delegates to its `main`, which
+also loads stored answers:
+
+```python
+if __name__ == "__main__":
+    main(root__n1)
 ```
 
 For languages other than python, the same structure in that language's
@@ -186,7 +204,9 @@ Reject — naming the node and the hole — when:
 - the entry point of a leaf cannot be identified mechanically;
 - glue does not end by returning the parent's declared outputs per the return
   convention — that is decomposition's hole, not yours to close;
-- seam calls exist and no `ai_runtime` was supplied;
+- decision points exist and no `decision_runtime` was supplied;
+- a leaf calls `ai()`, the retired seam that consulted a model — verification
+  should have failed it, and it belongs back at codification;
 - the tree's language and the requested `language` disagree.
 
 Every one of these belongs to an earlier stage. Composition is the proof

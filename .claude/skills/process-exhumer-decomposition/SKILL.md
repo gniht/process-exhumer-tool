@@ -28,7 +28,8 @@ liftable.
   needs.
 - **Does NOT:** write leaf implementations (codification's job), check
   contracts against code (verification's job), or predict which leaves will
-  need AI (discovered during codification, recorded in the node's `result`).
+  need a decision point (discovered during codification, recorded in the
+  node's `result`).
 
 ## How to run it
 

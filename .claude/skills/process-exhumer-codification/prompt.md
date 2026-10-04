@@ -33,14 +33,15 @@ Exactly one JSON object, discriminated on `decision`:
 {
   "decision": "codified",
   "code": "string — full source in the target language",
-  "determinism": "deterministic | ai_required",
-  "ai_dependence": [
+  "determinism": "deterministic | decision_required",
+  "decisions": [
     {
-      "site": "string — which seam call, located by the function it sits in",
+      "site": "string — which decide() call, located by the function it sits in",
       "judgment": "string — what is being judged",
       "why_irreducible": "string — why no deterministic implementation honestly satisfies the behavior",
       "cause": "unstructured_encoding | open_output_space | unstated_dependence | normative",
-      "nearest_codifiable_alternative": "string — the closest deterministic implementation, and what adopting it would trade away"
+      "nearest_codifiable_alternative": "string — the closest deterministic implementation, and what adopting it would trade away",
+      "fallback": { "kind": "codified | unknown | set_aside | stop", "why": "string — what the program does when nobody has decided, and why that is the honest stand-in" }
     }
   ]
 }
@@ -64,13 +65,14 @@ Rules that bind every output:
   names, in order. One declared output → return it bare; several → return a
   map keyed by output names (in python, a dict). No declared outputs (an
   effect-bearing behavior) → return nothing.
-- **The AI seam is the only vessel for judgment.** Judgment may appear in
-  `code` only as a call to the canonical function `ai(instruction, payload)`
-  (defined in the Prompt below). No other escape hatch exists.
+- **The decision seam is the only vessel for judgment.** Judgment may appear
+  in `code` only as a call to the canonical function `decide(request)`
+  (defined in the Prompt below). No other escape hatch exists — in
+  particular, code never calls a model, by any route.
 - **`determinism` is a count, not an opinion.** `"deterministic"` iff `code`
-  contains zero seam calls; otherwise `"ai_required"` with exactly one
-  `ai_dependence` entry per call site. Omit `ai_dependence` (or leave it
-  empty) when deterministic.
+  contains zero `decide()` calls; otherwise `"decision_required"` with exactly
+  one `decisions` entry per call site. Omit `decisions` (or leave it empty)
+  when deterministic.
 - **Closed over its contract.** Code references only its declared inputs and
   local constants — no globals, no undeclared environment access, no effects
   beyond those the behavior declares.
@@ -79,101 +81,157 @@ Rules that bind every output:
 
 You are the codification stage of a framework that "unearths" a reproducible
 process for accomplishing a task.
-The deliverable is a **program**. Judgment that survives to run time is the cost this
-framework exists to drive down, not a normal state to design around — and whatever genuinely
-cannot be driven out is a finding to be earned by exhausting that effort, never a concession
-claimed in place of it.
+The deliverable is a **program**, and it never calls a model. Judgment left for run time is
+a failure to codify, not a normal state to design around. What genuinely cannot be codified
+becomes a declared decision point — a question for a person, backed by a fallback — and is a
+finding earned by exhausting the effort to codify it, never a concession claimed in its place.
  You receive one leaf contract and write its
 implementation — **once**. There is no refinement loop: the code you emit must
 satisfy the `behavior` over the full declared input space, not just the
 examples you happen to imagine.
 
-### The AI seam
+### The decision seam
 
 All judgment flows through one canonical function:
 
 ```python
-ai(instruction: str, payload: dict) -> value
+decide(request: dict) -> dict
 ```
 
-- **`instruction` is static** — you write it now, and it never varies at
-  runtime. It is contract-shaped: state what must be true of the return value
-  given the payload, and the exact shape of the return. Runtime data never
-  enters the instruction; it travels in `payload`.
-- **`payload`** carries the named runtime values the judgment needs — no more.
-- **The return is consumed mechanically** by the surrounding code, so its
-  declared shape must be unambiguous.
+The request:
 
-You never implement `ai()` — the run environment supplies it at composition
-time. You never express judgment any other way: no inline prompts to other
-systems, no placeholder comments deferring to a human.
+```python
+{
+    "question": str,      # static: what must be decided, written for a person
+    "answer_shape": str,  # static: the exact shape an acceptable answer takes
+    "fallback": {
+        "kind": str,      # static: "codified" | "unknown" | "set_aside" | "stop"
+        "value": ...,     # computed at run time: the stand-in, for codified and unknown
+    },
+    "evidence": dict,     # run time: the named values the decision is about, no more
+}
+```
 
-One seam is the point: it makes AI-dependence visible, countable, and
+The return is `{"value": ..., "source": "answered" | "fallback", "fallback_kind": ...}`,
+with `fallback_kind` present only when `source` is `"fallback"`. A `stop` fallback never
+returns: it halts the run and reports the decision it needs.
+
+- **Question, answer shape and fallback kind are static** — you write them
+  now, and they never vary at run time. Write the question for a person: plain
+  language, answerable from the evidence alone. Runtime data never enters
+  them; it travels in `evidence` and in the fallback's `value`.
+- **The return is consumed mechanically**, so `answer_shape` must be
+  unambiguous.
+
+You never implement `decide()` — composition supplies the runtime, which
+returns an answer a person has stored or else applies your fallback. **It
+never consults a model, and neither does your code**: no inline prompts, no
+calls to any model or AI service, no placeholder comments deferring to
+someone. Judgment has one route, and it ends at a person.
+
+One seam is the point: it makes judgment visible, countable, and
 mechanically checkable. Verification detects it; composition wires it; the
-framework's goal — minimal AI dependence — is measured through it.
+framework's goal — no judgment left in the program — is measured through it.
 
-### Minimize AI dependence, honestly
+### Fallbacks — what the program does until someone decides
+
+Every decision point declares a fallback, and it is part of the design, not
+an afterthought. Most runs will use it: answering is optional, and a program
+that needs a person on every input has not done its job. Choose from this
+closed set:
+
+- **`codified`** — run the nearest codifiable alternative as a stand-in and
+  pass its result as `value`. The default whenever the alternative has a
+  defensible output for the input.
+- **`unknown`** — pass the explicit unknown the contract's outputs can carry.
+- **`set_aside`** — withhold the item from the main result and list it with
+  the reason; your code does this when the return's `fallback_kind` is
+  `set_aside`.
+- **`stop`** — halt the run, reporting the decision it needs. The last
+  resort: only where any stand-in could cause irreversible harm.
+
+**A fallback must never look like a decision.** Carry each value's `source`
+(and `fallback_kind`) from the return into your outputs, so a reader can
+always tell an answered value from a stand-in. A codified stand-in is a
+plausible value, which is exactly why it must be marked.
+
+If the contract's outputs cannot carry the fallback you need — no place for
+an unknown, no way to mark a value's source — reject: the contract is not
+ready for a decision point.
+
+### Codify fully, honestly
 
 Order of preference:
 
 1. **Fully deterministic** — an implementation that genuinely satisfies the
-   behavior with zero seam calls.
-2. **Deterministic skeleton, narrowest kernel** — mechanical pre-processing
-   in, the smallest possible judgment through the seam, mechanical
-   post-processing out.
+   behavior with no decision points.
+2. **Deterministic skeleton, narrowest decision** — mechanical
+   pre-processing in, the smallest possible decision through the seam,
+   mechanical post-processing out.
 
 Two failure modes, both worse than the honest middle:
 
-- **Faked determinism.** A heuristic that merely avoids the seam while
-  failing the behavior on parts of the declared input space is worse than an
-  honest `ai()` call. Verification tests the behavior, not seam-avoidance.
+- **Faked determinism.** A heuristic that avoids the seam while failing the
+  behavior on parts of the declared input space is a silent stand-in, the
+  failure this framework exists to prevent. Put the heuristic where it
+  belongs: as the decision point's `codified` fallback, where its output is
+  marked. If its limits are acceptable, the remedy is a narrower contract it
+  satisfies outright — the user's call at ratification, not yours.
+  Verification tests the behavior, not seam-avoidance.
 - **Lazy judgment.** Reaching for the seam out of convenience. Parsing,
   format conversion, arithmetic, filtering, sorting, lookups, string
-  mechanics — these are code, not judgment.
+  mechanics — these are code, not judgment. Every decision point is a
+  question someone may have to answer; an unearned one costs them time.
 
-Several distinct judgments woven through one leaf are allowed but are a
-smell of under-decomposition: keep each kernel separate and annotate each one.
-The count matters beyond code quality — one narrow judgment per leaf is a
-credible residue datum; four in a leaf is probably a decomposition that stopped
-too soon, and its claim to irreducibility is discounted accordingly.
+Several distinct decisions woven through one leaf are allowed but are a
+smell of under-decomposition: keep each decision point separate and annotate
+each one. The count matters beyond code quality — one narrow decision per
+leaf is a credible residue datum; four in a leaf is probably a decomposition
+that stopped too soon, and its claim to irreducibility is discounted
+accordingly.
 
-### Every seam call is a residue entry, and must argue for itself
+### Every decision point is a residue entry, and must argue for itself
 
-A seam call is not just a cost, it is this run's second deliverable: a claim
-that some judgment cannot be made reproducible. Such a claim is worth nothing
-asserted and a great deal argued, so each annotation carries two more fields.
+A decision point is not just a cost, it is this run's second deliverable: a
+claim that some judgment cannot be made reproducible. Such a claim is worth
+nothing asserted and a great deal argued, so each annotation carries three
+more fields.
 
 **`cause`** — why it resisted, from this closed set. The causes have different
 remedies and some are not remedies for the framework at all:
 
-- **`unstructured_encoding`** — the fact is present in the payload but expressed
-  in open language with no stable form, so no parser reaches it. A property of
-  the *input's shape*, not the task's difficulty; a source that states the fact
-  structurally removes the call entirely.
-- **`open_output_space`** — the return is drawn from no enumerable set, so no
+- **`unstructured_encoding`** — the fact is present in the evidence but
+  expressed in open language with no stable form, so no parser reaches it. A
+  property of the *input's shape*, not the task's difficulty; a source that
+  states the fact structurally removes the decision point entirely.
+- **`open_output_space`** — the answer is drawn from no enumerable set, so no
   rule generates it. Essential; no remedy.
 - **`unstated_dependence`** — the answer turns on a preference or context the
   contract never granted. Remedy: grant it as an input. Usually a contract
   defect wearing judgment's clothes, and often better raised as a reject.
-- **`normative`** — the call is evaluative rather than factual. No remedy, and
-  the one class where a *human*, not a model, is the honest answer: flag it
-  plainly, because a seam call here quietly substitutes a model for a value
-  judgment.
+- **`normative`** — the decision is evaluative rather than factual. No remedy:
+  a person's answer is the honest one. Say so plainly, and choose the
+  fallback with care — a `codified` stand-in here substitutes a rule for a
+  value judgment.
 
 **`nearest_codifiable_alternative`** — the closest deterministic implementation
 you can describe, and what adopting it would trade away. Write it even when you
-are confident the seam is right: stating the trade-off often reveals it is
-acceptable, and a reader cannot weigh a concession whose alternative was never
-named. "None exists" is an answer, but it is a strong claim and reads as one.
+are confident the decision point is right: stating the trade-off often reveals
+it is acceptable, and a reader cannot weigh a concession whose alternative was
+never named. "None exists" is an answer, but it is a strong claim and reads as
+one. When one exists, it is usually also the `codified` fallback.
+
+**`fallback`** — the kind you chose and why: what the program does when nobody
+has decided, and why that is the honest stand-in for this judgment.
 
 ### Determinism is discovered here
 
 This is the moment the framework learns whether this unit reduces to
-deterministic code. Report exactly what you wrote: zero seam calls →
-`"deterministic"`; otherwise `"ai_required"`, one `ai_dependence` entry per
-call site, each with the judgment and why it is irreducible. "Deterministic"
-means *free of judgment*, not free of declared effects — a leaf that fetches
-a URL its contract declares is deterministic in this sense.
+deterministic code. Report exactly what you wrote: zero `decide()` calls →
+`"deterministic"`; otherwise `"decision_required"`, one `decisions` entry per
+call site, each with the judgment, why it is irreducible, and its fallback.
+"Deterministic" means *free of judgment*, not free of declared effects — a
+leaf that fetches a URL its contract declares is deterministic in this sense.
 
 This outcome belongs to the node's result record, never to the contract —
 the contract has no field for it, by design.
@@ -194,8 +252,10 @@ The contract you receive was declared codifiable by a fallible earlier
 stage. Emit `decision: "reject"` with the reason if:
 
 - `inputs`/`outputs` are not concrete enough to write a real signature, or
-- the behavior cannot be satisfied even with the seam — it is contradictory,
-  ill-posed, or demands inputs the contract does not grant.
+- the behavior cannot be satisfied even with a decision point — it is
+  contradictory, ill-posed, or demands inputs the contract does not grant, or
+- a decision is needed and the contract's outputs cannot carry an honest
+  fallback: no explicit unknown, no way to mark a value's source.
 
 "Inputs the contract does not grant" includes **ambient capabilities**: the
 clock, randomness, the network, the filesystem, environment variables. If the
@@ -206,9 +266,10 @@ error to verification, which costs a whole cycle to learn what a reject says
 immediately.
 
 Reject too when the outputs are **not determined by the granted inputs by any
-means**. A seam call does not repair missing information: a model asked to
-judge what its payload cannot answer will confabulate, and recording that as
-irreducible judgment launders a contract defect into an accepted residue entry.
+means**. A decision point does not repair missing information: whoever
+answers is being asked what the evidence cannot tell them, and a model, if one
+were ever wired in, would confabulate. Recording that as irreducible judgment
+launders a contract defect into an accepted residue entry.
 
 Do not guess missing I/O into existence — upstream glue is already wired to
 this contract, and a quiet guess breaks it. A clean rejection sends the
