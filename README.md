@@ -16,7 +16,11 @@ I can't be the only person running into problems like this, and generating code 
 
 ## Status
 
-All five pipeline stages are built as Claude Code skills. None has yet been exercised end-to-end; **the first complete run is the current milestone**, and its write-up will be linked here once it exists.
+All five pipeline stages are built as Claude Code skills, and **the first complete end-to-end run finished on 2026-09-21**: [`runs/2026-09-09-job-search-triage/`](runs/2026-09-09-job-search-triage/). A loose wish, for something that finds jobs worth applying to without reading every posting, became a root contract, a 13-node tree with six leaves, 70 verification checks, and a standalone 581-line Python program. That program ran on live job boards and made exactly the number of model calls predicted in advance, all at the one leaf that reads prose and none during criteria evaluation.
+
+The pipeline did its job; the program it produced is not yet correct. The live run found four remote jobs silently judged not remote, because the contract required a common field *schema* but never said what a field's *values* may be. That passed all 70 checks, since every node satisfied its own contract. Verification checks code against contracts. It cannot check a contract against what its author meant, and only running on real data from two differently shaped sources exposed the gap. The [Stage 5 write-up](runs/2026-09-09-job-search-triage/stage-5-composition.md) has the details.
+
+The run's findings were folded back into the spec and the stage prompts on 2026-09-25. Those revisions have not been exercised yet; the next run, on a different task, is what tests them.
 
 The architecture was captured in [`spec.md`](spec.md) on 2026-06-04 via a [project-spec-interrogator](https://github.com/gniht/project-spec-interrogator) session — this project's stage-1 interrogator is itself a specialized derivative of that skill. The contemporaneous build record, including the design commitments that landed during each stage build, is in [`design-journal.md`](design-journal.md).
 
@@ -38,11 +42,13 @@ A few of the ideas doing the most work:
 - **Judgment lives only in leaves.** Glue — the code that wires components together — moves data and never interprets it. Any judgment a build needs is pushed into a child contract, where the recursion can keep working on it. Reducing AI dependence is therefore purely a question of how far decomposition pushes.
 - **The contract is the only primitive.** One small declarative structure — inputs, outputs, and a required behavior clause — flows through every stage. There is no separate handoff format anywhere in the pipeline: the contract *is* the handoff.
 - **Any stage may reject what it's handed.** A contract that can't be satisfied as wired is rejected rather than papered over, and a rejection always indicts the upstream author, never the rejecting stage. Errors surface where they were made.
+- **The residue is a deliverable.** A run yields two things: the codified process, and the *residue* — the judgments that resisted codification, each with the argument for why. Irreducibility is a property of the information rather than of the model reading it, so the residue says something durable about the task itself. An entry must be earned (decomposition pushed to exhaustion) and is provisional until the user agrees there is no acceptable way around it.
 
 ## Files
 
 - [`spec.md`](spec.md) — the architectural spec: goals, scope, the core data model, validation criteria, open questions
-- [`design-journal.md`](design-journal.md) — contemporaneous record of the five stage builds and the commitments that landed during each
+- [`design-journal.md`](design-journal.md) — contemporaneous record of the five stage builds, the runs, and the commitments that landed during each
 - `.claude/skills/` — the five pipeline stages, each a self-contained stage prompt (`prompt.md`) wrapped by a thin Claude Code harness (`SKILL.md`)
+- `runs/` — one directory per end-to-end attempt: a write-up for each stage, the artifact every stage emitted, and the composed program
 
 Usage documentation will follow the first validated end-to-end run.
