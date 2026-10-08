@@ -101,6 +101,18 @@ Prompted by correcting run 2's reading of the leftover-reasoning test. The autho
 
 Not yet exercised. The job-triage redo will be the first run under it.
 
+## 2026-10-08 — Job-triage v2, Stage 1
+
+**Job-triage v2** (`runs/2026-10-08-job-triage-v2/`) revises run 2's contract into a version for real use: multi-user in structure, local storage, basic authentication, and as many configurable rules as the data supports. **Stage 1 cleared 2026-10-08** with two root contracts, `root-contract-refresh.json` (fetch and extract, shared) and `root-contract-assess.json` (one user's rules over the stored postings), whose shared interface, the stored postings, is stated in identical text in both. Accounts, sessions and the page are the host's, built outside the pipeline. The contracts address all three of run 2's defects:
+
+- every field has a declared value space;
+- undated postings are shown and marked;
+- each source fails alone.
+
+Run 2's model extraction is gone. The prediction is **zero decision points**: every field is structured data or text that plain pattern matching reads.
+
+The interrogator's new item 7 ("move judgment into the build") was exercised for the first time and settled five recurring judgments as rules. The author improved one: an unstated pay period counts as yearly only above a per-currency floor, set at the minimum wage's full-time yearly equivalent.
+
 ## Next
 
 **First, the job-triage program made usable**: revise run 2's root contract (its three defects, the user's show/hide rules, no decision the user must answer on every run) and re-run stages 2–5 under the decision seam, with a way to use it day to day (a local web page is the current direction). **Then run 3, on a different task**, to exercise the 2026-09-25 and 2026-10-04 revisions on something whose defects aren't already known. Still queued:

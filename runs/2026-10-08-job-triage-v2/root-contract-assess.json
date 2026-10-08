@@ -1,0 +1,47 @@
+{
+  "behavior": "Given the stored postings, one user's watched sources, rules and marks, and the current date: every stored posting from a watched source appears exactly once, in shown or in hidden, and no other posting appears; every rule yields for every such posting one of met, not met or can't tell, can't tell exactly when the field it tests is unknown or not comparable (a salary in a different currency or pay period from the rule's), and every verdict names the field value it rests on and the location in the payload that value came from; where a field holds several values, or a salary a range, a require or prefer rule is met when any value meets it and an exclude rule is met only when every value meets it; a keyword test matches case-insensitively on whole words or phrases, a trailing * matching any word ending; a within-days test counts back from the current date; a posting is hidden exactly when the user hid it (hidden by you), or it is not saved and fails a require rule or meets an exclude rule (failed: that rule) or gets can't tell on a require or exclude rule set to hide unknowns (couldn't check: that rule), and every hidden posting carries every reason that applies to it; shown postings are ordered by the number of prefer rules met, most first, a prefer rule's can't tell counting as not met, then by posted date, newest first, using the first-seen date for an undated posting, then by source and posting ID; every record carries the user's marks and is flagged new when this user has not viewed it, no longer listed when so marked, and no posting date when undated; each rule's diagnostics give its counts of met, not met and can't tell over the watched postings, the number of hidden postings it is a reason for and how many of those are couldn't check, and the postings it could not check; and the same inputs always give the same outputs.",
+  "inputs": [
+    {
+      "name": "stored_postings",
+      "type": "a store of postings keyed by source and the board's posting ID, possibly empty",
+      "description": "The shared memory of every posting ever fetched; nothing is removed from it. Each entry carries the raw payload from the most recent successful fetch that listed it; the date it was first seen; its listing status (listed, or no longer listed with the date it was first missed); and its extracted fields. Each extracted field holds either a value from that field's declared value space or unknown, together with the board's raw value and the location in the payload it was derived from. Declared fields: title, location (one or more), department/team (one or more) and full text, as text stated; company, from the source definition; countries, a set of country codes stated or clearly derivable; regions, a set from a declared region vocabulary, where a country implies its region and a region never implies a country; work arrangement, one of remote, hybrid, onsite; employment type, one of full-time, part-time, contract, temporary, internship; seniority, a set of levels named by title words, from intern, junior, senior, staff, principal, lead, manager, director, executive (no seniority word means unknown, not mid-level); salary, as {minimum, maximum, currency, pay period}, pay period one of hour, day, week, month, year; years of experience, the lowest number of years the posting states as a requirement; posted date, a date or undated. A set field with no recognisable value is unknown."
+    },
+    {
+      "name": "watched_sources",
+      "type": "a set of source identifiers",
+      "description": "The sources this user follows. Postings from other sources are outside this assessment."
+    },
+    {
+      "name": "rules",
+      "type": "a list of rules, possibly empty",
+      "description": "The user's editable statement of what they want to see, refined between runs. Each rule names a field and a test: contains a keyword or phrase (title or full text); is one of (company, department/team, country, region, work arrangement, employment type, seniority, listing status); at least or at most (salary, stated with amount, currency and pay period; years of experience); or within a number of days (posted date, first-seen date). Each rule acts as require, exclude or prefer, and a require or exclude rule says whether a posting it can't tell about is shown or hidden, defaulting to shown."
+    },
+    {
+      "name": "marks",
+      "type": "a record per posting the user has marked",
+      "description": "For each marked posting, keyed by source and posting ID: any of viewed, saved, applied, hidden by you. Belongs to this user alone."
+    },
+    {
+      "name": "as_of",
+      "type": "a date",
+      "description": "The current date. Every date the run records or measures from is this one."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "shown",
+      "type": "an ordered list of assessment records",
+      "description": "One record per shown posting: its key, its extracted fields, each rule's verdict with the value and payload location it rests on, the number of prefer rules met, the user's marks, and its flags (new, no longer listed, no posting date)."
+    },
+    {
+      "name": "hidden",
+      "type": "a list of assessment records",
+      "description": "One record per hidden posting, in the same shape as shown, together with every reason it is hidden (hidden by you; failed: rule; couldn't check: rule)."
+    },
+    {
+      "name": "rule_diagnostics",
+      "type": "a record per rule",
+      "description": "Counts of met, not met and can't tell over the watched postings; the number of hidden postings the rule is a reason for, and how many of those are couldn't check; and the postings it could not check. The material the user refines their rules with."
+    }
+  ]
+}

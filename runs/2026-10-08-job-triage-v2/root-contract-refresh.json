@@ -1,0 +1,37 @@
+{
+  "behavior": "Given source definitions, the stored postings, a pay-floor table and the current date: for every source whose fetch succeeds, every posting it lists is present in the returned store under its source and posting ID, a posting not previously stored being added with the current date as its first-seen date and one already stored being replaced by the version just fetched with its first-seen date kept; every stored posting has every declared field extracted from the payload it carries, each value either within that field's declared value space or unknown and carrying the board's raw value and its location in the payload, a board's value being mapped into a value space only where its meaning matches; a salary is extracted only where the posting states it in a recognisable form, a bare $ being read as USD only where the US is the posting's only country, and a pay period the posting does not state being read as yearly only where the salary's currency has a pay-floor entry and the lower figure is at least that floor, and otherwise unknown; a stored posting from a successfully fetched source that the fetch did not list is marked no longer listed with the date it was first missed, and one so marked that is listed again has the mark cleared; a source whose fetch fails changes nothing stored from it and affects no other source; no stored posting is ever removed; and the report states for every source whether its fetch succeeded and, if it did, how many postings it listed, how many were new, how many were newly no longer listed and how many were listed again, or, if it did not, the reason.",
+  "inputs": [
+    {
+      "name": "sources",
+      "type": "a list of source definitions",
+      "description": "The sources to fetch. Each definition fixes the company, the endpoint, any request headers, the response envelope, the field mappings and the date format. Data rather than code, so sources can be added without the contract changing."
+    },
+    {
+      "name": "stored_postings",
+      "type": "a store of postings keyed by source and the board's posting ID, possibly empty",
+      "description": "The shared memory of every posting ever fetched; nothing is removed from it. Each entry carries the raw payload from the most recent successful fetch that listed it; the date it was first seen; its listing status (listed, or no longer listed with the date it was first missed); and its extracted fields. Each extracted field holds either a value from that field's declared value space or unknown, together with the board's raw value and the location in the payload it was derived from. Declared fields: title, location (one or more), department/team (one or more) and full text, as text stated; company, from the source definition; countries, a set of country codes stated or clearly derivable; regions, a set from a declared region vocabulary, where a country implies its region and a region never implies a country; work arrangement, one of remote, hybrid, onsite; employment type, one of full-time, part-time, contract, temporary, internship; seniority, a set of levels named by title words, from intern, junior, senior, staff, principal, lead, manager, director, executive (no seniority word means unknown, not mid-level); salary, as {minimum, maximum, currency, pay period}, pay period one of hour, day, week, month, year; years of experience, the lowest number of years the posting states as a requirement; posted date, a date or undated. A set field with no recognisable value is unknown."
+    },
+    {
+      "name": "pay_floors",
+      "type": "a table from currency code to an amount in that currency",
+      "description": "For each currency, the lowest lower figure at which a salary range with no stated pay period is read as yearly: the full-time yearly equivalent of the minimum wage where that currency is paid. Below the floor, or for a currency with no entry, an unstated pay period is unknown. Data rather than code, so a place can be added without the contract changing."
+    },
+    {
+      "name": "as_of",
+      "type": "a date",
+      "description": "The current date. Every date the run records or measures from is this one."
+    }
+  ],
+  "outputs": [
+    {
+      "name": "updated_postings",
+      "type": "a store of postings keyed by source and the board's posting ID, possibly empty",
+      "description": "The successor to the incoming stored postings, in exactly the same shape. The shared memory of every posting ever fetched; nothing is removed from it. Each entry carries the raw payload from the most recent successful fetch that listed it; the date it was first seen; its listing status (listed, or no longer listed with the date it was first missed); and its extracted fields. Each extracted field holds either a value from that field's declared value space or unknown, together with the board's raw value and the location in the payload it was derived from. Declared fields: title, location (one or more), department/team (one or more) and full text, as text stated; company, from the source definition; countries, a set of country codes stated or clearly derivable; regions, a set from a declared region vocabulary, where a country implies its region and a region never implies a country; work arrangement, one of remote, hybrid, onsite; employment type, one of full-time, part-time, contract, temporary, internship; seniority, a set of levels named by title words, from intern, junior, senior, staff, principal, lead, manager, director, executive (no seniority word means unknown, not mid-level); salary, as {minimum, maximum, currency, pay period}, pay period one of hour, day, week, month, year; years of experience, the lowest number of years the posting states as a requirement; posted date, a date or undated. A set field with no recognisable value is unknown."
+    },
+    {
+      "name": "source_report",
+      "type": "a record per source",
+      "description": "Whether the source's fetch succeeded; if it did, the counts of postings listed, new, newly no longer listed and listed again; if it did not, the reason."
+    }
+  ]
+}
