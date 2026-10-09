@@ -113,6 +113,18 @@ Run 2's model extraction is gone. The prediction is **zero decision points**: ev
 
 The interrogator's new item 7 ("move judgment into the build") was exercised for the first time and settled five recurring judgments as rules. The author improved one: an unstated pay period counts as yearly only above a per-currency floor, set at the minimum wage's full-time yearly equivalent.
 
+## 2026-10-08 — Job-triage v2, Stages 2–3
+
+**Stage 2** produced two trees: refresh has 14 nodes and 10 leaves, assess has 5 nodes and 3 leaves. The stored-postings interface is checked mechanically to be identical in both. Decomposition found two gaps in the root, which the author confirmed as amendments: the posting's link was missing, and the any/every rule for alternatives was scoped too wide.
+
+**Stage 3: 13 leaves, all deterministic, zero decision points.** The prediction held. The judgment item 7 moved into the build now lives in tables in the code: countries, regions, level words and their exceptions.
+
+That exposed a pattern worth carrying forward. Two leaf contracts promised what a name "denotes", which a table delivers only as far as its entries reach. By codification's own rule that is faked determinism. The remedy the author ratified is a narrower contract in which **the table decides**, stating both directions of its limit:
+- a name the table lacks comes out unknown, which is shown by default;
+- a table entry counts even where the text means something else by it.
+
+Decomposition could write leaf contracts that way from the start whenever a leaf's behavior is a lookup. Not yet folded into the prompt; queued below.
+
 ## Next
 
 **First, the job-triage program made usable**: revise run 2's root contract (its three defects, the user's show/hide rules, no decision the user must answer on every run) and re-run stages 2–5 under the decision seam, with a way to use it day to day (a local web page is the current direction). **Then run 3, on a different task**, to exercise the 2026-09-25 and 2026-10-04 revisions on something whose defects aren't already known. Still queued:
@@ -120,3 +132,7 @@ The interrogator's new item 7 ("move judgment into the build") was exercised for
 - The subagent-isolation experiment: decompose run 2's root contract in an isolated context and diff the trees.
 - The deferred interrogator refinements: entry-boundary input concreteness, a derivability check, and an AI-user front door.
 - The residue-log decision (spec, Open Questions).
+- From job-triage v2:
+  - a cross-tree interface check in the decomposition harness;
+  - a size criterion in the codify test;
+  - for leaves whose behavior is a lookup, decomposition writes "the leaf's table decides" into the contract.

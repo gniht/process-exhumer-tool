@@ -145,3 +145,16 @@ larger.
   high rate costs attention, not missed postings.
 
 **Prediction unchanged: zero decision points.** Every leaf is declared deterministic.
+
+## Amended at stage 3 (author ratified)
+
+Codification found that `derive_geography` (n8) and `derive_seniority` (n11) promised that a
+name or word "denotes" a country or level, which a table can deliver only as far as its entries
+reach. The author ratified the narrower contracts: the leaf's table decides. Only those two
+behaviors changed in `node-tree-refresh.json`. The parent's contract and glue still hold as
+written. See `stage-3-codification.md`.
+
+Composition's watch list gains one item: **table misses and wrong entries on live data**,
+meaning names or level words the tables lack (these come out unknown and are shown) and entries
+that match something else (a town that shares a country's name, a level word in a phrase the
+exceptions lack).
