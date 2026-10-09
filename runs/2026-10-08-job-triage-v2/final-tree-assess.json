@@ -1,0 +1,316 @@
+{
+  "id": "n1",
+  "contract": {
+    "behavior": "Given the stored postings, one user's watched sources, rules and marks, and the current date: every stored posting from a watched source appears exactly once, in shown or in hidden, and no other posting appears; every rule yields for every such posting one of met, not met or can't tell, can't tell exactly when the field it tests is unknown or not comparable (a salary in a different currency or pay period from the rule's), and every verdict names the field value it rests on and the location in the payload that value came from; where a field holds alternatives (countries, regions, seniority, or a salary's range), a require or prefer rule is met when any value meets it and an exclude rule is met only when every value meets it; a keyword test matches case-insensitively on whole words or phrases, a trailing * matching any word ending; a within-days test counts back from the current date; a posting is hidden exactly when the user hid it (hidden by you), or it is not saved and fails a require rule or meets an exclude rule (failed: that rule) or gets can't tell on a require or exclude rule set to hide unknowns (couldn't check: that rule), and every hidden posting carries every reason that applies to it; shown postings are ordered by the number of prefer rules met, most first, a prefer rule's can't tell counting as not met, then by posted date, newest first, using the first-seen date for an undated posting, then by source and posting ID; every record carries the user's marks and is flagged new when this user has not viewed it, no longer listed when so marked, and no posting date when undated; each rule's diagnostics give its counts of met, not met and can't tell over the watched postings, the number of hidden postings it is a reason for and how many of those are couldn't check, and the postings it could not check; and the same inputs always give the same outputs.",
+    "inputs": [
+      {
+        "name": "stored_postings",
+        "type": "a list of stored-posting entries sorted by source_id then posting_id, at most one per (source_id, posting_id), possibly empty",
+        "description": "The shared memory of every posting ever fetched; nothing is removed from it. Each entry is {source_id, posting_id, first_seen, listing, payload, fields}: source_id the id of the source definition it was fetched from; posting_id the board's posting ID as a string; first_seen the date it was first stored, 'YYYY-MM-DD'; listing {status, since}, status 'listed' or 'no_longer_listed', since the date it was first missed when no longer listed and otherwise null; payload the board's raw posting object from the most recent successful fetch that listed it; fields a map from each declared field name (title, link, company, location, department_team, full_text, countries, regions, work_arrangement, employment_type, seniority, salary, years_of_experience, posted_date) to a field record. Declared fields and their value spaces: title and link (the posting's page address), each a string as stated; company, a string from the source definition (evidence path 'source.company'); location, department_team and full_text, each a list of strings as stated, in board order, one per piece of text read, with one evidence entry per piece (department_team's values describe the posting together, not as alternatives); countries, a sorted list of distinct ISO 3166-1 alpha-2 codes, stated or clearly derivable; regions, a sorted list of distinct regions, each stated or implied by a listed country (a country implies its most specific regions; a region never implies a country); work_arrangement, one of 'remote', 'hybrid', 'onsite'; employment_type, one of 'full-time', 'part-time', 'contract', 'temporary', 'internship'; seniority, a sorted list of distinct levels named by title words, from 'intern', 'junior', 'senior', 'staff', 'principal', 'lead', 'manager', 'director', 'executive' (no seniority word means unknown, not mid-level); salary, {minimum, maximum, currency, pay_period}, numbers with minimum <= maximum, currency an ISO 4217 code or null, pay_period one of 'hour', 'day', 'week', 'month', 'year' or null; years_of_experience, a non-negative integer, the lowest number of years the posting states as a requirement; posted_date, 'YYYY-MM-DD', null meaning undated. A list-valued field is never an empty list: with nothing recognisable it is null. Regions: africa, americas, apac, asia, emea, europe, latin_america, middle_east, north_america, oceania; americas contains north_america and latin_america, emea contains europe, middle_east and africa, apac contains asia and oceania. A field record is {value, evidence}: value is a value from the field's declared value space, or null for unknown; evidence lists the entries the value was derived from, including board values that could not be mapped (value null). An evidence entry is {path, span, raw, value}: path locates what was read; span is [start, end) character offsets into the text at that path as converted to plain text, or null when the whole value at the path was used; raw is the board's value at the path, or the matched text when span is given; value is what the entry contributes to the field, a value from the field's declared value space, or null when the board's value could not be mapped into it. A path is a dotted sequence of keys into JSON; a key followed by [] steps into every element of the list there (e.g. 'departments[].name', 'categories.allLocations[]'). In evidence, a path names the one element read, by index (e.g. 'departments.0.name'); a path beginning 'source.' names a value in the source definition rather than the payload."
+      },
+      {
+        "name": "watched_sources",
+        "type": "a list of distinct source ids",
+        "description": "The sources this user follows. Postings from other sources are outside this assessment."
+      },
+      {
+        "name": "rules",
+        "type": "a list of rules with distinct ids, possibly empty",
+        "description": "The user's editable statement of what they want to see, refined between runs. A rule is {id, field, test, action, unknowns} plus the test's parameters. Tests: 'contains' with keywords (a non-empty list of words or phrases), on field 'title' or 'full_text'; 'one_of' with values (a non-empty list from the field's value space), on 'company', 'department_team', 'countries', 'regions', 'work_arrangement', 'employment_type', 'seniority' or 'listing_status' (values 'listed', 'no_longer_listed'); 'at_least' or 'at_most' with amount (a number), on 'years_of_experience', or on 'salary' with currency (ISO 4217) and pay_period as well; 'within_days' with days (a non-negative integer), on 'posted_date' or 'first_seen'. action is 'require', 'exclude' or 'prefer'. unknowns is 'show' or 'hide' and applies to require and exclude rules only, defaulting to 'show'."
+      },
+      {
+        "name": "marks",
+        "type": "a list of per-posting mark records",
+        "description": "For each posting the user has marked: {source_id, posting_id, marks}, at most one item per posting, marks a non-empty list from 'viewed', 'saved', 'applied', 'hidden' ('hidden' meaning hidden by you). Belongs to this user alone."
+      },
+      {
+        "name": "as_of",
+        "type": "a date, 'YYYY-MM-DD'",
+        "description": "The current date. Every date the run records or measures from is this one."
+      }
+    ],
+    "outputs": [
+      {
+        "name": "shown",
+        "type": "an ordered list of assessment records",
+        "description": "One record per shown posting, ordered by prefer_met (most first), then posted_date, or first_seen when posted_date is null (newest first), then source_id and posting_id. An assessment record is {source_id, posting_id, fields, first_seen, listing, verdicts, prefer_met, marks, flags}: fields, first_seen and listing as stored; verdicts one per rule in rule order; prefer_met the number of prefer rules whose verdict is met; marks the user's marks for the posting in the order viewed, saved, applied, hidden (empty when unmarked); flags {new, no_longer_listed, no_posting_date}: new when not marked viewed, no_longer_listed when the listing status is no_longer_listed, no_posting_date when posted_date is null. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence."
+      },
+      {
+        "name": "hidden",
+        "type": "an ordered list of assessment records with reasons",
+        "description": "One record per hidden posting, ordered by source_id then posting_id. An assessment record is {source_id, posting_id, fields, first_seen, listing, verdicts, prefer_met, marks, flags}: fields, first_seen and listing as stored; verdicts one per rule in rule order; prefer_met the number of prefer rules whose verdict is met; marks the user's marks for the posting in the order viewed, saved, applied, hidden (empty when unmarked); flags {new, no_longer_listed, no_posting_date}: new when not marked viewed, no_longer_listed when the listing status is no_longer_listed, no_posting_date when posted_date is null. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence. A hidden record also carries reasons, a non-empty list: {kind: 'hidden_by_you'} first when marked hidden, then, in rule order, {kind: 'failed', rule_id} or {kind: 'couldnt_check', rule_id}."
+      },
+      {
+        "name": "rule_diagnostics",
+        "type": "a list of per-rule records",
+        "description": "One record per rule, in rule order: {rule_id, met, not_met, cant_tell, hid, hid_couldnt_check, could_not_check}: counts of each verdict over the watched postings; hid, the number of hidden postings the rule is a reason for, and hid_couldnt_check, how many of those for couldnt_check; could_not_check, the {source_id, posting_id} of every posting whose verdict was cant_tell, ordered by source_id then posting_id. The material the user refines their rules with."
+      }
+    ]
+  },
+  "assembly_pattern": "sequential",
+  "glue": "watched = set(watched_sources)\npostings = [entry for entry in stored_postings if entry[\"source_id\"] in watched]\nverdicts = evaluate_rules(postings, rules, as_of)\nplaced = place_postings(postings, rules, verdicts, marks)\nrule_diagnostics = diagnose_rules(rules, verdicts, placed[\"hidden\"])\nreturn {\"shown\": placed[\"shown\"], \"hidden\": placed[\"hidden\"], \"rule_diagnostics\": rule_diagnostics}\n",
+  "children": [
+    {
+      "name": "evaluate_rules",
+      "id": "n2",
+      "contract": {
+        "behavior": "Given postings, rules and the current date: returns one item per posting, in the same order, naming the posting and holding one verdict per rule in rule order, each the verdict of that rule on that posting at the current date, as follows. The tested value is the posting's field value (first_seen and listing status come from the entry itself). The verdict is cant_tell when the value is null, or when a salary's currency or pay_period is null or differs from the rule's. Otherwise, by test: contains is met when any keyword occurs in the title, or in any piece of full_text, case-insensitively, as a whole word or whole phrase, bounded by characters that are not letters or digits; whitespace in a phrase matches any run of whitespace; a keyword ending in '*' matches any continuation of letters or digits. one_of on company, work_arrangement, employment_type or listing_status is met when the value is one of the rule's values; on department_team, whose values describe the posting together, it is met when any value is one of the rule's values. Text values are compared ignoring case and surrounding whitespace. at_least and at_most compare years_of_experience with amount, inclusively. within_days is met when the date is on or after the current date minus days. These results are the same for every action. Countries, regions, seniority and a salary's range hold alternatives, and each value is judged on its own: a country or seniority level meets a one_of rule when it is one of the rule's values and fails otherwise; a region meets it when it or a region containing it is one of the rule's values, cannot be told when one of the rule's values lies strictly inside it, and fails otherwise; every amount from minimum to maximum is a value of a salary range, judged against amount inclusively. Over alternatives, a require or prefer rule is met when any value meets it, otherwise cant_tell when any value cannot be told, otherwise not_met; an exclude rule is met when every value meets it, not_met when any value fails, otherwise cant_tell. The verdict names the field, the value and the evidence it rests on. Regions: africa, americas, apac, asia, emea, europe, latin_america, middle_east, north_america, oceania; americas contains north_america and latin_america, emea contains europe, middle_east and africa, apac contains asia and oceania.",
+        "inputs": [
+          {
+            "name": "postings",
+            "type": "a list of stored-posting entries",
+            "description": "The shared memory of every posting ever fetched; nothing is removed from it. Each entry is {source_id, posting_id, first_seen, listing, payload, fields}: source_id the id of the source definition it was fetched from; posting_id the board's posting ID as a string; first_seen the date it was first stored, 'YYYY-MM-DD'; listing {status, since}, status 'listed' or 'no_longer_listed', since the date it was first missed when no longer listed and otherwise null; payload the board's raw posting object from the most recent successful fetch that listed it; fields a map from each declared field name (title, link, company, location, department_team, full_text, countries, regions, work_arrangement, employment_type, seniority, salary, years_of_experience, posted_date) to a field record. Declared fields and their value spaces: title and link (the posting's page address), each a string as stated; company, a string from the source definition (evidence path 'source.company'); location, department_team and full_text, each a list of strings as stated, in board order, one per piece of text read, with one evidence entry per piece (department_team's values describe the posting together, not as alternatives); countries, a sorted list of distinct ISO 3166-1 alpha-2 codes, stated or clearly derivable; regions, a sorted list of distinct regions, each stated or implied by a listed country (a country implies its most specific regions; a region never implies a country); work_arrangement, one of 'remote', 'hybrid', 'onsite'; employment_type, one of 'full-time', 'part-time', 'contract', 'temporary', 'internship'; seniority, a sorted list of distinct levels named by title words, from 'intern', 'junior', 'senior', 'staff', 'principal', 'lead', 'manager', 'director', 'executive' (no seniority word means unknown, not mid-level); salary, {minimum, maximum, currency, pay_period}, numbers with minimum <= maximum, currency an ISO 4217 code or null, pay_period one of 'hour', 'day', 'week', 'month', 'year' or null; years_of_experience, a non-negative integer, the lowest number of years the posting states as a requirement; posted_date, 'YYYY-MM-DD', null meaning undated. A list-valued field is never an empty list: with nothing recognisable it is null. Regions: africa, americas, apac, asia, emea, europe, latin_america, middle_east, north_america, oceania; americas contains north_america and latin_america, emea contains europe, middle_east and africa, apac contains asia and oceania. A field record is {value, evidence}: value is a value from the field's declared value space, or null for unknown; evidence lists the entries the value was derived from, including board values that could not be mapped (value null). An evidence entry is {path, span, raw, value}: path locates what was read; span is [start, end) character offsets into the text at that path as converted to plain text, or null when the whole value at the path was used; raw is the board's value at the path, or the matched text when span is given; value is what the entry contributes to the field, a value from the field's declared value space, or null when the board's value could not be mapped into it. A path is a dotted sequence of keys into JSON; a key followed by [] steps into every element of the list there (e.g. 'departments[].name', 'categories.allLocations[]'). In evidence, a path names the one element read, by index (e.g. 'departments.0.name'); a path beginning 'source.' names a value in the source definition rather than the payload."
+          },
+          {
+            "name": "rules",
+            "type": "a list of rules with distinct ids, possibly empty",
+            "description": "The user's editable statement of what they want to see, refined between runs. A rule is {id, field, test, action, unknowns} plus the test's parameters. Tests: 'contains' with keywords (a non-empty list of words or phrases), on field 'title' or 'full_text'; 'one_of' with values (a non-empty list from the field's value space), on 'company', 'department_team', 'countries', 'regions', 'work_arrangement', 'employment_type', 'seniority' or 'listing_status' (values 'listed', 'no_longer_listed'); 'at_least' or 'at_most' with amount (a number), on 'years_of_experience', or on 'salary' with currency (ISO 4217) and pay_period as well; 'within_days' with days (a non-negative integer), on 'posted_date' or 'first_seen'. action is 'require', 'exclude' or 'prefer'. unknowns is 'show' or 'hide' and applies to require and exclude rules only, defaulting to 'show'."
+          },
+          {
+            "name": "as_of",
+            "type": "a date, 'YYYY-MM-DD'",
+            "description": "The current date. Every date the run records or measures from is this one."
+          }
+        ],
+        "outputs": [
+          {
+            "name": "verdicts",
+            "type": "a list of per-posting verdict lists",
+            "description": "One item per posting, in the order of the postings: {source_id, posting_id, verdicts}, verdicts one per rule in rule order. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence."
+          }
+        ]
+      },
+      "assembly_pattern": "iterative",
+      "glue": "return [\n    {\n        \"source_id\": entry[\"source_id\"],\n        \"posting_id\": entry[\"posting_id\"],\n        \"verdicts\": [evaluate_rule(entry, rule, as_of) for rule in rules],\n    }\n    for entry in postings\n]\n",
+      "children": [
+        {
+          "name": "evaluate_rule",
+          "id": "n5",
+          "contract": {
+            "behavior": "Given one stored posting, one rule and the current date, returns the rule's verdict on the posting. The tested value is the posting's field value (first_seen and listing status come from the entry itself). The verdict is cant_tell when the value is null, or when a salary's currency or pay_period is null or differs from the rule's. Otherwise, by test: contains is met when any keyword occurs in the title, or in any piece of full_text, case-insensitively, as a whole word or whole phrase, bounded by characters that are not letters or digits; whitespace in a phrase matches any run of whitespace; a keyword ending in '*' matches any continuation of letters or digits. one_of on company, work_arrangement, employment_type or listing_status is met when the value is one of the rule's values; on department_team, whose values describe the posting together, it is met when any value is one of the rule's values. Text values are compared ignoring case and surrounding whitespace. at_least and at_most compare years_of_experience with amount, inclusively. within_days is met when the date is on or after the current date minus days. These results are the same for every action. Countries, regions, seniority and a salary's range hold alternatives, and each value is judged on its own: a country or seniority level meets a one_of rule when it is one of the rule's values and fails otherwise; a region meets it when it or a region containing it is one of the rule's values, cannot be told when one of the rule's values lies strictly inside it, and fails otherwise; every amount from minimum to maximum is a value of a salary range, judged against amount inclusively. Over alternatives, a require or prefer rule is met when any value meets it, otherwise cant_tell when any value cannot be told, otherwise not_met; an exclude rule is met when every value meets it, not_met when any value fails, otherwise cant_tell. The verdict names the field, the value and the evidence it rests on. Regions: africa, americas, apac, asia, emea, europe, latin_america, middle_east, north_america, oceania; americas contains north_america and latin_america, emea contains europe, middle_east and africa, apac contains asia and oceania.",
+            "inputs": [
+              {
+                "name": "posting",
+                "type": "a stored-posting entry",
+                "description": "The shared memory of every posting ever fetched; nothing is removed from it. Each entry is {source_id, posting_id, first_seen, listing, payload, fields}: source_id the id of the source definition it was fetched from; posting_id the board's posting ID as a string; first_seen the date it was first stored, 'YYYY-MM-DD'; listing {status, since}, status 'listed' or 'no_longer_listed', since the date it was first missed when no longer listed and otherwise null; payload the board's raw posting object from the most recent successful fetch that listed it; fields a map from each declared field name (title, link, company, location, department_team, full_text, countries, regions, work_arrangement, employment_type, seniority, salary, years_of_experience, posted_date) to a field record. Declared fields and their value spaces: title and link (the posting's page address), each a string as stated; company, a string from the source definition (evidence path 'source.company'); location, department_team and full_text, each a list of strings as stated, in board order, one per piece of text read, with one evidence entry per piece (department_team's values describe the posting together, not as alternatives); countries, a sorted list of distinct ISO 3166-1 alpha-2 codes, stated or clearly derivable; regions, a sorted list of distinct regions, each stated or implied by a listed country (a country implies its most specific regions; a region never implies a country); work_arrangement, one of 'remote', 'hybrid', 'onsite'; employment_type, one of 'full-time', 'part-time', 'contract', 'temporary', 'internship'; seniority, a sorted list of distinct levels named by title words, from 'intern', 'junior', 'senior', 'staff', 'principal', 'lead', 'manager', 'director', 'executive' (no seniority word means unknown, not mid-level); salary, {minimum, maximum, currency, pay_period}, numbers with minimum <= maximum, currency an ISO 4217 code or null, pay_period one of 'hour', 'day', 'week', 'month', 'year' or null; years_of_experience, a non-negative integer, the lowest number of years the posting states as a requirement; posted_date, 'YYYY-MM-DD', null meaning undated. A list-valued field is never an empty list: with nothing recognisable it is null. Regions: africa, americas, apac, asia, emea, europe, latin_america, middle_east, north_america, oceania; americas contains north_america and latin_america, emea contains europe, middle_east and africa, apac contains asia and oceania. A field record is {value, evidence}: value is a value from the field's declared value space, or null for unknown; evidence lists the entries the value was derived from, including board values that could not be mapped (value null). An evidence entry is {path, span, raw, value}: path locates what was read; span is [start, end) character offsets into the text at that path as converted to plain text, or null when the whole value at the path was used; raw is the board's value at the path, or the matched text when span is given; value is what the entry contributes to the field, a value from the field's declared value space, or null when the board's value could not be mapped into it. A path is a dotted sequence of keys into JSON; a key followed by [] steps into every element of the list there (e.g. 'departments[].name', 'categories.allLocations[]'). In evidence, a path names the one element read, by index (e.g. 'departments.0.name'); a path beginning 'source.' names a value in the source definition rather than the payload."
+              },
+              {
+                "name": "rule",
+                "type": "a rule",
+                "description": "A rule is {id, field, test, action, unknowns} plus the test's parameters. Tests: 'contains' with keywords (a non-empty list of words or phrases), on field 'title' or 'full_text'; 'one_of' with values (a non-empty list from the field's value space), on 'company', 'department_team', 'countries', 'regions', 'work_arrangement', 'employment_type', 'seniority' or 'listing_status' (values 'listed', 'no_longer_listed'); 'at_least' or 'at_most' with amount (a number), on 'years_of_experience', or on 'salary' with currency (ISO 4217) and pay_period as well; 'within_days' with days (a non-negative integer), on 'posted_date' or 'first_seen'. action is 'require', 'exclude' or 'prefer'. unknowns is 'show' or 'hide' and applies to require and exclude rules only, defaulting to 'show'."
+              },
+              {
+                "name": "as_of",
+                "type": "a date, 'YYYY-MM-DD'",
+                "description": "The current date. Every date the run records or measures from is this one."
+              }
+            ],
+            "outputs": [
+              {
+                "name": "verdict",
+                "type": "a verdict",
+                "description": "A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence."
+              }
+            ]
+          },
+          "code": "import datetime\nimport re\n\n_PARENT = {\n    \"north_america\": \"americas\", \"latin_america\": \"americas\",\n    \"europe\": \"emea\", \"middle_east\": \"emea\", \"africa\": \"emea\",\n    \"asia\": \"apac\", \"oceania\": \"apac\",\n}\n_SINGLE_VALUED = {\"company\", \"work_arrangement\", \"employment_type\", \"listing_status\"}\n_ALTERNATIVES = {\"countries\", \"regions\", \"seniority\"}\n\n\ndef _containing(region):\n    \"\"\"The region and every region containing it.\"\"\"\n    chain = [region]\n    while chain[-1] in _PARENT:\n        chain.append(_PARENT[chain[-1]])\n    return chain\n\n\ndef _norm(value):\n    return value.strip().casefold() if isinstance(value, str) else value\n\n\ndef _keyword_pattern(keyword):\n    keyword = keyword.strip()\n    continues = keyword.endswith(\"*\")\n    if continues:\n        keyword = keyword[:-1].rstrip()\n    words = keyword.split()\n    if not words:\n        return None\n    body = r\"\\s+\".join(re.escape(word) for word in words)\n    tail = r\"[^\\W_]*\" if continues else \"\"\n    return re.compile(r\"(?<![^\\W_])\" + body + tail + r\"(?![^\\W_])\", re.IGNORECASE)\n\n\ndef _tested(posting, field):\n    \"\"\"The field's value and the evidence it carries.\"\"\"\n    if field == \"first_seen\":\n        value = posting[\"first_seen\"]\n        return value, [{\"path\": \"entry.first_seen\", \"span\": None, \"raw\": value, \"value\": value}]\n    if field == \"listing_status\":\n        listing = posting[\"listing\"]\n        return listing[\"status\"], [{\"path\": \"entry.listing\", \"span\": None, \"raw\": listing, \"value\": listing[\"status\"]}]\n    record = (posting.get(\"fields\") or {}).get(field) or {}\n    return record.get(\"value\"), list(record.get(\"evidence\") or [])\n\n\ndef _over_alternatives(outcomes, action):\n    \"\"\"Combine per-value outcomes ('meets', 'fails', 'unknown') into a verdict for the action.\"\"\"\n    if action == \"exclude\":\n        if all(outcome == \"meets\" for outcome in outcomes):\n            return \"met\"\n        if any(outcome == \"fails\" for outcome in outcomes):\n            return \"not_met\"\n        return \"cant_tell\"\n    if any(outcome == \"meets\" for outcome in outcomes):\n        return \"met\"\n    if any(outcome == \"unknown\" for outcome in outcomes):\n        return \"cant_tell\"\n    return \"not_met\"\n\n\ndef _region_outcome(region, wanted):\n    if any(r in wanted for r in _containing(region)):\n        return \"meets\"\n    if any(region in _containing(w)[1:] for w in wanted):\n        return \"unknown\"  # a rule value lies strictly inside this region\n    return \"fails\"\n\n\ndef _contains(rule, value, evidence):\n    patterns = [(k, p) for k, p in ((k, _keyword_pattern(k)) for k in rule[\"keywords\"]) if p]\n    texts = [(e[\"path\"], e[\"value\"]) for e in evidence if isinstance(e.get(\"value\"), str)]\n    if rule[\"field\"] == \"title\":\n        texts = [t for t in texts if t[1] == value][:1] or [(\"title\", value)]\n    matches = []\n    for path, text in texts:\n        for keyword, pattern in patterns:\n            for match in pattern.finditer(text):\n                matches.append({\"path\": path, \"span\": [match.start(), match.end()],\n                                \"raw\": match.group(0), \"value\": keyword})\n    return (\"met\", matches) if matches else (\"not_met\", evidence)\n\n\ndef _compare(test, amount, number):\n    return number >= amount if test == \"at_least\" else number <= amount\n\n\ndef evaluate_rule(posting, rule, as_of):\n    field, test, action = rule[\"field\"], rule[\"test\"], rule[\"action\"]\n    value, evidence = _tested(posting, field)\n\n    def verdict(result, rested_on=None):\n        return {\"rule_id\": rule[\"id\"], \"result\": result, \"field\": field, \"value\": value,\n                \"evidence\": evidence if rested_on is None else rested_on}\n\n    if value is None:\n        return verdict(\"cant_tell\")\n\n    if test == \"contains\":\n        result, rested_on = _contains(rule, value, evidence)\n        return verdict(result, rested_on)\n\n    if test == \"one_of\":\n        wanted = [_norm(v) for v in rule[\"values\"]]\n        if field in _SINGLE_VALUED:\n            return verdict(\"met\" if _norm(value) in wanted else \"not_met\")\n        if field == \"department_team\":\n            return verdict(\"met\" if any(_norm(v) in wanted for v in value) else \"not_met\")\n        if field == \"regions\":\n            outcomes = [_region_outcome(region, wanted) for region in value]\n        elif field in _ALTERNATIVES:\n            outcomes = [\"meets\" if _norm(v) in wanted else \"fails\" for v in value]\n        else:\n            raise ValueError(f\"one_of does not apply to {field!r}\")\n        return verdict(_over_alternatives(outcomes, action))\n\n    if test in (\"at_least\", \"at_most\"):\n        amount = rule[\"amount\"]\n        if field == \"years_of_experience\":\n            return verdict(\"met\" if _compare(test, amount, value) else \"not_met\")\n        if field == \"salary\":\n            currency, period = value.get(\"currency\"), value.get(\"pay_period\")\n            if currency is None or period is None:\n                return verdict(\"cant_tell\")\n            if _norm(currency) != _norm(rule[\"currency\"]) or _norm(period) != _norm(rule[\"pay_period\"]):\n                return verdict(\"cant_tell\")\n            # Every amount from minimum to maximum is an alternative; the endpoints decide.\n            outcomes = [\"meets\" if _compare(test, amount, v) else \"fails\"\n                        for v in (value[\"minimum\"], value[\"maximum\"])]\n            return verdict(_over_alternatives(outcomes, action))\n        raise ValueError(f\"{test} does not apply to {field!r}\")\n\n    if test == \"within_days\":\n        earliest = datetime.date.fromisoformat(as_of) - datetime.timedelta(days=rule[\"days\"])\n        return verdict(\"met\" if datetime.date.fromisoformat(value) >= earliest else \"not_met\")\n\n    raise ValueError(f\"unknown test {test!r}\")\n",
+          "result": {
+            "determinism": "deterministic",
+            "decisions": [],
+            "verdict": "pass",
+            "failures": []
+          }
+        }
+      ],
+      "result": {
+        "verdict": "pass",
+        "failures": []
+      }
+    },
+    {
+      "name": "place_postings",
+      "id": "n3",
+      "contract": {
+        "behavior": "Given postings, rules, every posting's verdicts and the user's marks: each posting yields exactly one assessment record, in shown or in hidden. Its reasons are 'hidden_by_you' when it is marked hidden, and, only when it is not marked saved, for each rule in order: 'failed' when a require rule is not_met or an exclude rule is met, 'couldnt_check' when a require or exclude rule whose unknowns is 'hide' is cant_tell. A posting with any reason is hidden, carrying all of them in that order; any other is shown. prefer_met counts the prefer rules that are met; a prefer rule never hides. Shown is ordered by prefer_met, most first, then by posted_date (first_seen when posted_date is null), newest first, then by source_id and posting_id; hidden by source_id then posting_id.",
+        "inputs": [
+          {
+            "name": "postings",
+            "type": "a list of stored-posting entries",
+            "description": "The shared memory of every posting ever fetched; nothing is removed from it. Each entry is {source_id, posting_id, first_seen, listing, payload, fields}: source_id the id of the source definition it was fetched from; posting_id the board's posting ID as a string; first_seen the date it was first stored, 'YYYY-MM-DD'; listing {status, since}, status 'listed' or 'no_longer_listed', since the date it was first missed when no longer listed and otherwise null; payload the board's raw posting object from the most recent successful fetch that listed it; fields a map from each declared field name (title, link, company, location, department_team, full_text, countries, regions, work_arrangement, employment_type, seniority, salary, years_of_experience, posted_date) to a field record. Declared fields and their value spaces: title and link (the posting's page address), each a string as stated; company, a string from the source definition (evidence path 'source.company'); location, department_team and full_text, each a list of strings as stated, in board order, one per piece of text read, with one evidence entry per piece (department_team's values describe the posting together, not as alternatives); countries, a sorted list of distinct ISO 3166-1 alpha-2 codes, stated or clearly derivable; regions, a sorted list of distinct regions, each stated or implied by a listed country (a country implies its most specific regions; a region never implies a country); work_arrangement, one of 'remote', 'hybrid', 'onsite'; employment_type, one of 'full-time', 'part-time', 'contract', 'temporary', 'internship'; seniority, a sorted list of distinct levels named by title words, from 'intern', 'junior', 'senior', 'staff', 'principal', 'lead', 'manager', 'director', 'executive' (no seniority word means unknown, not mid-level); salary, {minimum, maximum, currency, pay_period}, numbers with minimum <= maximum, currency an ISO 4217 code or null, pay_period one of 'hour', 'day', 'week', 'month', 'year' or null; years_of_experience, a non-negative integer, the lowest number of years the posting states as a requirement; posted_date, 'YYYY-MM-DD', null meaning undated. A list-valued field is never an empty list: with nothing recognisable it is null. Regions: africa, americas, apac, asia, emea, europe, latin_america, middle_east, north_america, oceania; americas contains north_america and latin_america, emea contains europe, middle_east and africa, apac contains asia and oceania. A field record is {value, evidence}: value is a value from the field's declared value space, or null for unknown; evidence lists the entries the value was derived from, including board values that could not be mapped (value null). An evidence entry is {path, span, raw, value}: path locates what was read; span is [start, end) character offsets into the text at that path as converted to plain text, or null when the whole value at the path was used; raw is the board's value at the path, or the matched text when span is given; value is what the entry contributes to the field, a value from the field's declared value space, or null when the board's value could not be mapped into it. A path is a dotted sequence of keys into JSON; a key followed by [] steps into every element of the list there (e.g. 'departments[].name', 'categories.allLocations[]'). In evidence, a path names the one element read, by index (e.g. 'departments.0.name'); a path beginning 'source.' names a value in the source definition rather than the payload."
+          },
+          {
+            "name": "rules",
+            "type": "a list of rules with distinct ids, possibly empty",
+            "description": "The user's editable statement of what they want to see, refined between runs. A rule is {id, field, test, action, unknowns} plus the test's parameters. Tests: 'contains' with keywords (a non-empty list of words or phrases), on field 'title' or 'full_text'; 'one_of' with values (a non-empty list from the field's value space), on 'company', 'department_team', 'countries', 'regions', 'work_arrangement', 'employment_type', 'seniority' or 'listing_status' (values 'listed', 'no_longer_listed'); 'at_least' or 'at_most' with amount (a number), on 'years_of_experience', or on 'salary' with currency (ISO 4217) and pay_period as well; 'within_days' with days (a non-negative integer), on 'posted_date' or 'first_seen'. action is 'require', 'exclude' or 'prefer'. unknowns is 'show' or 'hide' and applies to require and exclude rules only, defaulting to 'show'."
+          },
+          {
+            "name": "verdicts",
+            "type": "a list of per-posting verdict lists",
+            "description": "One item per posting, in the order of the postings: {source_id, posting_id, verdicts}, verdicts one per rule in rule order. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence."
+          },
+          {
+            "name": "marks",
+            "type": "a list of per-posting mark records",
+            "description": "For each posting the user has marked: {source_id, posting_id, marks}, at most one item per posting, marks a non-empty list from 'viewed', 'saved', 'applied', 'hidden' ('hidden' meaning hidden by you). Belongs to this user alone."
+          }
+        ],
+        "outputs": [
+          {
+            "name": "shown",
+            "type": "an ordered list of assessment records",
+            "description": "One record per shown posting, ordered by prefer_met (most first), then posted_date, or first_seen when posted_date is null (newest first), then source_id and posting_id. An assessment record is {source_id, posting_id, fields, first_seen, listing, verdicts, prefer_met, marks, flags}: fields, first_seen and listing as stored; verdicts one per rule in rule order; prefer_met the number of prefer rules whose verdict is met; marks the user's marks for the posting in the order viewed, saved, applied, hidden (empty when unmarked); flags {new, no_longer_listed, no_posting_date}: new when not marked viewed, no_longer_listed when the listing status is no_longer_listed, no_posting_date when posted_date is null. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence."
+          },
+          {
+            "name": "hidden",
+            "type": "an ordered list of assessment records with reasons",
+            "description": "One record per hidden posting, ordered by source_id then posting_id. An assessment record is {source_id, posting_id, fields, first_seen, listing, verdicts, prefer_met, marks, flags}: fields, first_seen and listing as stored; verdicts one per rule in rule order; prefer_met the number of prefer rules whose verdict is met; marks the user's marks for the posting in the order viewed, saved, applied, hidden (empty when unmarked); flags {new, no_longer_listed, no_posting_date}: new when not marked viewed, no_longer_listed when the listing status is no_longer_listed, no_posting_date when posted_date is null. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence. A hidden record also carries reasons, a non-empty list: {kind: 'hidden_by_you'} first when marked hidden, then, in rule order, {kind: 'failed', rule_id} or {kind: 'couldnt_check', rule_id}."
+          }
+        ]
+      },
+      "code": "_MARK_ORDER = (\"viewed\", \"saved\", \"applied\", \"hidden\")\n\n\ndef place_postings(postings, rules, verdicts, marks):\n    marks_by_key = {(item[\"source_id\"], item[\"posting_id\"]): set(item[\"marks\"]) for item in marks}\n    verdicts_by_key = {(item[\"source_id\"], item[\"posting_id\"]): item[\"verdicts\"] for item in verdicts}\n    shown, hidden = [], []\n\n    for entry in postings:\n        key = (entry[\"source_id\"], entry[\"posting_id\"])\n        its_marks = [mark for mark in _MARK_ORDER if mark in marks_by_key.get(key, set())]\n        its_verdicts = verdicts_by_key.get(key, [])\n        by_rule = {verdict[\"rule_id\"]: verdict for verdict in its_verdicts}\n\n        reasons = []\n        if \"hidden\" in its_marks:\n            reasons.append({\"kind\": \"hidden_by_you\"})\n        if \"saved\" not in its_marks:\n            for rule in rules:\n                verdict = by_rule.get(rule[\"id\"])\n                if verdict is None or rule[\"action\"] == \"prefer\":\n                    continue\n                result = verdict[\"result\"]\n                if (rule[\"action\"] == \"require\" and result == \"not_met\") or (\n                    rule[\"action\"] == \"exclude\" and result == \"met\"\n                ):\n                    reasons.append({\"kind\": \"failed\", \"rule_id\": rule[\"id\"]})\n                elif result == \"cant_tell\" and rule.get(\"unknowns\", \"show\") == \"hide\":\n                    reasons.append({\"kind\": \"couldnt_check\", \"rule_id\": rule[\"id\"]})\n\n        prefer_met = sum(\n            1 for rule in rules\n            if rule[\"action\"] == \"prefer\" and by_rule.get(rule[\"id\"], {}).get(\"result\") == \"met\"\n        )\n        posted = ((entry.get(\"fields\") or {}).get(\"posted_date\") or {}).get(\"value\")\n        record = {\n            \"source_id\": entry[\"source_id\"],\n            \"posting_id\": entry[\"posting_id\"],\n            \"fields\": entry[\"fields\"],\n            \"first_seen\": entry[\"first_seen\"],\n            \"listing\": entry[\"listing\"],\n            \"verdicts\": [by_rule[rule[\"id\"]] for rule in rules if rule[\"id\"] in by_rule],\n            \"prefer_met\": prefer_met,\n            \"marks\": its_marks,\n            \"flags\": {\n                \"new\": \"viewed\" not in its_marks,\n                \"no_longer_listed\": entry[\"listing\"][\"status\"] == \"no_longer_listed\",\n                \"no_posting_date\": posted is None,\n            },\n        }\n        if reasons:\n            hidden.append({**record, \"reasons\": reasons})\n        else:\n            shown.append(record)\n\n    def ordering_date(record):\n        posted = ((record[\"fields\"] or {}).get(\"posted_date\") or {}).get(\"value\")\n        return posted if posted is not None else record[\"first_seen\"]\n\n    # Stable sorts, least significant key first.\n    shown.sort(key=lambda r: (r[\"source_id\"], r[\"posting_id\"]))\n    shown.sort(key=ordering_date, reverse=True)\n    shown.sort(key=lambda r: r[\"prefer_met\"], reverse=True)\n    hidden.sort(key=lambda r: (r[\"source_id\"], r[\"posting_id\"]))\n    return {\"shown\": shown, \"hidden\": hidden}\n",
+      "result": {
+        "determinism": "deterministic",
+        "decisions": [],
+        "verdict": "pass",
+        "failures": []
+      }
+    },
+    {
+      "name": "diagnose_rules",
+      "id": "n4",
+      "contract": {
+        "behavior": "Given the rules, every watched posting's verdicts and the hidden records: returns one record per rule in rule order, counting that rule's met, not_met and cant_tell verdicts over all the postings, the hidden records whose reasons name the rule (hid) and how many of those name it as couldnt_check (hid_couldnt_check), and listing every posting whose verdict for the rule was cant_tell.",
+        "inputs": [
+          {
+            "name": "rules",
+            "type": "a list of rules with distinct ids, possibly empty",
+            "description": "The user's editable statement of what they want to see, refined between runs. A rule is {id, field, test, action, unknowns} plus the test's parameters. Tests: 'contains' with keywords (a non-empty list of words or phrases), on field 'title' or 'full_text'; 'one_of' with values (a non-empty list from the field's value space), on 'company', 'department_team', 'countries', 'regions', 'work_arrangement', 'employment_type', 'seniority' or 'listing_status' (values 'listed', 'no_longer_listed'); 'at_least' or 'at_most' with amount (a number), on 'years_of_experience', or on 'salary' with currency (ISO 4217) and pay_period as well; 'within_days' with days (a non-negative integer), on 'posted_date' or 'first_seen'. action is 'require', 'exclude' or 'prefer'. unknowns is 'show' or 'hide' and applies to require and exclude rules only, defaulting to 'show'."
+          },
+          {
+            "name": "verdicts",
+            "type": "a list of per-posting verdict lists",
+            "description": "One item per posting, in the order of the postings: {source_id, posting_id, verdicts}, verdicts one per rule in rule order. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence."
+          },
+          {
+            "name": "hidden",
+            "type": "an ordered list of assessment records with reasons",
+            "description": "One record per hidden posting, ordered by source_id then posting_id. An assessment record is {source_id, posting_id, fields, first_seen, listing, verdicts, prefer_met, marks, flags}: fields, first_seen and listing as stored; verdicts one per rule in rule order; prefer_met the number of prefer rules whose verdict is met; marks the user's marks for the posting in the order viewed, saved, applied, hidden (empty when unmarked); flags {new, no_longer_listed, no_posting_date}: new when not marked viewed, no_longer_listed when the listing status is no_longer_listed, no_posting_date when posted_date is null. A verdict is {rule_id, result, field, value, evidence}: result 'met', 'not_met' or 'cant_tell'; field the rule's field; value the posting's value for that field (null when unknown); evidence the entries the result rests on: for a contains test that is met, one entry per match {path: the piece's path, span, raw: the matched text, value: the keyword}; for first_seen and listing_status, one entry with path 'entry.first_seen' or 'entry.listing'; otherwise the tested field record's evidence. A hidden record also carries reasons, a non-empty list: {kind: 'hidden_by_you'} first when marked hidden, then, in rule order, {kind: 'failed', rule_id} or {kind: 'couldnt_check', rule_id}."
+          }
+        ],
+        "outputs": [
+          {
+            "name": "rule_diagnostics",
+            "type": "a list of per-rule records",
+            "description": "One record per rule, in rule order: {rule_id, met, not_met, cant_tell, hid, hid_couldnt_check, could_not_check}: counts of each verdict over the watched postings; hid, the number of hidden postings the rule is a reason for, and hid_couldnt_check, how many of those for couldnt_check; could_not_check, the {source_id, posting_id} of every posting whose verdict was cant_tell, ordered by source_id then posting_id. The material the user refines their rules with."
+          }
+        ]
+      },
+      "code": "def diagnose_rules(rules, verdicts, hidden):\n    rule_diagnostics = []\n    for rule in rules:\n        rule_id = rule[\"id\"]\n        counts = {\"met\": 0, \"not_met\": 0, \"cant_tell\": 0}\n        could_not_check = []\n        for item in verdicts:\n            for verdict in item[\"verdicts\"]:\n                if verdict[\"rule_id\"] != rule_id:\n                    continue\n                counts[verdict[\"result\"]] += 1\n                if verdict[\"result\"] == \"cant_tell\":\n                    could_not_check.append({\"source_id\": item[\"source_id\"], \"posting_id\": item[\"posting_id\"]})\n\n        hid = hid_couldnt_check = 0\n        for record in hidden:\n            kinds = {reason[\"kind\"] for reason in record[\"reasons\"] if reason.get(\"rule_id\") == rule_id}\n            if kinds:\n                hid += 1\n                if \"couldnt_check\" in kinds:\n                    hid_couldnt_check += 1\n\n        could_not_check.sort(key=lambda key: (key[\"source_id\"], key[\"posting_id\"]))\n        rule_diagnostics.append({\n            \"rule_id\": rule_id,\n            **counts,\n            \"hid\": hid,\n            \"hid_couldnt_check\": hid_couldnt_check,\n            \"could_not_check\": could_not_check,\n        })\n    return rule_diagnostics\n",
+      "result": {
+        "determinism": "deterministic",
+        "decisions": [],
+        "verdict": "pass",
+        "failures": []
+      }
+    }
+  ],
+  "result": {
+    "verdict": "pass",
+    "failures": [],
+    "run": {
+      "program": "job_triage_assess.py",
+      "ran": "yes: two demo users over the 338-posting store from refresh run 3, exit 0, under 0.1 seconds each; identical output on rerun",
+      "inputs": "live/users.json (demo rules and marks chosen to exercise every test, action and mark; not the author's)",
+      "decision_observations": "none: no leaf calls decide()",
+      "users": {
+        "demo-a": {
+          "watched_postings": 338,
+          "shown": 66,
+          "hidden": 272,
+          "hidden_reasons": [
+            [
+              "failed",
+              "a-title",
+              196
+            ],
+            [
+              "failed",
+              "a-region",
+              160
+            ],
+            [
+              "failed",
+              "a-gone",
+              8
+            ],
+            [
+              "failed",
+              "a-years",
+              8
+            ],
+            [
+              "couldnt_check",
+              "a-region",
+              1
+            ],
+            [
+              "hidden_by_you",
+              null,
+              1
+            ]
+          ],
+          "root_clauses_checked": {
+            "every watched posting exactly once, no other": true,
+            "one verdict per rule, in rule order": true,
+            "can't tell exactly when the tested value is unknown (non-salary)": true,
+            "shown ordered by prefer_met, then date newest first, then key": true,
+            "hidden ordered by key": true,
+            "hidden by you exactly when marked hidden": true,
+            "saved postings carry no rule reasons": true,
+            "flags match marks, listing and date": true,
+            "diagnostics count every watched posting per rule": true
+          }
+        },
+        "demo-b": {
+          "watched_postings": 113,
+          "shown": 13,
+          "hidden": 100,
+          "hidden_reasons": [
+            [
+              "failed",
+              "b-title",
+              95
+            ],
+            [
+              "failed",
+              "b-europe",
+              58
+            ],
+            [
+              "failed",
+              "b-onsite",
+              13
+            ],
+            [
+              "failed",
+              "b-contract",
+              2
+            ]
+          ],
+          "root_clauses_checked": {
+            "every watched posting exactly once, no other": true,
+            "one verdict per rule, in rule order": true,
+            "can't tell exactly when the tested value is unknown (non-salary)": true,
+            "shown ordered by prefer_met, then date newest first, then key": true,
+            "hidden ordered by key": true,
+            "hidden by you exactly when marked hidden": true,
+            "saved postings carry no rule reasons": true,
+            "flags match marks, listing and date": true,
+            "diagnostics count every watched posting per rule": true
+          }
+        }
+      },
+      "assessment (judgment)": "The outputs satisfy the root behavior on every clause checked mechanically (placement exactly once, verdict order, can't tell exactly when unknown, ordering, hidden-by-you, saved overriding rules, flags, diagnostics), and the two users see different lists from one store."
+    }
+  }
+}

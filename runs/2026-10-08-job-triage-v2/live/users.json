@@ -1,0 +1,185 @@
+{
+ "demo-a": {
+  "about": "Demo user: senior software engineer, North America, prefers remote and pay of at least $150k.",
+  "watched_sources": [
+   "greenhouse:gitlab",
+   "lever:spotify",
+   "ashby:linear"
+  ],
+  "rules": [
+   {
+    "id": "a-title",
+    "field": "title",
+    "test": "contains",
+    "keywords": [
+     "engineer*",
+     "developer*"
+    ],
+    "action": "require",
+    "unknowns": "show"
+   },
+   {
+    "id": "a-region",
+    "field": "regions",
+    "test": "one_of",
+    "values": [
+     "north_america"
+    ],
+    "action": "require",
+    "unknowns": "hide"
+   },
+   {
+    "id": "a-remote",
+    "field": "work_arrangement",
+    "test": "one_of",
+    "values": [
+     "remote"
+    ],
+    "action": "prefer",
+    "unknowns": "show"
+   },
+   {
+    "id": "a-junior",
+    "field": "seniority",
+    "test": "one_of",
+    "values": [
+     "intern",
+     "junior"
+    ],
+    "action": "exclude",
+    "unknowns": "show"
+   },
+   {
+    "id": "a-pay",
+    "field": "salary",
+    "test": "at_least",
+    "amount": 150000,
+    "currency": "USD",
+    "pay_period": "year",
+    "action": "prefer",
+    "unknowns": "show"
+   },
+   {
+    "id": "a-years",
+    "field": "years_of_experience",
+    "test": "at_least",
+    "amount": 10,
+    "action": "exclude",
+    "unknowns": "show"
+   },
+   {
+    "id": "a-fresh",
+    "field": "posted_date",
+    "test": "within_days",
+    "days": 45,
+    "action": "prefer",
+    "unknowns": "show"
+   },
+   {
+    "id": "a-gone",
+    "field": "listing_status",
+    "test": "one_of",
+    "values": [
+     "no_longer_listed"
+    ],
+    "action": "exclude",
+    "unknowns": "show"
+   }
+  ],
+  "marks": [
+   {
+    "source_id": "ashby:linear",
+    "posting_id": "86abcce0-04b2-405c-9a8e-e0ca84813914",
+    "marks": [
+     "viewed",
+     "saved"
+    ]
+   },
+   {
+    "source_id": "lever:spotify",
+    "posting_id": "186b763a-2a61-4563-8813-ff6b40c9c8a7",
+    "marks": [
+     "hidden"
+    ]
+   },
+   {
+    "source_id": "greenhouse:gitlab",
+    "posting_id": "8490477002",
+    "marks": [
+     "viewed"
+    ]
+   },
+   {
+    "source_id": "ashby:linear",
+    "posting_id": "069c4628-88d7-4e4d-b393-c996fc7f3076",
+    "marks": [
+     "viewed"
+    ]
+   }
+  ]
+ },
+ "demo-b": {
+  "about": "Demo user: product or design roles in Europe, at Spotify or Linear; no contract or on-site roles.",
+  "watched_sources": [
+   "lever:spotify",
+   "ashby:linear"
+  ],
+  "rules": [
+   {
+    "id": "b-title",
+    "field": "title",
+    "test": "contains",
+    "keywords": [
+     "product manager",
+     "product designer",
+     "designer",
+     "design engineer"
+    ],
+    "action": "require",
+    "unknowns": "show"
+   },
+   {
+    "id": "b-europe",
+    "field": "regions",
+    "test": "one_of",
+    "values": [
+     "europe"
+    ],
+    "action": "require",
+    "unknowns": "show"
+   },
+   {
+    "id": "b-contract",
+    "field": "employment_type",
+    "test": "one_of",
+    "values": [
+     "contract",
+     "temporary"
+    ],
+    "action": "exclude",
+    "unknowns": "show"
+   },
+   {
+    "id": "b-onsite",
+    "field": "work_arrangement",
+    "test": "one_of",
+    "values": [
+     "onsite"
+    ],
+    "action": "exclude",
+    "unknowns": "show"
+   },
+   {
+    "id": "b-spotify",
+    "field": "company",
+    "test": "one_of",
+    "values": [
+     "Spotify"
+    ],
+    "action": "prefer",
+    "unknowns": "show"
+   }
+  ],
+  "marks": []
+ }
+}

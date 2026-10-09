@@ -1,0 +1,107 @@
+{
+ "refresh-1": {
+  "about": "empty store; three live boards and one board that does not exist",
+  "stored_after": 330,
+  "source_report": [
+   {
+    "source_id": "greenhouse:gitlab",
+    "status": "ok",
+    "listed": 220,
+    "new": 220,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "lever:spotify",
+    "status": "ok",
+    "listed": 79,
+    "new": 79,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "ashby:linear",
+    "status": "ok",
+    "listed": 31,
+    "new": 31,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "greenhouse:no-such-board",
+    "status": "failed",
+    "reason": "HTTP 404"
+   }
+  ]
+ },
+ "refresh-2": {
+  "about": "the store from run 1, refreshed again",
+  "stored_after": 330,
+  "source_report": [
+   {
+    "source_id": "greenhouse:gitlab",
+    "status": "ok",
+    "listed": 220,
+    "new": 0,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "lever:spotify",
+    "status": "ok",
+    "listed": 79,
+    "new": 0,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "ashby:linear",
+    "status": "ok",
+    "listed": 31,
+    "new": 0,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "greenhouse:no-such-board",
+    "status": "failed",
+    "reason": "HTTP 404"
+   }
+  ]
+ },
+ "refresh-3": {
+  "about": "a store seeded from the 45 postings saved on 2026-09-21, refreshed live",
+  "stored_after": 338,
+  "source_report": [
+   {
+    "source_id": "greenhouse:gitlab",
+    "status": "ok",
+    "listed": 220,
+    "new": 210,
+    "no_longer_listed": 5,
+    "listed_again": 0
+   },
+   {
+    "source_id": "lever:spotify",
+    "status": "ok",
+    "listed": 79,
+    "new": 67,
+    "no_longer_listed": 3,
+    "listed_again": 0
+   },
+   {
+    "source_id": "ashby:linear",
+    "status": "ok",
+    "listed": 31,
+    "new": 16,
+    "no_longer_listed": 0,
+    "listed_again": 0
+   },
+   {
+    "source_id": "greenhouse:no-such-board",
+    "status": "failed",
+    "reason": "HTTP 404"
+   }
+  ]
+ }
+}

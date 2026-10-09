@@ -48,8 +48,27 @@ def name_of(tree_name, node_id):
     return next(name for name, n in units(tree_name) if n["id"] == node_id)
 
 
+# When set, leaves are taken from the assembled programs (job_triage_<tree>.py) instead of the tree, so
+# the same checks run against the code as composition nested it.
+ARTIFACT = bool(os.environ.get("VERIFY_ARTIFACT"))
+_PROGRAMS = {}
+
+
+def _program(tree_name):
+    if tree_name not in _PROGRAMS:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(f"program_{tree_name}", os.path.join(RUN, f"job_triage_{tree_name}.py"))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _PROGRAMS[tree_name] = module
+    return _PROGRAMS[tree_name]
+
+
 def load_leaf(tree_name, node_id):
-    """The leaf's entry point, executed from the code stored on the tree (not the leaves/ copies)."""
+    """The leaf's entry point, executed from the code stored on the tree (not the leaves/ copies), or,
+    with VERIFY_ARTIFACT set, the node's function in the assembled program."""
+    if ARTIFACT:
+        return getattr(_program(tree_name), f"{name_of(tree_name, node_id)}__{node_id}"), {}
     leaf = node(tree_name, node_id)
     namespace = {"__name__": f"leaf_{tree_name}_{node_id}"}
     exec(compile(leaf["code"], f"<{tree_name}:{node_id}>", "exec"), namespace)

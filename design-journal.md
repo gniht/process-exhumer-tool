@@ -135,9 +135,39 @@ Decomposition could write leaf contracts that way from the start whenever a leaf
 
 The author took every recommended fix: contract wording in seven units (the refresh root among them), and five re-codified leaves. **Re-verified: 201 checks, 0 failures, 19 of 19 units pass, still zero decision points.** On the 45 fixture postings the fixed leaves give identical output to the old ones; the defects lived only in edge cases, which only hand-built inputs reached.
 
+## 2026-10-08 — Job-triage v2, Stage 5
+
+**Two standalone programs, `job_triage_refresh.py` and `job_triage_assess.py`: no model, no decision points, an empty residue.** Live on three boards, refresh stored 330 postings in about 3 seconds. A misconfigured fourth board failed alone. A store seeded from postings saved on 2026-09-21 found 8 real takedowns. Every one of 330 × 14 stored fields is in its declared space. Two demo users saw different lists from one store, and all nine assess clauses checked hold. Run 2's program made 46 model calls on its live run; this one makes none.
+
+Assembly found two defects that sit between stages:
+- **"Verbatim, indented one level" changes multi-line strings.** It corrupted n8's country table in the first build. The output looked plausible; a whole-output shape check caught it. The assembler now indents string-aware and confirms each nested unit is AST-identical to the verified one.
+- **Three stages had three entry-point rules.** That produced a reject at n5.
+
+Stage 4's leaf checks now also run against the assembled program, so an assembly that changes a leaf fails a check rather than a user.
+
 ## Next
 
-**First, the job-triage program made usable**: revise run 2's root contract (its three defects, the user's show/hide rules, no decision the user must answer on every run) and re-run stages 2–5 under the decision seam, with a way to use it day to day (a local web page is the current direction). **Then run 3, on a different task**, to exercise the 2026-09-25 and 2026-10-04 revisions on something whose defects aren't already known. Still queued:
+**Where things stand (2026-10-08).** Job-triage v2 (`runs/2026-10-08-job-triage-v2/`) has been through all five stages. The two programs, `job_triage_refresh.py` and `job_triage_assess.py`, ran live and are recorded in `stage-5-composition.md`. To pick it up:
+
+- **Rerun the live runs:** from the run directory, `python3 live/run_live.py`. It needs network access to the boards and rebuilds the git-ignored stores and outputs.
+- **Re-check everything:** `python3 verify/run_all.py` for stage 4, and `VERIFY_ARTIFACT=1 python3 verify/artifact_checks.py` for the leaf checks against the assembled programs.
+- **Change a contract:** edit `tools/build_trees.py`, then run `python3 tools/build_trees.py && python3 tools/codify_trees.py`, then `python3 verify/run_all.py`, then `python3 compose.py`. Leaf code lives in `leaves/`.
+- **Change what is fetched:** edit `live/sources.json` (data, no rebuild needed).
+
+**Next, in order:**
+1. **The author's two open questions** from `stage-5-composition.md`:
+   - map Lever's "Permanent" to full-time?
+   - pay floors beyond USD?
+2. **The host**, built outside the pipeline. It calls the two programs:
+   - a small local server and page, local storage only;
+   - basic authentication;
+   - users switchable for a demo;
+   - every rule option the data supports, with can't-tell per rule, shown by default;
+   - restore defaults behind a confirmation popup.
+3. **A run with the author's own rules.** The demo users' rules in `live/users.json` are not theirs.
+4. **Run 3, on a different task**, to exercise the revisions on something whose defects aren't already known.
+
+Still queued:
 
 - The subagent-isolation experiment: decompose run 2's root contract in an isolated context and diff the trees.
 - The deferred interrogator refinements: entry-boundary input concreteness, a derivability check, and an AI-user front door.
@@ -148,3 +178,5 @@ The author took every recommended fix: contract wording in seven units (the refr
   - for leaves whose behavior is a lookup, decomposition writes "the leaf's table decides" into the contract.
   - a clause-carry check in decomposition: every clause of a parent's behavior must follow from its children's contracts;
   - codification's faked-determinism test also looks for exclusion clauses in open language.
+  - composition's prompt: indent code lines only, never a string's continuation lines; confirm AST identity per node; re-run leaf checks on the artifact; a whole-output shape check on every live run;
+  - one entry-point rule shared by codification, verification and composition.

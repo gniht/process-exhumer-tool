@@ -1,0 +1,855 @@
+{
+ "source_report": [
+  {
+   "source_id": "greenhouse:gitlab",
+   "status": "ok",
+   "listed": 220,
+   "new": 220,
+   "no_longer_listed": 0,
+   "listed_again": 0
+  },
+  {
+   "source_id": "lever:spotify",
+   "status": "ok",
+   "listed": 79,
+   "new": 79,
+   "no_longer_listed": 0,
+   "listed_again": 0
+  },
+  {
+   "source_id": "ashby:linear",
+   "status": "ok",
+   "listed": 31,
+   "new": 31,
+   "no_longer_listed": 0,
+   "listed_again": 0
+  },
+  {
+   "source_id": "greenhouse:no-such-board",
+   "status": "failed",
+   "reason": "HTTP 404"
+  }
+ ],
+ "postings": 330,
+ "shape_problems": [],
+ "shape_problem_count": 0,
+ "unknown_rate": {
+  "ashby:linear": {
+   "title": "0/31",
+   "link": "0/31",
+   "company": "0/31",
+   "location": "0/31",
+   "department_team": "0/31",
+   "full_text": "0/31",
+   "countries": "8/31",
+   "regions": "0/31",
+   "work_arrangement": "0/31",
+   "employment_type": "0/31",
+   "seniority": "17/31",
+   "salary": "31/31",
+   "years_of_experience": "8/31",
+   "posted_date": "0/31"
+  },
+  "greenhouse:gitlab": {
+   "title": "0/220",
+   "link": "0/220",
+   "company": "0/220",
+   "location": "0/220",
+   "department_team": "0/220",
+   "full_text": "0/220",
+   "countries": "5/220",
+   "regions": "1/220",
+   "work_arrangement": "24/220",
+   "employment_type": "218/220",
+   "seniority": "70/220",
+   "salary": "116/220",
+   "years_of_experience": "193/220",
+   "posted_date": "0/220"
+  },
+  "lever:spotify": {
+   "title": "0/79",
+   "link": "0/79",
+   "company": "0/79",
+   "location": "0/79",
+   "department_team": "0/79",
+   "full_text": "0/79",
+   "countries": "0/79",
+   "regions": "0/79",
+   "work_arrangement": "0/79",
+   "employment_type": "77/79",
+   "seniority": "22/79",
+   "salary": "59/79",
+   "years_of_experience": "35/79",
+   "posted_date": "0/79"
+  }
+ },
+ "distributions": {
+  "ashby:linear": {
+   "work_arrangement": [
+    [
+     "\"remote\"",
+     28
+    ],
+    [
+     "\"hybrid\"",
+     3
+    ]
+   ],
+   "employment_type": [
+    [
+     "\"full-time\"",
+     31
+    ]
+   ],
+   "seniority": [
+    [
+     "null",
+     17
+    ],
+    [
+     "[\"manager\"]",
+     7
+    ],
+    [
+     "[\"senior\", \"staff\"]",
+     6
+    ],
+    [
+     "[\"principal\"]",
+     1
+    ]
+   ],
+   "regions": [
+    [
+     "[\"north_america\"]",
+     16
+    ],
+    [
+     "[\"europe\"]",
+     10
+    ],
+    [
+     "[\"europe\", \"north_america\"]",
+     3
+    ],
+    [
+     "[\"asia\"]",
+     2
+    ]
+   ]
+  },
+  "greenhouse:gitlab": {
+   "work_arrangement": [
+    [
+     "\"remote\"",
+     196
+    ],
+    [
+     "null",
+     24
+    ]
+   ],
+   "employment_type": [
+    [
+     "null",
+     218
+    ],
+    [
+     "\"contract\"",
+     2
+    ]
+   ],
+   "seniority": [
+    [
+     "null",
+     70
+    ],
+    [
+     "[\"senior\"]",
+     50
+    ],
+    [
+     "[\"manager\"]",
+     30
+    ],
+    [
+     "[\"staff\"]",
+     21
+    ],
+    [
+     "[\"manager\", \"senior\"]",
+     16
+    ],
+    [
+     "[\"director\"]",
+     13
+    ],
+    [
+     "[\"manager\", \"staff\"]",
+     5
+    ],
+    [
+     "[\"manager\", \"principal\"]",
+     5
+    ],
+    [
+     "[\"lead\"]",
+     4
+    ],
+    [
+     "[\"principal\"]",
+     3
+    ],
+    [
+     "[\"senior\", \"staff\"]",
+     2
+    ],
+    [
+     "[\"director\", \"senior\"]",
+     1
+    ]
+   ],
+   "regions": [
+    [
+     "[\"north_america\"]",
+     102
+    ],
+    [
+     "[\"europe\"]",
+     44
+    ],
+    [
+     "[\"asia\"]",
+     36
+    ],
+    [
+     "[\"europe\", \"north_america\"]",
+     11
+    ],
+    [
+     "[\"emea\", \"europe\"]",
+     7
+    ],
+    [
+     "[\"europe\", \"middle_east\", \"north_america\"]",
+     5
+    ],
+    [
+     "[\"europe\", \"middle_east\"]",
+     3
+    ],
+    [
+     "[\"oceania\"]",
+     3
+    ],
+    [
+     "[\"asia\", \"europe\", \"latin_america\", \"north_america\", \"oceania\"]",
+     2
+    ],
+    [
+     "[\"asia\", \"middle_east\", \"north_america\", \"oceania\"]",
+     1
+    ],
+    [
+     "[\"emea\", \"north_america\"]",
+     1
+    ],
+    [
+     "[\"latin_america\", \"north_america\"]",
+     1
+    ]
+   ]
+  },
+  "lever:spotify": {
+   "work_arrangement": [
+    [
+     "\"hybrid\"",
+     39
+    ],
+    [
+     "\"remote\"",
+     29
+    ],
+    [
+     "\"onsite\"",
+     11
+    ]
+   ],
+   "employment_type": [
+    [
+     "null",
+     77
+    ],
+    [
+     "\"contract\"",
+     2
+    ]
+   ],
+   "seniority": [
+    [
+     "null",
+     22
+    ],
+    [
+     "[\"senior\"]",
+     19
+    ],
+    [
+     "[\"manager\"]",
+     18
+    ],
+    [
+     "[\"manager\", \"senior\"]",
+     8
+    ],
+    [
+     "[\"manager\", \"principal\"]",
+     3
+    ],
+    [
+     "[\"staff\"]",
+     3
+    ],
+    [
+     "[\"senior\", \"staff\"]",
+     3
+    ],
+    [
+     "[\"director\"]",
+     2
+    ],
+    [
+     "[\"lead\"]",
+     1
+    ]
+   ],
+   "regions": [
+    [
+     "[\"europe\"]",
+     40
+    ],
+    [
+     "[\"north_america\"]",
+     30
+    ],
+    [
+     "[\"asia\"]",
+     7
+    ],
+    [
+     "[\"europe\", \"middle_east\"]",
+     1
+    ],
+    [
+     "[\"middle_east\"]",
+     1
+    ]
+   ]
+  }
+ },
+ "salary": {
+  "ashby:linear": {
+   "postings_with_statements": 0,
+   "value_known": 0,
+   "period_known": 0,
+   "currency_null": 0,
+   "disagreeing": [],
+   "examples": []
+  },
+  "greenhouse:gitlab": {
+   "postings_with_statements": 104,
+   "value_known": 104,
+   "period_known": 100,
+   "currency_null": 0,
+   "disagreeing": [],
+   "examples": [
+    [
+     "Manager, Solutions Architects - San Francisco",
+     {
+      "minimum": 154200,
+      "maximum": 231300,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$154,200\u2014$231,300 USD"
+     ]
+    ],
+    [
+     "Staff Backend Engineer, Developer Experience",
+     {
+      "minimum": 131600,
+      "maximum": 282000,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$131,600\u2014$282,000 USD"
+     ]
+    ],
+    [
+     "Senior Product Manager, Tenant Scale",
+     {
+      "minimum": 139200,
+      "maximum": 235200,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$139,200\u2014$235,200 USD"
+     ]
+    ],
+    [
+     "Staff Forward Deployed Engineer",
+     {
+      "minimum": 220000,
+      "maximum": 270000,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$220,000\u2014$270,000 USD"
+     ]
+    ]
+   ]
+  },
+  "lever:spotify": {
+   "postings_with_statements": 20,
+   "value_known": 20,
+   "period_known": 20,
+   "currency_null": 0,
+   "disagreeing": [],
+   "examples": [
+    [
+     "Research Scientist - Generative Audio",
+     {
+      "minimum": 133194,
+      "maximum": 190278,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$133,194 - $190,278"
+     ]
+    ],
+    [
+     "Data Scientist - Music Mission",
+     {
+      "minimum": 116994,
+      "maximum": 167135,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$116,994 - $167,135 USD"
+     ]
+    ],
+    [
+     "Associate \u2013 Audiobook Licensing & Author Partnerships",
+     {
+      "minimum": 74000,
+      "maximum": 106000,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$74,000 \u2013 $106,000 USD"
+     ]
+    ],
+    [
+     "Senior Staff Machine Learning Engineer - Content Platform",
+     {
+      "minimum": 281196,
+      "maximum": 401709,
+      "currency": "USD",
+      "pay_period": "year"
+     },
+     [
+      "$281,196 - $401,709"
+     ]
+    ]
+   ]
+  }
+ },
+ "geography_misses": [
+  [
+   "greenhouse:gitlab",
+   "Remote",
+   1
+  ]
+ ],
+ "country_matches_from_text": [
+  [
+   "Canada",
+   "CA",
+   94
+  ],
+  [
+   "United States",
+   "US",
+   93
+  ],
+  [
+   "United Kingdom",
+   "GB",
+   71
+  ],
+  [
+   "United States of America",
+   "US",
+   54
+  ],
+  [
+   "India",
+   "IN",
+   50
+  ],
+  [
+   "New York",
+   "US",
+   27
+  ],
+  [
+   "NY",
+   "US",
+   27
+  ],
+  [
+   "Germany",
+   "DE",
+   26
+  ],
+  [
+   "Ireland",
+   "IE",
+   14
+  ],
+  [
+   "US",
+   "US",
+   13
+  ],
+  [
+   "France",
+   "FR",
+   13
+  ],
+  [
+   "Poland",
+   "PL",
+   13
+  ],
+  [
+   "Singapore",
+   "SG",
+   11
+  ],
+  [
+   "Netherlands",
+   "NL",
+   11
+  ],
+  [
+   "Israel",
+   "IL",
+   10
+  ],
+  [
+   "Japan",
+   "JP",
+   8
+  ],
+  [
+   "Australia",
+   "AU",
+   7
+  ],
+  [
+   "Spain",
+   "ES",
+   7
+  ],
+  [
+   "Mexico",
+   "MX",
+   3
+  ],
+  [
+   "Turkey",
+   "TR",
+   2
+  ],
+  [
+   "Austria",
+   "AT",
+   2
+  ],
+  [
+   "South Korea",
+   "KR",
+   2
+  ],
+  [
+   "Switzerland",
+   "CH",
+   2
+  ],
+  [
+   "Sweden",
+   "SE",
+   2
+  ],
+  [
+   "Taiwan",
+   "TW",
+   2
+  ],
+  [
+   "Brazil",
+   "BR",
+   1
+  ],
+  [
+   "KSA",
+   "SA",
+   1
+  ],
+  [
+   "UAE",
+   "AE",
+   1
+  ]
+ ],
+ "seniority_null_titles": {
+  "ashby:linear": [
+   "Product Engineer",
+   "Deal Desk",
+   "Developer Relations",
+   "Production Designer",
+   "Developer Relations",
+   "Account Executive, Enterprise",
+   "Product Support Specialist, Europe",
+   "Production Designer",
+   "Account Executive, Startups",
+   "Account Executive, Growth",
+   "Product Support Specialist, Pacific/Mountain Time",
+   "Solutions Engineer, Europe",
+   "Design Engineer (Web & Brand)",
+   "Mobile Product Designer",
+   "Design Engineer (Web & Brand)",
+   "Analytics Engineer",
+   "Technical Recruiter"
+  ],
+  "greenhouse:gitlab": [
+   "Forward Deployed Engineer, AI and Agentic SDLC",
+   "Forward Deployed Engineer - EMEA",
+   "Sales Development Representative",
+   "Business Development Representative",
+   "Business Development Representative",
+   "Commercial Account Executive, Named - West",
+   "Strategic Account Executive, AI - San Francisco",
+   "Strategic Account Executive - Turkey",
+   "Backend Engineer (Ruby), AI Engineering: Agent Foundations",
+   "Customer Success Engineer, LATAM (Spanish, Portugese)",
+   "Strategic Account Executive - MENA",
+   "AI Transformation Owner, CRO",
+   "Tech Operations Specialist",
+   "Enterprise Account Executive - Singapore",
+   "Customer Success Architect, CEUR",
+   "Public Sector Strategic Account Executive, SLED - Mountain Plains",
+   "Support Engineer (AMER)",
+   "Public Sector Strategic Account Executive - Canada",
+   "Strategic Account Executive, Poland",
+   "Intermediate Support Engineer (SHIFT)",
+   "Intermediate Support Engineer",
+   "Backend Engineer, Create: Source Code Experience (Ruby)",
+   "Intermediate Software Engineer, Security Factory: Vulnerability Management",
+   "Strategic Account Executive - San Francisco",
+   "Backend Engineer, AI Engineering: Duo Chat"
+  ],
+  "lever:spotify": [
+   "Research Scientist - Generative Audio",
+   "Backend Engineer II - Data Platform",
+   "Data Scientist - Music Mission",
+   "Android Engineer - Experience",
+   "Client Partner - Emerging & Scaled (German Speaking)",
+   "Performance Marketing Activation Specialist",
+   "C++ Engineer - Experience",
+   "Client Partner - Emerging & Scaled, Independent Agency (UK)",
+   "Associate \u2013 Audiobook Licensing & Author Partnerships",
+   "Data Scientist - Music Promotion",
+   "Fraud Analyst (Revenue Protection) - 12-Month Fixed-Term",
+   "Research Scientist - Personalization",
+   "Backend Engineer - Platform Security",
+   "Research Scientist - Generative Audio",
+   "Data Scientist, Company Planning & Execution",
+   "Legal Counsel, Litigation and Copyright",
+   "Backend Engineer - Data Platform",
+   "Research Scientist - Personalization",
+   "Security Engineer - Detection and Response",
+   "Tax Analyst",
+   "Artist & Label Partnerships Contractor, Vietnam",
+   "Head of Product Management - Artist Products"
+  ]
+ },
+ "seniority_matches": [
+  [
+   [
+    "senior",
+    "senior"
+   ],
+   105
+  ],
+  [
+   [
+    "manager",
+    "manager"
+   ],
+   92
+  ],
+  [
+   [
+    "staff",
+    "staff"
+   ],
+   40
+  ],
+  [
+   [
+    "director",
+    "director"
+   ],
+   16
+  ],
+  [
+   [
+    "principal",
+    "principal"
+   ],
+   12
+  ],
+  [
+   [
+    "lead",
+    "lead"
+   ],
+   5
+  ]
+ ],
+ "employment_from_title": [
+  [
+   "Candidate Experience Specialist, Contractor",
+   "contract"
+  ],
+  [
+   "Candidate Experience Specialist, Contractor",
+   "contract"
+  ],
+  [
+   "Artist & Label Partnerships Contractor, Vietnam",
+   "contract"
+  ]
+ ],
+ "years_examples": [
+  [
+   "5+ years",
+   31
+  ],
+  [
+   "3+ years",
+   10
+  ],
+  [
+   "10+ years",
+   10
+  ],
+  [
+   "8+ years",
+   9
+  ],
+  [
+   "7+ years",
+   7
+  ],
+  [
+   "4+ years",
+   7
+  ],
+  [
+   "2+ years",
+   6
+  ],
+  [
+   "6+ years",
+   5
+  ],
+  [
+   "a minimum of 5+ years",
+   3
+  ],
+  [
+   "3-5 years",
+   2
+  ],
+  [
+   "2-5 years",
+   1
+  ],
+  [
+   "3 years of experience",
+   1
+  ],
+  [
+   "at least 3 years",
+   1
+  ],
+  [
+   "15+ years",
+   1
+  ],
+  [
+   "at least 2+ years",
+   1
+  ],
+  [
+   "8-12 years",
+   1
+  ],
+  [
+   "at least 5 years",
+   1
+  ],
+  [
+   "7-10 years",
+   1
+  ],
+  [
+   "1\u20132 years",
+   1
+  ],
+  [
+   "at least 2 years",
+   1
+  ],
+  [
+   "5+ Years",
+   1
+  ],
+  [
+   "at least 7+ years",
+   1
+  ],
+  [
+   "2 years of relevant tax related work experience",
+   1
+  ],
+  [
+   "at least 3+ years",
+   1
+  ],
+  [
+   "At least 8+ years",
+   1
+  ]
+ ]
+}

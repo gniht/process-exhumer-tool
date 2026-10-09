@@ -217,3 +217,19 @@ identical outputs on all 45 fixture postings. The failures were real but confine
 fixtures don't contain, which is why hand-built cases found them.
 
 The watch list for composition is unchanged.
+
+## Re-verified at stage 5
+
+- **The surface check now applies composition's entry-point rule.** Exactly one function, of
+  any name, may take the contract's inputs. Applied to the stage 4 code, it fails n5, whose
+  private `_fetch(source)` composition rejected. After n5's re-codification: 201 checks,
+  0 failures.
+- **The seam check follows the request target through a helper.** It now checks that every
+  call fills the helper's parameter with `source['endpoint']`, rather than looking for that
+  text inside the helper.
+- **The leaf checks run against the assembled programs.** `VERIFY_ARTIFACT=1 python3
+  verify/artifact_checks.py` runs them on the code as composition nested it: 126 of 127 pass.
+  The shortened-timeout check needs a module constant and runs only on the tree's code. This
+  is what catches an assembly that changes a leaf, as the first build did to n8 (see
+  `stage-5-composition.md`).
+

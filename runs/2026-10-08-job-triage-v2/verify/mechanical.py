@@ -48,10 +48,15 @@ def leaf_checks(tree_name):
         public = [n for n in module.body if isinstance(n, ast.FunctionDef) and not n.name.startswith("_")]
         params = [a.arg for a in public[0].args.args] if len(public) == 1 else None
         extras = public[0].args.vararg or public[0].args.kwarg or public[0].args.kwonlyargs if public else None
+        # composition identifies the entry point as the one function of any name taking the inputs
+        same_signature = [n.name for n in module.body if isinstance(n, ast.FunctionDef)
+                          and [a.arg for a in n.args.args] == inputs]
         check(tree_name, nid, "surface",
-              len(public) == 1 and public[0].name == name and params == inputs and not extras,
+              len(public) == 1 and public[0].name == name and params == inputs and not extras
+              and same_signature == [name],
               f"AST: public functions {[f.name for f in public]}; entry `{name}` params {params} vs contract "
-              f"inputs {inputs}; no *args/**kwargs/keyword-only: {not extras}")
+              f"inputs {inputs}; no *args/**kwargs/keyword-only: {not extras}; functions of any name taking "
+              f"exactly the inputs (composition's entry-point rule): {same_signature}")
 
         # closure: no effects beyond the declared ones, no state written outside the call
         imports = _imports(module)
@@ -92,11 +97,25 @@ def leaf_checks(tree_name):
                         and len(claims["decisions"]) == decide_sites))
         urls_from_input = True
         if declared_network:
-            # the only request target is the source definition's endpoint
-            requests = [n for n in ast.walk(module) if isinstance(n, ast.Call)
-                        and isinstance(n.func, ast.Attribute) and n.func.attr == "Request"]
-            urls_from_input = bool(requests) and all(
-                ast.unparse(r.args[0]) == "source['endpoint']" for r in requests)
+            # the only request target is the source definition's endpoint: either named directly, or a
+            # helper parameter that every call of the helper fills with it
+            urls_from_input = False
+            for fn in [n for n in module.body if isinstance(n, ast.FunctionDef)]:
+                for r in [n for n in ast.walk(fn) if isinstance(n, ast.Call)
+                          and isinstance(n.func, ast.Attribute) and n.func.attr == "Request"]:
+                    target = ast.unparse(r.args[0])
+                    if target == "source['endpoint']":
+                        urls_from_input = True
+                        continue
+                    params = [a.arg for a in fn.args.args]
+                    if target not in params:
+                        urls_from_input = False
+                        break
+                    k = params.index(target)
+                    callers = [c for c in ast.walk(module) if isinstance(c, ast.Call)
+                               and isinstance(c.func, ast.Name) and c.func.id == fn.name]
+                    urls_from_input = bool(callers) and all(
+                        len(c.args) > k and ast.unparse(c.args[k]) == "source['endpoint']" for c in callers)
         check(tree_name, nid, "seam", claim_ok and not model_calls and urls_from_input,
               f"AST: {decide_sites} decide() call site(s); model-call names {model_calls or 'none'}; claim "
               f"determinism={claims['determinism']}, decisions={len(claims['decisions'])}"

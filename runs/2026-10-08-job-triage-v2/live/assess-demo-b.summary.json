@@ -1,0 +1,262 @@
+{
+ "watched": [
+  "ashby:linear",
+  "lever:spotify"
+ ],
+ "watched_postings": 113,
+ "shown": 13,
+ "hidden": 100,
+ "root_clauses_checked": {
+  "every watched posting exactly once, no other": true,
+  "one verdict per rule, in rule order": true,
+  "can't tell exactly when the tested value is unknown (non-salary)": true,
+  "shown ordered by prefer_met, then date newest first, then key": true,
+  "hidden ordered by key": true,
+  "hidden by you exactly when marked hidden": true,
+  "saved postings carry no rule reasons": true,
+  "flags match marks, listing and date": true,
+  "diagnostics count every watched posting per rule": true
+ },
+ "hidden_reasons": [
+  [
+   "failed",
+   "b-title",
+   95
+  ],
+  [
+   "failed",
+   "b-europe",
+   58
+  ],
+  [
+   "failed",
+   "b-onsite",
+   13
+  ],
+  [
+   "failed",
+   "b-contract",
+   2
+  ]
+ ],
+ "rule_diagnostics": [
+  {
+   "rule_id": "b-title",
+   "met": 18,
+   "not_met": 95,
+   "cant_tell": 0,
+   "hid": 95,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  },
+  {
+   "rule_id": "b-europe",
+   "met": 55,
+   "not_met": 58,
+   "cant_tell": 0,
+   "hid": 58,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  },
+  {
+   "rule_id": "b-contract",
+   "met": 2,
+   "not_met": 31,
+   "cant_tell": 80,
+   "hid": 2,
+   "hid_couldnt_check": 0,
+   "could_not_check": 80
+  },
+  {
+   "rule_id": "b-onsite",
+   "met": 13,
+   "not_met": 100,
+   "cant_tell": 0,
+   "hid": 13,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  },
+  {
+   "rule_id": "b-spotify",
+   "met": 82,
+   "not_met": 31,
+   "cant_tell": 0,
+   "hid": 0,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  }
+ ],
+ "top_shown": [
+  {
+   "title": "Principal Product Manager - Format Foundations",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-10-05",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Senior Digital Learning Experience Designer, Learning & Inclusion",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-09-17",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Principal Product Manager - Audio and Media Playback",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-09-16",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Senior Product Manager - Subscriptions",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-09-08",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Principal Product Manager - Personalization",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-09-08",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Senior Product Manager - Audiobooks Format Foundations",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-09-04",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Product Manager - Customer Service Platform",
+   "company": "Spotify",
+   "prefer_met": 1,
+   "date": "2026-09-02",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Design Engineer (Web & Brand)",
+   "company": "Linear",
+   "prefer_met": 0,
+   "date": "2026-09-15",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Design Engineer (Web & Brand)",
+   "company": "Linear",
+   "prefer_met": 0,
+   "date": "2026-09-15",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe",
+    "north_america"
+   ]
+  },
+  {
+   "title": "Production Designer",
+   "company": "Linear",
+   "prefer_met": 0,
+   "date": "2026-08-06",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  },
+  {
+   "title": "Production Designer",
+   "company": "Linear",
+   "prefer_met": 0,
+   "date": "2026-08-06",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe",
+    "north_america"
+   ]
+  },
+  {
+   "title": "Principal Product Designer",
+   "company": "Linear",
+   "prefer_met": 0,
+   "date": "2026-04-29",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": null,
+   "regions": [
+    "europe"
+   ]
+  }
+ ],
+ "marked": []
+}

@@ -525,6 +525,171 @@
   ],
   "result": {
     "verdict": "pass",
-    "failures": []
+    "failures": [],
+    "run": {
+      "program": "job_triage_refresh.py",
+      "ran": "yes: three live refreshes on 2026-10-08, exit 0, about 3 seconds each, no model and no decision points",
+      "inputs": "live/sources.json (GitLab on Greenhouse, Spotify on Lever, Linear on Ashby, and one Greenhouse board that does not exist), pay floors {USD: 15080}",
+      "runs": {
+        "refresh-1": {
+          "about": "empty store; three live boards and one board that does not exist",
+          "stored_after": 330,
+          "source_report": [
+            {
+              "source_id": "greenhouse:gitlab",
+              "status": "ok",
+              "listed": 220,
+              "new": 220,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "lever:spotify",
+              "status": "ok",
+              "listed": 79,
+              "new": 79,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "ashby:linear",
+              "status": "ok",
+              "listed": 31,
+              "new": 31,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "greenhouse:no-such-board",
+              "status": "failed",
+              "reason": "HTTP 404"
+            }
+          ]
+        },
+        "refresh-2": {
+          "about": "the store from run 1, refreshed again",
+          "stored_after": 330,
+          "source_report": [
+            {
+              "source_id": "greenhouse:gitlab",
+              "status": "ok",
+              "listed": 220,
+              "new": 0,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "lever:spotify",
+              "status": "ok",
+              "listed": 79,
+              "new": 0,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "ashby:linear",
+              "status": "ok",
+              "listed": 31,
+              "new": 0,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "greenhouse:no-such-board",
+              "status": "failed",
+              "reason": "HTTP 404"
+            }
+          ]
+        },
+        "refresh-3": {
+          "about": "a store seeded from the 45 postings saved on 2026-09-21, refreshed live",
+          "stored_after": 338,
+          "source_report": [
+            {
+              "source_id": "greenhouse:gitlab",
+              "status": "ok",
+              "listed": 220,
+              "new": 210,
+              "no_longer_listed": 5,
+              "listed_again": 0
+            },
+            {
+              "source_id": "lever:spotify",
+              "status": "ok",
+              "listed": 79,
+              "new": 67,
+              "no_longer_listed": 3,
+              "listed_again": 0
+            },
+            {
+              "source_id": "ashby:linear",
+              "status": "ok",
+              "listed": 31,
+              "new": 16,
+              "no_longer_listed": 0,
+              "listed_again": 0
+            },
+            {
+              "source_id": "greenhouse:no-such-board",
+              "status": "failed",
+              "reason": "HTTP 404"
+            }
+          ]
+        }
+      },
+      "decision_observations": "none: no leaf calls decide()",
+      "shape_check": "330 stored postings x 14 fields checked against the declared value spaces and evidence shape: 0 problems",
+      "unknown_rate": {
+        "ashby:linear": {
+          "title": "0/31",
+          "link": "0/31",
+          "company": "0/31",
+          "location": "0/31",
+          "department_team": "0/31",
+          "full_text": "0/31",
+          "countries": "8/31",
+          "regions": "0/31",
+          "work_arrangement": "0/31",
+          "employment_type": "0/31",
+          "seniority": "17/31",
+          "salary": "31/31",
+          "years_of_experience": "8/31",
+          "posted_date": "0/31"
+        },
+        "greenhouse:gitlab": {
+          "title": "0/220",
+          "link": "0/220",
+          "company": "0/220",
+          "location": "0/220",
+          "department_team": "0/220",
+          "full_text": "0/220",
+          "countries": "5/220",
+          "regions": "1/220",
+          "work_arrangement": "24/220",
+          "employment_type": "218/220",
+          "seniority": "70/220",
+          "salary": "116/220",
+          "years_of_experience": "193/220",
+          "posted_date": "0/220"
+        },
+        "lever:spotify": {
+          "title": "0/79",
+          "link": "0/79",
+          "company": "0/79",
+          "location": "0/79",
+          "department_team": "0/79",
+          "full_text": "0/79",
+          "countries": "0/79",
+          "regions": "0/79",
+          "work_arrangement": "0/79",
+          "employment_type": "77/79",
+          "seniority": "22/79",
+          "salary": "59/79",
+          "years_of_experience": "35/79",
+          "posted_date": "0/79"
+        }
+      },
+      "assessment (judgment)": "The outputs satisfy the root behavior. Every listed posting is stored under its source and posting ID with every declared field in its value space or unknown, with evidence; the failing source failed alone with its reason; a second run added nothing and kept every first-seen date; a store seeded from postings saved 2026-09-21 marked the 8 that the boards no longer list, with today's date, and kept the 37 still listed."
+    }
   }
 }

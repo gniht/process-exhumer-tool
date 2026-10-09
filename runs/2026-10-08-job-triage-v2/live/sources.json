@@ -1,0 +1,213 @@
+[
+  {
+    "id": "greenhouse:gitlab",
+    "company": "GitLab",
+    "endpoint": "https://boards-api.greenhouse.io/v1/boards/gitlab/jobs?content=true",
+    "headers": {},
+    "list_path": "jobs",
+    "id_path": "id",
+    "date": {
+      "path": "first_published",
+      "format": "iso8601"
+    },
+    "fields": {
+      "title": [
+        {
+          "path": "title"
+        }
+      ],
+      "link": [
+        {
+          "path": "absolute_url"
+        }
+      ],
+      "location": [
+        {
+          "path": "location.name"
+        },
+        {
+          "path": "offices[].name"
+        }
+      ],
+      "department_team": [
+        {
+          "path": "departments[].name"
+        }
+      ],
+      "full_text": [
+        {
+          "path": "content",
+          "format": "escaped_html"
+        }
+      ]
+    }
+  },
+  {
+    "id": "lever:spotify",
+    "company": "Spotify",
+    "endpoint": "https://api.lever.co/v0/postings/spotify?mode=json",
+    "headers": {},
+    "list_path": null,
+    "id_path": "id",
+    "date": {
+      "path": "createdAt",
+      "format": "epoch_millis"
+    },
+    "fields": {
+      "title": [
+        {
+          "path": "text"
+        }
+      ],
+      "link": [
+        {
+          "path": "hostedUrl"
+        }
+      ],
+      "location": [
+        {
+          "path": "categories.allLocations[]"
+        },
+        {
+          "path": "categories.location"
+        }
+      ],
+      "department_team": [
+        {
+          "path": "categories.department"
+        },
+        {
+          "path": "categories.team"
+        }
+      ],
+      "full_text": [
+        {
+          "path": "descriptionPlain"
+        },
+        {
+          "path": "lists[].text"
+        },
+        {
+          "path": "lists[].content",
+          "format": "html"
+        },
+        {
+          "path": "additionalPlain"
+        }
+      ],
+      "countries": [
+        {
+          "path": "country"
+        }
+      ],
+      "work_arrangement": [
+        {
+          "path": "workplaceType",
+          "values": {
+            "remote": "remote",
+            "hybrid": "hybrid",
+            "onsite": "onsite"
+          }
+        }
+      ],
+      "employment_type": [
+        {
+          "path": "categories.commitment",
+          "values": {
+            "Full Time Contractor": "contract",
+            "Full-time": "full-time",
+            "Part-time": "part-time",
+            "Intern": "internship",
+            "Internship": "internship",
+            "Contract": "contract",
+            "Temporary": "temporary"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "ashby:linear",
+    "company": "Linear",
+    "endpoint": "https://api.ashbyhq.com/posting-api/job-board/linear?includeCompensation=true",
+    "headers": {
+      "User-Agent": "job-triage/2 (personal job search)"
+    },
+    "list_path": "jobs",
+    "id_path": "id",
+    "date": {
+      "path": "publishedAt",
+      "format": "iso8601"
+    },
+    "fields": {
+      "title": [
+        {
+          "path": "title"
+        }
+      ],
+      "link": [
+        {
+          "path": "jobUrl"
+        }
+      ],
+      "location": [
+        {
+          "path": "location"
+        },
+        {
+          "path": "secondaryLocations[].location"
+        }
+      ],
+      "department_team": [
+        {
+          "path": "department"
+        },
+        {
+          "path": "team"
+        }
+      ],
+      "full_text": [
+        {
+          "path": "descriptionHtml",
+          "format": "html"
+        },
+        {
+          "path": "compensation.compensationTierSummary"
+        },
+        {
+          "path": "compensation.scrapeableCompensationSalarySummary"
+        }
+      ],
+      "countries": [
+        {
+          "path": "address.postalAddress.addressCountry"
+        },
+        {
+          "path": "secondaryLocations[].address.postalAddress.addressCountry"
+        }
+      ],
+      "work_arrangement": [
+        {
+          "path": "workplaceType",
+          "values": {
+            "Remote": "remote",
+            "Hybrid": "hybrid",
+            "OnSite": "onsite"
+          }
+        }
+      ],
+      "employment_type": [
+        {
+          "path": "employmentType",
+          "values": {
+            "FullTime": "full-time",
+            "PartTime": "part-time",
+            "Intern": "internship",
+            "Contract": "contract",
+            "Temporary": "temporary"
+          }
+        }
+      ]
+    }
+  }
+]

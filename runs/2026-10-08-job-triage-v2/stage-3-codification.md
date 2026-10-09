@@ -176,3 +176,9 @@ the changes reach edge cases only.
 Flatness: n7 and n8 now each carry the HTML converter, byte-identical, beside the six copies of
 the path reader.
 
+## Re-codified at stage 5 (composition's reject)
+
+**`fetch_source` (n5, 87 lines):** the private helper `_fetch(source)` took exactly the contract's
+input, so composition couldn't identify the entry point mechanically. It now takes
+`endpoint, headers`. Behavior is unchanged. See `stage-5-composition.md`.
+

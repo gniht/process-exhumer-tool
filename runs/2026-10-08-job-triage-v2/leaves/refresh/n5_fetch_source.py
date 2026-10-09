@@ -35,10 +35,8 @@ def _single(value, path):
     return reached[0][1] if len(reached) == 1 else None
 
 
-def _fetch(source):
-    request = urllib.request.Request(
-        source["endpoint"], headers=dict(source.get("headers") or {}), method="GET"
-    )
+def _fetch(endpoint, headers):
+    request = urllib.request.Request(endpoint, headers=dict(headers or {}), method="GET")
     opener = urllib.request.build_opener()
     opener.addheaders = []  # send the definition's headers, not urllib's default User-Agent
     try:
@@ -64,7 +62,7 @@ def fetch_source(source):
         return {"source_id": source_id, "status": "failed", "reason": reason}
 
     try:
-        reason, data = _fetch(source)
+        reason, data = _fetch(source["endpoint"], source.get("headers"))
         if reason is not None:
             return failed(reason)
         list_path = source.get("list_path")

@@ -1,0 +1,6 @@
+store-*.json
+refresh-*.input.json
+refresh-*.output.json
+assess-*.input.json
+assess-*.output.json
+*.stderr

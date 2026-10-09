@@ -1,0 +1,407 @@
+{
+ "watched": [
+  "ashby:linear",
+  "greenhouse:gitlab",
+  "lever:spotify"
+ ],
+ "watched_postings": 338,
+ "shown": 66,
+ "hidden": 272,
+ "root_clauses_checked": {
+  "every watched posting exactly once, no other": true,
+  "one verdict per rule, in rule order": true,
+  "can't tell exactly when the tested value is unknown (non-salary)": true,
+  "shown ordered by prefer_met, then date newest first, then key": true,
+  "hidden ordered by key": true,
+  "hidden by you exactly when marked hidden": true,
+  "saved postings carry no rule reasons": true,
+  "flags match marks, listing and date": true,
+  "diagnostics count every watched posting per rule": true
+ },
+ "hidden_reasons": [
+  [
+   "failed",
+   "a-title",
+   196
+  ],
+  [
+   "failed",
+   "a-region",
+   160
+  ],
+  [
+   "failed",
+   "a-gone",
+   8
+  ],
+  [
+   "failed",
+   "a-years",
+   8
+  ],
+  [
+   "couldnt_check",
+   "a-region",
+   1
+  ],
+  [
+   "hidden_by_you",
+   null,
+   1
+  ]
+ ],
+ "rule_diagnostics": [
+  {
+   "rule_id": "a-title",
+   "met": 141,
+   "not_met": 197,
+   "cant_tell": 0,
+   "hid": 196,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  },
+  {
+   "rule_id": "a-region",
+   "met": 176,
+   "not_met": 161,
+   "cant_tell": 1,
+   "hid": 161,
+   "hid_couldnt_check": 1,
+   "could_not_check": 1
+  },
+  {
+   "rule_id": "a-remote",
+   "met": 259,
+   "not_met": 55,
+   "cant_tell": 24,
+   "hid": 0,
+   "hid_couldnt_check": 0,
+   "could_not_check": 24
+  },
+  {
+   "rule_id": "a-junior",
+   "met": 0,
+   "not_met": 224,
+   "cant_tell": 114,
+   "hid": 0,
+   "hid_couldnt_check": 0,
+   "could_not_check": 114
+  },
+  {
+   "rule_id": "a-pay",
+   "met": 105,
+   "not_met": 17,
+   "cant_tell": 216,
+   "hid": 0,
+   "hid_couldnt_check": 0,
+   "could_not_check": 216
+  },
+  {
+   "rule_id": "a-years",
+   "met": 8,
+   "not_met": 88,
+   "cant_tell": 242,
+   "hid": 8,
+   "hid_couldnt_check": 0,
+   "could_not_check": 242
+  },
+  {
+   "rule_id": "a-fresh",
+   "met": 195,
+   "not_met": 143,
+   "cant_tell": 0,
+   "hid": 0,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  },
+  {
+   "rule_id": "a-gone",
+   "met": 8,
+   "not_met": 330,
+   "cant_tell": 0,
+   "hid": 8,
+   "hid_couldnt_check": 0,
+   "could_not_check": 0
+  }
+ ],
+ "top_shown": [
+  {
+   "title": "Manager, Support Engineering (AMER)",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-10-08",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 115200,
+    "maximum": 194400,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Senior Professional Services Engineer - PubSec - US Only",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-10-07",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 136080,
+    "maximum": 230040,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Senior CX Platform Engineer",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-10-07",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 139200,
+    "maximum": 235200,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Engineering Manager, Dedicated Infrastructure",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-10-05",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 152800,
+    "maximum": 259200,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Support Engineer, U.S. Government Support",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-10-05",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 95200,
+    "maximum": 160800,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Staff Fullstack Engineer, Data Products (Golang / Node)",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-10-02",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 152800,
+    "maximum": 259200,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Senior Security Risk Engineer",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-09-29",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 139200,
+    "maximum": 189000,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Director of Engineering, Database Excellence",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-09-29",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 230400,
+    "maximum": 345600,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Distinguished Engineer, Core DevOps",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-09-25",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 250000,
+    "maximum": 349000,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "europe",
+    "north_america"
+   ]
+  },
+  {
+   "title": "Security Engineer - Detection and Response",
+   "company": "Spotify",
+   "prefer_met": 3,
+   "date": "2026-09-24",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 132948,
+    "maximum": 189927,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  },
+  {
+   "title": "Principal Site Reliability Engineer, Platform Engineering: Dedicated",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-09-23",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 223200,
+    "maximum": 380400,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "europe",
+    "north_america"
+   ]
+  },
+  {
+   "title": "Senior Developer Advocate",
+   "company": "GitLab",
+   "prefer_met": 3,
+   "date": "2026-09-23",
+   "marks": [],
+   "flags": [
+    "new"
+   ],
+   "salary": {
+    "minimum": 115200,
+    "maximum": 194400,
+    "currency": "USD",
+    "pay_period": "year"
+   },
+   "regions": [
+    "north_america"
+   ]
+  }
+ ],
+ "marked": [
+  {
+   "title": "Staff Backend Engineer, Developer Experience",
+   "where": "shown",
+   "marks": [
+    "viewed"
+   ],
+   "reasons": null
+  },
+  {
+   "title": "Product Manager",
+   "where": "shown",
+   "marks": [
+    "viewed",
+    "saved"
+   ],
+   "reasons": null
+  },
+  {
+   "title": "Senior / Staff Product Engineer",
+   "where": "hidden",
+   "marks": [
+    "viewed"
+   ],
+   "reasons": [
+    {
+     "kind": "failed",
+     "rule_id": "a-region"
+    }
+   ]
+  },
+  {
+   "title": "Backend Engineer II - Data Platform",
+   "where": "hidden",
+   "marks": [
+    "hidden"
+   ],
+   "reasons": [
+    {
+     "kind": "hidden_by_you"
+    },
+    {
+     "kind": "failed",
+     "rule_id": "a-region"
+    }
+   ]
+  }
+ ]
+}

@@ -1,0 +1,59 @@
+{
+ "countries lever:spotify: structured field vs location text": {
+  "agree": 30,
+  "text names none": 49,
+  "disagree": 0,
+  "examples": []
+ },
+ "countries ashby:linear: structured field vs location text": {
+  "agree": 2,
+  "text names none": 29,
+  "disagree": 0,
+  "examples": []
+ },
+ "work_arrangement lever:spotify: structured vs location words": [
+  [
+   "('hybrid', None)",
+   39
+  ],
+  [
+   "('remote', None)",
+   29
+  ],
+  [
+   "('onsite', None)",
+   11
+  ]
+ ],
+ "work_arrangement ashby:linear: structured vs location words": [
+  [
+   "('remote', None)",
+   28
+  ],
+  [
+   "('hybrid', None)",
+   3
+  ]
+ ],
+ "posted_date greenhouse: as written vs UTC": {
+  "differ": 19,
+  "of": 220,
+  "examples": [
+   [
+    "2026-08-05T21:17:30-04:00",
+    "2026-08-05",
+    "2026-08-06"
+   ],
+   [
+    "2026-07-10T22:45:49-04:00",
+    "2026-07-10",
+    "2026-07-11"
+   ],
+   [
+    "2026-07-28T23:23:43-04:00",
+    "2026-07-28",
+    "2026-07-29"
+   ]
+  ]
+ }
+}
