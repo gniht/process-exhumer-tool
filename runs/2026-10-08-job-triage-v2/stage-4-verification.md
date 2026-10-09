@@ -179,3 +179,41 @@ Nothing is deferred. These are the questions only live data answers:
 - **Salary collisions**: stipends and funding ranges both make the salary unknown.
 - **Table misses and wrong entries** (from stage 3).
 - **Redirects**: the transport follows them, so a board that moves still fetches.
+
+---
+
+## Fix pass: every failure resolved, 2026-10-08
+
+The author's decision: "yes, apply all the recommended fixes and re-verify". Every fix was the
+recommended one, and none adds a decision point.
+
+**Re-verified: 201 checks, 197 executed (98%), 4 static. 0 failures, 0 deferred. 19 of 19 units
+pass.** The claim audit is still clean: 13 of 13 leaves are deterministic with zero `decide()`.
+
+What changed:
+- **Contracts.** Behaviors changed in the refresh root, n3, n6, n8, n10, n13 and assess n2. No
+  glue changed, and `evaluate_rule`'s text is identical. Recorded in `stage-1-interrogation.md`
+  for the root and `stage-2-decomposition.md` for the rest.
+- **Code.** n7, n8, n10, n12 and n13 were re-codified, as recorded in `stage-3-codification.md`.
+
+**Checks were regenerated, not replayed.** Eight checks asserted on wording or behavior that the
+amended contracts changed, and each was rewritten against the new contract. Two more are new:
+- n8: "European Union" now gives europe, and "Worldwide" gives null.
+- n8: two- and three-letter names count only in capitals, longer names in any case.
+- n8, new: an html-format locator's spans index its converted text.
+- n10: exception phrases give nothing, and "Intern Coordinator" still gives internship, as the
+  narrowed contract says.
+- n12: side-by-side statements get month and year.
+- n12, new: a period does not reach a farther statement.
+- n13: the forms decide, so "at least 3 years" counts, but "in 2 years you will gain experience"
+  doesn't.
+- The three static node checks now test that n3, n6 and assess n2 state the carried clauses in
+  the root's words, and that n6's children deliver them.
+
+With the two new checks, the total went from 199 to 201.
+
+**On real input nothing moved.** For n7, n8, n10, n12 and n13, the old and new code give
+identical outputs on all 45 fixture postings. The failures were real but confined to inputs the
+fixtures don't contain, which is why hand-built cases found them.
+
+The watch list for composition is unchanged.

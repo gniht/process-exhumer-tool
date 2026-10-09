@@ -15,7 +15,7 @@ _REQUIREMENT = re.compile(
         rf"(?P<range>{_N})\s*{_DASH}\s*{_N}\s*\+?\s*{_YEARS}",
         rf"(?P<plus>{_N})\s*\+\s*{_YEARS}",
         rf"(?P<more>{_N})\s+or\s+more\s+{_YEARS}",
-        rf"(?P<of>{_N})\s+{_YEARS}\s+(?:of\s+)?(?:[\w-]+\s+){{0,4}}?experience\b",
+        rf"(?P<of>{_N})\s+{_YEARS}(?:['’]?\s+experience\b|\s+of\s+(?:[\w-]+\s+){{0,4}}?experience\b)",
     ]),
     re.IGNORECASE,
 )

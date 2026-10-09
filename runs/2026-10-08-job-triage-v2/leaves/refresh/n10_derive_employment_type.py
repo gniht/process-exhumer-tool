@@ -16,6 +16,15 @@ _TITLE_WORDS = [
     ("temporary", re.compile(r"[(\[]\s*temp\s*[)\]]", re.IGNORECASE)),
     ("full-time", re.compile(_EDGE_BEFORE + r"full[\s-]time" + _EDGE_AFTER, re.IGNORECASE)),
 ]
+# Phrases in which a listed word names the work rather than its terms. They are matched first and
+# consume their text, so the word inside them yields nothing.
+_NOT_TYPES = re.compile(
+    _EDGE_BEFORE
+    + r"(?:internships?\s+programs?|interns?\s+programs?|intern\s+recruit(?:er|ers|ing|ment)|"
+    r"full[\s-]time\s+equivalents?|temporary\s+(?:housing|accommodation|staffing|agency))"
+    + _EDGE_AFTER,
+    re.IGNORECASE,
+)
 
 
 def _read_path(value, path):
@@ -68,7 +77,7 @@ def derive_employment_type(payload, source, title):
     if not isinstance(text, str):
         return {"value": None, "evidence": evidence}
     path = next((e["path"] for e in title.get("evidence") or [] if e.get("value") == text), "title")
-    matches, taken = [], []
+    matches, taken = [], [match.span() for match in _NOT_TYPES.finditer(text)]
     for employment_type, pattern in _TITLE_WORDS:
         for match in pattern.finditer(text):
             span = match.span()

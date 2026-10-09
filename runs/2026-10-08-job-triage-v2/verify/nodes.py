@@ -139,17 +139,25 @@ def refresh_n6():
           "field's declared space or null, carrying the evidence it was derived from; the glue reads nothing "
           "but payload, source and pay_floors, so the result depends only on these inputs",
           unit="node", method="static")
-    geo = node("refresh", "n8")["contract"]["behavior"]
-    sen = node("refresh", "n11")["contract"]["behavior"]
-    admits = "even where the text means something else" in geo and "'Staff Pharmacist' gives 'staff'" in sen
-    check("refresh", "n6", "behavior", not admits,
-          "static, assume-guarantee: n6 promises 'a board's value being mapped into a value space only where "
-          "its meaning matches'. The values maps keep it (their author judges each board value). The narrowed "
-          "derive_geography and derive_seniority contracts, ratified at stage 3, do not: 'an entry counts "
-          "wherever it appears, even where the text means something else by it' and \"'Staff Pharmacist' "
-          f"gives 'staff'\" (both present: {admits}). So the clause cannot be derived from the children. The "
-          "stage 3 record said the narrowing left n6's contract holding; that missed this clause, which the "
-          "root states too", unit="node", method="static")
+    n6 = node("refresh", "n6")["contract"]["behavior"]
+    behaviors = {i: node("refresh", i)["contract"]["behavior"] for i in ("n8", "n9", "n10", "n11", "n12", "n13", "n14")}
+    tables_decide = {i: ("table decides" in behaviors[i] or "forms decide" in behaviors[i]) for i in ("n8", "n10", "n11", "n13")}
+    maps_only = all("values map" in behaviors[i] for i in ("n9", "n10"))
+    closed = ("the whole word 'remote' gives 'remote'" in behaviors["n9"]
+              and "a salary statement is a range of two figures" in behaviors["n12"])
+    dated = "parses in its format" in behaviors["n14"]
+    salary = ("a bare '$' is USD only when the countries value is exactly ['US']" in behaviors["n12"]
+              and "the lower figure is at least that entry" in behaviors["n12"])
+    states = "fixed tables of names, words and forms, which decide" in n6 and "a bare $ being read as USD" in n6
+    check("refresh", "n6", "behavior", states and all(tables_decide.values()) and maps_only and closed and dated and salary,
+          "static, assume-guarantee: n6 now promises board values are mapped only by the definition's value "
+          "maps and date format or by fixed tables of names, words and forms, which decide, and restates the "
+          f"salary rule (both stated: {states}). The children deliver it: board values go through values maps "
+          f"(work arrangement, employment type: {maps_only}) and the declared date format ({dated}); text is "
+          f"read by tables or forms that decide (geography, employment type, seniority, years: {tables_decide}) "
+          f"or by closed word lists and forms (work-arrangement words, salary statements: {closed}); the "
+          f"salary rule is derive_salary's, given the countries the glue passes it ({salary})",
+          unit="node", method="static")
 
 
 def refresh_n1():
@@ -217,21 +225,22 @@ def refresh_n1():
           f"{out['source_report']}", unit="node")
 
     # static, assume-guarantee, clause by clause: what the children's contracts carry to the root
-    n3 = node("refresh", "n3")["contract"]["behavior"] + " " + node("refresh", "n3")["contract"]["outputs"][0]["description"]
-    carried_salary = "bare $" in n3 or "bare '$'" in n3 or "pay-floor entry" in n3 or "lower figure" in n3
-    carried_mapping = "meaning matches" in n3
-    check("refresh", "n1", "behavior", carried_salary and carried_mapping,
+    root = node("refresh", "n1")["contract"]["behavior"]
+    n3 = node("refresh", "n3")["contract"]["behavior"]
+    mapping = ("only by the source definition's value maps and date format, or by the program's fixed tables "
+               "of names, words and forms, which decide: what they do not cover is unknown, and an entry counts "
+               "wherever it appears")
+    salary = ("a bare $ being read as USD only where the US is the posting's only country, and a pay period "
+              "the posting does not state being read as yearly only where the salary's currency has a "
+              "pay-floor entry and the lower figure is at least that floor, and otherwise unknown")
+    carried = {"mapping in root": mapping in root, "mapping in extract_fetched": mapping in n3,
+               "salary in root": salary in root, "salary in extract_fetched": salary in n3}
+    check("refresh", "n1", "behavior", all(carried.values()),
           "static, assume-guarantee over the children's contracts: the store, listing, failure, no-removal "
-          "and report clauses follow from fetch_sources, extract_fetched and merge_into_store, and every "
-          "value's space and evidence from the field-record shape extract_fetched promises. Two root "
-          "clauses are not carried: extract_fetched's contract promises 'the extraction of its payload under "
-          "its own source's definition and the pay-floor table' and the field shapes, but neither "
-          f"'a board's value being mapped into a value space only where its meaning matches' (present: "
-          f"{carried_mapping}) nor the salary clause (bare $ only for a US-only posting; an unstated period "
-          f"yearly only at or above the pay floor) (present: {carried_salary}). The leaves below do keep "
-          "both (derive_salary's contract states the salary rules; extract_posting's states the mapping "
-          "rule), but the contracts between them and the root drop them, so a different extract_fetched "
-          "satisfying its own contract could break the root", unit="node", method="static")
+          "and report clauses follow from fetch_sources, extract_fetched and merge_into_store; every value's "
+          "space and evidence from the field records extract_fetched promises; and the mapping and salary "
+          f"clauses are now stated by extract_fetched in the root's own words: {carried}",
+          unit="node", method="static")
 
 
 # ---------------------------------------------------------------- assess
@@ -304,23 +313,22 @@ def assess_n1():
           f"executed: all three outputs; every watched posting exactly once across shown and hidden: "
           f"{short(out, 200)}", unit="node")
 
-    n2 = node("assess", "n1")["children"][0]["contract"]
-    n2_text = n2["behavior"] + " " + n2["outputs"][0]["description"]
+    n2 = node("assess", "n2")["contract"]["behavior"]
+    n5 = node("assess", "n5")["contract"]["behavior"]
+    rules = n5[n5.index("The tested value is"):]
     clauses = {
-        "can't tell exactly when the field is unknown or not comparable": "cant_tell when" in n2_text or "unknown or not comparable" in n2_text,
-        "alternatives: any for require/prefer, every for exclude": "every value" in n2_text,
-        "keyword tests: case-insensitive whole words, trailing *": "whole word" in n2_text,
-        "within-days counts back from the current date": "counts back" in n2_text or "minus days" in n2_text,
+        "can't tell when unknown or not comparable": "The verdict is cant_tell when the value is null, or when a salary's currency or pay_period is null or differs" in n2,
+        "alternatives: any for require/prefer, every for exclude": "an exclude rule is met when every value meets it" in n2,
+        "keyword tests: case-insensitive whole words, trailing *": "as a whole word or whole phrase" in n2 and "ending in '*'" in n2,
+        "within-days counts back from the current date": "on or after the current date minus days" in n2,
+        "the whole of evaluate_rule's rules": rules in n2,
     }
     check("assess", "n1", "behavior", all(clauses.values()),
           "static, assume-guarantee over the children's contracts: watched filtering is the glue's own; "
           "exactly-once placement, reasons, ordering, flags and marks follow from place_postings; diagnostics "
           "from diagnose_rules over the watched postings' verdicts; same inputs, same outputs from the three "
-          "functions. The verdict clauses are not carried: evaluate_rules promises 'each the verdict of that "
-          "rule on that posting at the current date' and the verdict's shape, but none of the root's rules "
-          f"for what a verdict is: {clauses}. Only evaluate_rule's contract (below evaluate_rules) states "
-          "them, so a different evaluate_rules satisfying its own contract could break the root",
-          unit="node", method="static")
+          "functions; and evaluate_rules now states what each verdict is, in the same words as evaluate_rule: "
+          f"{clauses}", unit="node", method="static")
 
 
 def run():

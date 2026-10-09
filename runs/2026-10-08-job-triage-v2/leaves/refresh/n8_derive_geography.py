@@ -1,4 +1,6 @@
+import html
 import re
+from html.parser import HTMLParser
 
 # ISO 3166-1 alpha-2 codes and the names that denote each one alone. Names shared with a US state
 # ('Georgia') or with another country ('Congo', 'Korea', 'Virgin Islands') are deliberately absent.
@@ -372,6 +374,60 @@ def _scan(text):
     return sorted(found, key=lambda item: item[0])
 
 
+# Text conversion, the same as read_stated_text's, so that spans index a locator's value as converted
+# to plain text.
+_BLOCK_TAGS = {
+    "address", "article", "aside", "blockquote", "br", "dd", "div", "dl", "dt", "figcaption",
+    "figure", "footer", "form", "h1", "h2", "h3", "h4", "h5", "h6", "header", "hr", "li", "main",
+    "nav", "ol", "p", "pre", "section", "table", "tbody", "td", "tfoot", "th", "thead", "tr", "ul",
+}
+_SKIPPED_TAGS = {"script", "style"}
+
+
+class _HtmlText(HTMLParser):
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.parts = []
+        self.skipping = 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in _SKIPPED_TAGS:
+            self.skipping += 1
+        elif tag in _BLOCK_TAGS:
+            self.parts.append("\n")
+
+    def handle_startendtag(self, tag, attrs):
+        if tag in _BLOCK_TAGS:
+            self.parts.append("\n")
+
+    def handle_endtag(self, tag):
+        if tag in _SKIPPED_TAGS:
+            self.skipping = max(0, self.skipping - 1)
+        elif tag in _BLOCK_TAGS:
+            self.parts.append("\n")
+
+    def handle_data(self, data):
+        if not self.skipping:
+            self.parts.append(re.sub(r"\s+", " ", data))
+
+
+def _from_html(markup):
+    parser = _HtmlText()
+    parser.feed(markup)
+    parser.close()
+    # Text split across inline tags arrives in pieces, so whitespace runs are collapsed after joining.
+    lines = (re.sub(r"\s+", " ", line).strip() for line in "".join(parser.parts).split("\n"))
+    return "\n".join(line for line in lines if line)
+
+
+def _convert(text, text_format):
+    if text_format == "html":
+        return _from_html(text)
+    if text_format == "escaped_html":
+        return _from_html(html.unescape(text))
+    return re.sub(r"\s+", " ", text).strip()
+
+
 def _whole_value(text):
     """A countries-locator value read whole: an ISO code by declaration, or a name."""
     stripped = text.strip()
@@ -417,15 +473,17 @@ def derive_geography(payload, source, location):
                 region_evidence.append({"path": path, "span": span, "raw": raw, "value": region})
 
     for locator in (source.get("fields") or {}).get("countries") or []:
+        text_format = locator.get("format") or "plain"
         for path, raw in _read_path(payload, locator["path"]):
             if not isinstance(raw, str) or not raw.strip():
                 continue
-            whole = _whole_value(raw)
+            text = _convert(raw, text_format)
+            whole = _whole_value(text)
             if whole:
                 for kind, target in whole:
                     add(kind, target, path, None, raw)
                 continue
-            matches = _scan(raw)
+            matches = _scan(text)
             if not matches:
                 country_evidence.append({"path": path, "span": None, "raw": raw, "value": None})
             for (start, end), matched, kind, target in matches:

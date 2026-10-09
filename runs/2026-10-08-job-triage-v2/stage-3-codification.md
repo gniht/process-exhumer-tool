@@ -152,3 +152,27 @@ found inputs the word lists can't keep out. See `stage-4-verification.md`, failu
 Six leaves each carry their own copy of the path reader (`_read_path`), because none may
 reference another. Composition nests them verbatim. This time all six are byte-identical
 (checked by hash), unlike run 2's two walkers, but nothing enforces that.
+
+## Re-codified at stage 4 (author: "yes, apply all the recommended fixes and re-verify")
+
+Five leaves changed, all still deterministic with zero `decide()` calls:
+- **`read_stated_text` (n7, 114 lines):** whitespace runs are collapsed after the text pieces are
+  joined, so text split across inline tags gets one space.
+- **`derive_geography` (n8, 508 lines):** a countries-locator value is converted by its
+  locator's format before it is read, so spans index the converted text. The converter is copied
+  verbatim from n7.
+- **`derive_employment_type` (n10, 90 lines):** adds exception phrases in which a listed word
+  names the work, such as "Internship Program", "Intern Recruiter", "Full-Time Equivalent" and
+  "Temporary Housing".
+- **`derive_salary` (n12, 140 lines):** a pay period counts for the statement it is nearer,
+  within the 40-character window on the same line. Before, two statements side by side each saw
+  both periods. A range whose figures fail minimum ≤ maximum no longer competes for a period.
+- **`derive_years_of_experience` (n13, 41 lines):** the "N years … experience" form needs "of"
+  when words come between. It also accepts "N years experience" and "N years' experience".
+
+On the 45 fixture postings, the old and new code give identical outputs for all five leaves, so
+the changes reach edge cases only.
+
+Flatness: n7 and n8 now each carry the HTML converter, byte-identical, beside the six copies of
+the path reader.
+

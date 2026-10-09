@@ -69,7 +69,7 @@
   "category": "closure",
   "method": "executed",
   "outcome": "pass",
-  "detail": "AST: imports ['re'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+  "detail": "AST: imports ['html', 'html.parser', 're'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
  },
  {
   "tree": "refresh",
@@ -671,8 +671,8 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "html: whitespace split across inline tags: got ['Hello  world again'], expected ['Hello world again']; evidence paths ['d']"
+  "outcome": "pass",
+  "detail": "html: whitespace split across inline tags: got ['Hello world again'], expected ['Hello world again']; evidence paths ['d']"
  },
  {
   "tree": "refresh",
@@ -905,8 +905,8 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "the contract's own example: 'European Union' at a countries locator 'names neither one country nor a region' and is kept as evidence with value null. Got countries {\"value\": null, \"evidence\": []}, regions {\"value\": [\"europe\"], \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"European Union\", \"value\": \"europe\"}]}: the region table maps 'european union' to europe. Ashby states it on every EU posting."
+  "outcome": "pass",
+  "detail": "the amended example: 'European Union' at a countries locator names the region europe ({\"value\": [\"europe\"], \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"European Union\", \"value\": \"europe\"}]}), and 'Worldwide' names neither a country nor a region in the tables, kept with value null ({\"value\": null, \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"Worldwide\", \"value\": null}]})"
  },
  {
   "tree": "refresh",
@@ -914,8 +914,8 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "span offsets are into the text 'as converted to plain text': locator value '  Canada,  Mexico' converts to 'Canada, Mexico'; spans [[2, 8], [11, 17]] read back the raw value (True) but not the converted text (False). Only when a locator value has extra whitespace"
+  "outcome": "pass",
+  "detail": "span offsets are into the text 'as converted to plain text': locator value '  Canada,  Mexico' converts to 'Canada, Mexico'; spans [[0, 6], [8, 14]] read back the raw value (False) but not the converted text (True). Only when a locator value has extra whitespace"
  },
  {
   "tree": "refresh",
@@ -923,8 +923,17 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "reading 1: the contract reads location texts 'whole words, case-insensitive'. Upper-case 'US'/'UK'/'USA' -> [['US'], ['GB'], ['US']]; lower-case 'us'/'uk'/'usa' -> [None, None, None]. The leaf matches codes in capitals only, so it departs from the letter of the contract, deliberately ('join us', 'in', 'it', 'no' would otherwise read as the US, India, Italy, Norway)"
+  "outcome": "pass",
+  "detail": "a countries locator in html format is converted as the locator says before it is read, and spans index the converted text 'Remote in Canada & Mexico': {\"value\": [\"CA\", \"MX\"], \"evidence\": [{\"path\": \"c\", \"span\": [10, 16], \"raw\": \"Canada\", \"value\": \"CA\"}, {\"path\": \"c\", \"span\": [19, 25], \"raw\": \"Mexico\", \"value\": ..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "the amended case rule: two- and three-letter names count only in capitals ([['US'], ['GB'], ['US']]); in lower case they do not, so 'join us', 'it', 'no' are not countries ([['IT'], None, None, None]; 'Italy' is read as a name); longer names count in any case ([['US'], ['GB'], ['CA']])"
  },
  {
   "tree": "refresh",
@@ -1031,8 +1040,8 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "the contract: 'a word naming the subject of the work gives nothing'. Titles where a listed word names the work, not the terms: [('Internship Program Manager', 'internship'), ('Intern Recruiter', 'internship'), ('Temporary Housing Coordinator', 'temporary'), ('Full-Time Equivalent Planning Analyst', 'full-time')]. Only 'Contract' is guarded; the other words count wherever they appear"
+  "outcome": "pass",
+  "detail": "the narrowed contract: a match inside an exception phrase gives nothing ('Internship Program', 'Full-Time Equivalent' and the table's others); the table decides, so a listed word in a phrase its exceptions lack counts ('Intern Coordinator' gives 'internship', as the contract says): [('Internship Program Manager', None), ('Intern Recruiter', None), ('Temporary Housing Coordinator', None), ('Full-Time Equivalent Planning Analyst', None), ('Intern Coordinator', 'internship'), ('Interns', 'internship')]"
  },
  {
   "tree": "refresh",
@@ -1247,8 +1256,17 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "reading 5, two statements side by side: '$4,000 - $5,000 per month or $50,000 - $60,000 per year'. Beside the first figures is 'per month', beside the second 'per year', so they disagree and the contract gives null. The 40-character window reaches across: each statement sees both periods, so each gets pay_period null; the two then 'agree' and combine into {'minimum': 4000, 'maximum': 60000, 'currency': 'USD', 'pay_period': None} with statement periods [None, None]"
+  "outcome": "pass",
+  "detail": "reading 5, two statements side by side: '$4,000 - $5,000 per month or $50,000 - $60,000 per year'. A period within the window counts for the statement it is nearer, so the first is monthly and the second yearly (['month', 'year']); they disagree and the value is null, as the contract says: None"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a period beside one statement does not reach a later one it is farther from: 'Monthly: $4,000 - $5,000; $50 - $60' -> ['month', None] (the second is below the floor, so null)"
  },
  {
   "tree": "refresh",
@@ -1319,8 +1337,8 @@
   "unit": "leaf",
   "category": "behavior",
   "method": "executed",
-  "outcome": "fail",
-  "detail": "the contract: 'a mention of years that states no requirement is not one'. Mentions in the listed forms that require nothing: [('We have been fully remote for at least 3 years.', 3), ('In 2 years you will gain experience leading a team.', 2), ('Our customers have 10+ years of history with us.', 10)]"
+  "outcome": "pass",
+  "detail": "the narrowed contract: the forms decide. A mention in a form counts even when it states no requirement ('fully remote for at least 3 years' gives 3, as the contract says); a mention in none does not ('in 2 years you will gain experience'); 'N years experience', \"N years' experience\" and 'N years of' + up to four words + 'experience' count: [('We have been fully remote for at least 3 years.', 3), ('Our customers have 10+ years of history with us.', 10), ('In 2 years you will gain experience leading a team.', None), ('5 years experience in sales', 5), (\"5 years' experience in sales\", 5), ('5 years’ experience in sales', 5), ('3 years of building systems and experience', 3)]"
  },
  {
   "tree": "refresh",
@@ -1715,8 +1733,8 @@
   "unit": "node",
   "category": "behavior",
   "method": "static",
-  "outcome": "fail",
-  "detail": "static, assume-guarantee: n6 promises 'a board's value being mapped into a value space only where its meaning matches'. The values maps keep it (their author judges each board value). The narrowed derive_geography and derive_seniority contracts, ratified at stage 3, do not: 'an entry counts wherever it appears, even where the text means something else by it' and \"'Staff Pharmacist' gives 'staff'\" (both present: True). So the clause cannot be derived from the children. The stage 3 record said the narrowing left n6's contract holding; that missed this clause, which the root states too"
+  "outcome": "pass",
+  "detail": "static, assume-guarantee: n6 now promises board values are mapped only by the definition's value maps and date format or by fixed tables of names, words and forms, which decide, and restates the salary rule (both stated: True). The children deliver it: board values go through values maps (work arrangement, employment type: True) and the declared date format (True); text is read by tables or forms that decide (geography, employment type, seniority, years: {'n8': True, 'n10': True, 'n11': True, 'n13': True}) or by closed word lists and forms (work-arrangement words, salary statements: True); the salary rule is derive_salary's, given the countries the glue passes it (True)"
  },
  {
   "tree": "refresh",
@@ -1742,8 +1760,8 @@
   "unit": "node",
   "category": "behavior",
   "method": "static",
-  "outcome": "fail",
-  "detail": "static, assume-guarantee over the children's contracts: the store, listing, failure, no-removal and report clauses follow from fetch_sources, extract_fetched and merge_into_store, and every value's space and evidence from the field-record shape extract_fetched promises. Two root clauses are not carried: extract_fetched's contract promises 'the extraction of its payload under its own source's definition and the pay-floor table' and the field shapes, but neither 'a board's value being mapped into a value space only where its meaning matches' (present: False) nor the salary clause (bare $ only for a US-only posting; an unstated period yearly only at or above the pay floor) (present: False). The leaves below do keep both (derive_salary's contract states the salary rules; extract_posting's states the mapping rule), but the contracts between them and the root drop them, so a different extract_fetched satisfying its own contract could break the root"
+  "outcome": "pass",
+  "detail": "static, assume-guarantee over the children's contracts: the store, listing, failure, no-removal and report clauses follow from fetch_sources, extract_fetched and merge_into_store; every value's space and evidence from the field records extract_fetched promises; and the mapping and salary clauses are now stated by extract_fetched in the root's own words: {'mapping in root': True, 'mapping in extract_fetched': True, 'salary in root': True, 'salary in extract_fetched': True}"
  },
  {
   "tree": "assess",
@@ -1787,7 +1805,7 @@
   "unit": "node",
   "category": "behavior",
   "method": "static",
-  "outcome": "fail",
-  "detail": "static, assume-guarantee over the children's contracts: watched filtering is the glue's own; exactly-once placement, reasons, ordering, flags and marks follow from place_postings; diagnostics from diagnose_rules over the watched postings' verdicts; same inputs, same outputs from the three functions. The verdict clauses are not carried: evaluate_rules promises 'each the verdict of that rule on that posting at the current date' and the verdict's shape, but none of the root's rules for what a verdict is: {\"can't tell exactly when the field is unknown or not comparable\": False, 'alternatives: any for require/prefer, every for exclude': False, 'keyword tests: case-insensitive whole words, trailing *': False, 'within-days counts back from the current date': False}. Only evaluate_rule's contract (below evaluate_rules) states them, so a different evaluate_rules satisfying its own contract could break the root"
+  "outcome": "pass",
+  "detail": "static, assume-guarantee over the children's contracts: watched filtering is the glue's own; exactly-once placement, reasons, ordering, flags and marks follow from place_postings; diagnostics from diagnose_rules over the watched postings' verdicts; same inputs, same outputs from the three functions; and evaluate_rules now states what each verdict is, in the same words as evaluate_rule: {\"can't tell when unknown or not comparable\": True, 'alternatives: any for require/prefer, every for exclude': True, 'keyword tests: case-insensitive whole words, trailing *': True, 'within-days counts back from the current date': True, \"the whole of evaluate_rule's rules\": True}"
  }
 ]

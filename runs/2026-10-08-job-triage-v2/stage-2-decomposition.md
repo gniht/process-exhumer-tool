@@ -158,3 +158,24 @@ Composition's watch list gains one item: **table misses and wrong entries on liv
 meaning names or level words the tables lack (these come out unknown and are shown) and entries
 that match something else (a town that shares a country's name, a level word in a phrase the
 exceptions lack).
+
+## Amended at stage 4 (author: "yes, apply all the recommended fixes and re-verify")
+
+Verification found contracts that dropped root clauses or disagreed with their leaves. Behaviors
+changed, and no glue changed:
+- **`extract_fetched` (n3) and `extract_posting` (n6)** now state the root's mapping clause, as
+  amended, and its salary rule, in the root's own words. Before, n3 promised only "the
+  extraction of its payload", so the root's clauses fell through it.
+- **`evaluate_rules` (assess n2)** now states what a verdict is, in the same words as
+  `evaluate_rule`. The generator holds that text once and gives it to both.
+- **`derive_geography` (n8)** changes two things:
+  - Two- and three-letter names count in capitals only. Longer names count in any case.
+  - "European Union" names the region europe, and the example of a value naming neither is now
+    "Worldwide".
+- **`derive_employment_type` (n10) and `derive_years_of_experience` (n13)** are narrowed the way
+  n8 and n11 were at stage 3: the table or the forms decide, with both directions of the limit
+  stated.
+
+The harness has no clause-carry check yet, so it would not have caught n3 or assess n2. That
+check is queued in the design journal.
+

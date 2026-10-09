@@ -339,12 +339,15 @@ def n8():
           and r["value"] is None,
           f"a locator value naming nothing is kept as evidence with value null: {short(c)}")
     c, r = by_locator("European Union")
+    w_c, w_r = by_locator("Worldwide")
     check(T, "n8", "behavior",
-          c["value"] is None and r["value"] is None
-          and c["evidence"] == [{"path": "c", "span": None, "raw": "European Union", "value": None}],
-          f"the contract's own example: 'European Union' at a countries locator 'names neither one country "
-          f"nor a region' and is kept as evidence with value null. Got countries {short(c)}, regions "
-          f"{short(r)}: the region table maps 'european union' to europe. Ashby states it on every EU posting.")
+          c == {"value": None, "evidence": []} and r["value"] == ["europe"]
+          and r["evidence"] == [{"path": "c", "span": None, "raw": "European Union", "value": "europe"}]
+          and w_c == {"value": None, "evidence": [{"path": "c", "span": None, "raw": "Worldwide", "value": None}]}
+          and w_r["value"] is None,
+          f"the amended example: 'European Union' at a countries locator names the region europe ({short(r)}), "
+          f"and 'Worldwide' names neither a country nor a region in the tables, kept with value null "
+          f"({short(w_c)})")
 
     c, r = by_locator("  Canada,  Mexico")
     spans_ok = all(e["span"] is None or "  Canada,  Mexico"[e["span"][0]:e["span"][1]] == e["raw"]
@@ -357,14 +360,26 @@ def n8():
           f"({spans_ok}) but not the converted text ({spans_converted}). Only when a locator value has extra "
           f"whitespace")
 
+    html_src = {"id": "s", "company": "C", "fields": {"countries": [{"path": "c", "format": "html"}]}}
+    value = "<p>Remote in <b>Canada</b> &amp;  Mexico</p>"
+    out = derive_geography({"c": value}, html_src, None)
+    converted = "Remote in Canada & Mexico"
+    check(T, "n8", "behavior",
+          out["countries"]["value"] == ["CA", "MX"]
+          and all(converted[e["span"][0]:e["span"][1]] == e["raw"] for e in out["countries"]["evidence"]),
+          f"a countries locator in html format is converted as the locator says before it is read, and spans "
+          f"index the converted text {converted!r}: {short(out['countries'])}")
+
     # reading 1: codes are matched in capitals only; the contract says case-insensitive
-    lower = [geo(t)[0] for t in ("Remote - us", "Remote, uk", "remote (usa)")]
+    lower = [geo(t)[0] for t in ("Join us in Italy", "Remote, uk", "remote (usa)", "no relocation; it team")]
     upper = [geo(t)[0] for t in ("Remote - US", "Remote, UK", "remote (USA)")]
-    check(T, "n8", "behavior", lower == upper,
-          f"reading 1: the contract reads location texts 'whole words, case-insensitive'. Upper-case "
-          f"'US'/'UK'/'USA' -> {upper}; lower-case 'us'/'uk'/'usa' -> {lower}. The leaf matches codes in "
-          f"capitals only, so it departs from the letter of the contract, deliberately ('join us', 'in', "
-          f"'it', 'no' would otherwise read as the US, India, Italy, Norway)")
+    names = [geo(t)[0] for t in ("remote - united states", "LONDON, ENGLAND", "toronto, canada")]
+    check(T, "n8", "behavior",
+          lower == [["IT"], None, None, None] and upper == [["US"], ["GB"], ["US"]]
+          and names == [["US"], ["GB"], ["CA"]],
+          f"the amended case rule: two- and three-letter names count only in capitals ({upper}); in lower "
+          f"case they do not, so 'join us', 'it', 'no' are not countries ({lower}; 'Italy' is read as a "
+          f"name); longer names count in any case ({names})")
 
     # overfit: the locator path, its shape and the location paths are the definition's to choose
     odd = {"id": "s", "company": "C", "fields": {"countries": [{"path": "geo.list[].iso"}]}}
@@ -452,12 +467,13 @@ def n10():
     got = [(t, derive({}, none, _title(t))["value"]) for t, _ in cases]
     check(T, "n10", "behavior", got == cases, f"title words from the contract's list: {got}")
     subject = [("Internship Program Manager", None), ("Intern Recruiter", None),
-               ("Temporary Housing Coordinator", None), ("Full-Time Equivalent Planning Analyst", None)]
+               ("Temporary Housing Coordinator", None), ("Full-Time Equivalent Planning Analyst", None),
+               ("Intern Coordinator", "internship"), ("Interns", "internship")]
     got = [(t, derive({}, none, _title(t))["value"]) for t, _ in subject]
     check(T, "n10", "behavior", got == subject,
-          f"the contract: 'a word naming the subject of the work gives nothing'. Titles where a listed word "
-          f"names the work, not the terms: {got}. Only 'Contract' is guarded; the other words count wherever "
-          f"they appear")
+          f"the narrowed contract: a match inside an exception phrase gives nothing ('Internship Program', "
+          f"'Full-Time Equivalent' and the table's others); the table decides, so a listed word in a phrase "
+          f"its exceptions lack counts ('Intern Coordinator' gives 'internship', as the contract says): {got}")
 
 
 # ---------------------------------------------------------------- n11 derive_seniority
@@ -575,12 +591,16 @@ def n12():
           f"does not, so the floor applies ({far['pay_period']})")
     text = "$4,000 - $5,000 per month or $50,000 - $60,000 per year"
     out = sal(text, ("US",))
-    check(T, "n12", "behavior", out["value"] is None,
-          f"reading 5, two statements side by side: {text!r}. Beside the first figures is 'per month', beside "
-          f"the second 'per year', so they disagree and the contract gives null. The 40-character window "
-          f"reaches across: each statement sees both periods, so each gets pay_period null; the two then "
-          f"'agree' and combine into {out['value']} with statement periods "
-          f"{[e['value']['pay_period'] for e in out['evidence']]}")
+    periods = [e["value"]["pay_period"] for e in out["evidence"]]
+    check(T, "n12", "behavior", out["value"] is None and periods == ["month", "year"],
+          f"reading 5, two statements side by side: {text!r}. A period within the window counts for the "
+          f"statement it is nearer, so the first is monthly and the second yearly ({periods}); they disagree "
+          f"and the value is null, as the contract says: {out['value']}")
+    text = "Monthly: $4,000 - $5,000; $50 - $60"
+    out = sal(text, ("US",))
+    check(T, "n12", "behavior", [e["value"]["pay_period"] for e in out["evidence"]] == ["month", None],
+          f"a period beside one statement does not reach a later one it is farther from: {text!r} -> "
+          f"{[e['value']['pay_period'] for e in out['evidence']]} (the second is below the floor, so null)")
     got = [sal("US$90,000 - US$110,000", ("CA",))["value"], sal("C$80,000 - C$100,000", ("CA",))["value"]]
     check(T, "n12", "behavior",
           got[0]["currency"] == "USD" and got[1]["currency"] == "CAD" and got[1]["pay_period"] is None,
@@ -626,13 +646,17 @@ def n13():
     out = derive(_text("8+ years of experience", "or 5 years with a PhD and 5 years of research experience"))
     check(T, "n13", "behavior", out["value"] == 5 and len(out["evidence"]) == 2,
           f"lowest N across all statements and pieces, every statement kept as evidence: {short(out, 250)}")
-    nonreq = [("We have been fully remote for at least 3 years.", None),
-              ("In 2 years you will gain experience leading a team.", None),
-              ("Our customers have 10+ years of history with us.", None)]
-    got = [(t, derive(_text(t))["value"]) for t, _ in nonreq]
-    check(T, "n13", "behavior", got == nonreq,
-          f"the contract: 'a mention of years that states no requirement is not one'. Mentions in the listed "
-          f"forms that require nothing: {got}")
+    forms = [("We have been fully remote for at least 3 years.", 3),
+             ("Our customers have 10+ years of history with us.", 10),
+             ("In 2 years you will gain experience leading a team.", None),
+             ("5 years experience in sales", 5), ("5 years' experience in sales", 5),
+             ("5 years\u2019 experience in sales", 5), ("3 years of building systems and experience", 3)]
+    got = [(t, derive(_text(t))["value"]) for t, _ in forms]
+    check(T, "n13", "behavior", got == forms,
+          f"the narrowed contract: the forms decide. A mention in a form counts even when it states no "
+          f"requirement ('fully remote for at least 3 years' gives 3, as the contract says); a mention in "
+          f"none does not ('in 2 years you will gain experience'); 'N years experience', \"N years' "
+          f"experience\" and 'N years of' + up to four words + 'experience' count: {got}")
 
 
 # ---------------------------------------------------------------- n14 read_posted_date

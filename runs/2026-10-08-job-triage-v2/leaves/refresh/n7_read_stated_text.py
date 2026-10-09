@@ -68,7 +68,8 @@ def _from_html(markup):
     parser = _HtmlText()
     parser.feed(markup)
     parser.close()
-    lines = (line.strip() for line in "".join(parser.parts).split("\n"))
+    # Text split across inline tags arrives in pieces, so whitespace runs are collapsed after joining.
+    lines = (re.sub(r"\s+", " ", line).strip() for line in "".join(parser.parts).split("\n"))
     return "\n".join(line for line in lines if line)
 
 

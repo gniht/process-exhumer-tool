@@ -133,7 +133,7 @@ Decomposition could write leaf contracts that way from the start whenever a leaf
 - **Open language, again (n10, n13, and two n8 wording conflicts).** Stage 3 cleared n10 and n13 because their word lists were closed, but each also carries an exclusion clause ("a word naming the subject of the work", "a mention of years that states no requirement") that no list can keep. Execution found inputs that get through. Stage 3's test for faked determinism should look for clauses like these, not only for verbs like "denotes".
 - **Clauses dropped between leaf and root (both roots, and n6).** An iterative node that promises "the verdict of that rule" or "the extraction of its payload" names its child's result without restating it, so the root's clauses fall through a contract that flat verification can see. Separately, the narrowing ratified at stage 3 contradicts the "only where its meaning matches" clause in n6 and the root, which stage 3 missed. Assume-guarantee caught all three by reading, not execution.
 
-Every failure has a recommended fix in the stage record. They are wording edits in five contracts plus four small code changes, and none needs a decision point.
+The author took every recommended fix: contract wording in seven units (the refresh root among them), and five re-codified leaves. **Re-verified: 201 checks, 0 failures, 19 of 19 units pass, still zero decision points.** On the 45 fixture postings the fixed leaves give identical output to the old ones; the defects lived only in edge cases, which only hand-built inputs reached.
 
 ## Next
 

@@ -67,13 +67,32 @@ def _currency(match, countries):
     return False, None
 
 
-def _stated_period(text, start, end):
-    before = text[max(0, start - _WINDOW):start].rsplit("\n", 1)[-1]
-    after = text[end:end + _WINDOW].split("\n", 1)[0]
-    named = {period for period, pattern in _PERIODS if pattern.search(before) or pattern.search(after)}
-    if len(named) == 1:
-        return True, named.pop()
-    return bool(named), None
+def _stated_periods(text, spans):
+    """For each statement span, (stated, period): the periods named beside it, within the window on the
+    same line, and nearer to it than to any other statement in the text."""
+    hits = [(period, match.start(), match.end()) for period, pattern in _PERIODS for match in pattern.finditer(text)]
+
+    def distance(span, start, end):
+        if end <= span[0]:
+            gap, between = span[0] - end, text[end:span[0]]
+        elif start >= span[1]:
+            gap, between = start - span[1], text[span[1]:start]
+        else:
+            return None
+        return gap if gap + (end - start) <= _WINDOW and "\n" not in between else None
+
+    results = []
+    for span in spans:
+        named = set()
+        for period, start, end in hits:
+            mine = distance(span, start, end)
+            if mine is None:
+                continue
+            others = [d for d in (distance(other, start, end) for other in spans if other != span) if d is not None]
+            if all(mine <= d for d in others):
+                named.add(period)
+        results.append((True, named.pop()) if len(named) == 1 else (bool(named), None))
+    return results
 
 
 def derive_salary(full_text, countries, pay_floors):
@@ -83,6 +102,7 @@ def derive_salary(full_text, countries, pay_floors):
         text = entry.get("value")
         if not isinstance(text, str):
             continue
+        found = []
         for match in _RANGE.finditer(text):
             recognised, currency = _currency(match, country_codes)
             if not recognised:
@@ -94,9 +114,10 @@ def derive_salary(full_text, countries, pay_floors):
                 high *= 1000
                 if not match.group("ak") and low < 1000:
                     low *= 1000
-            if not 0 < low <= high:
-                continue
-            stated, period = _stated_period(text, *match.span())
+            if 0 < low <= high:
+                found.append((match, currency, low, high))
+        periods = _stated_periods(text, [match.span() for match, *_ in found])
+        for (match, currency, low, high), (stated, period) in zip(found, periods):
             if not stated and currency is not None and currency in (pay_floors or {}):
                 if low >= pay_floors[currency]:
                     period = "year"

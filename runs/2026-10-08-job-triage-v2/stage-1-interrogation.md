@@ -175,6 +175,15 @@ amended. See `stage-2-decomposition.md`, *Root amendments*.
   values, which would stop "exclude team X" from ever hiding a posting that also names a
   department.
 
+## Amendment from stage 4 (author: "yes, apply all the recommended fixes and re-verify")
+
+- **How board values are mapped.** The refresh root said "a board's value being mapped into a
+  value space only where its meaning matches". After the stage 3 narrowing, the program can't
+  promise that: a table entry counts even where the text means something else. It now reads:
+  "only by the source definition's value maps and date format, or by the program's fixed tables
+  of names, words and forms, which decide: what they do not cover is unknown, and an entry counts
+  wherever it appears". See `stage-4-verification.md`.
+
 ## Decisions the author made against stage-1 recommendation
 
 - **Pay floor** (item 22): stage 1 proposed 10,000; the author rejected reading a monthly
