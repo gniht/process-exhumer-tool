@@ -163,6 +163,18 @@ plain pattern matching reads. Stages 3 and 5 test this.
 - **A stored posting refetched keeps its first-seen date** while its payload and extraction
   are replaced by the latest version.
 
+## Amendments proposed by stage 2 (author: "confirmed")
+
+Found on 2026-10-08 while decomposition resolved the shapes concretely; both root files are
+amended. See `stage-2-decomposition.md`, *Root amendments*.
+
+- **`link` added to the declared fields.** The root omitted the posting's address, which the
+  page needs.
+- **The any/every rule names its fields:** countries, regions, seniority and a salary's range.
+  Item 23 agreed it for alternatives only; the root generalised it to every field with several
+  values, which would stop "exclude team X" from ever hiding a posting that also names a
+  department.
+
 ## Decisions the author made against stage-1 recommendation
 
 - **Pay floor** (item 22): stage 1 proposed 10,000; the author rejected reading a monthly
