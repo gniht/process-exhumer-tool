@@ -1,0 +1,1793 @@
+[
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['fetch_source']; entry `fetch_source` params ['source'] vs contract inputs ['source']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['json', 'urllib.error', 'urllib.request'] within ['datetime', 'html', 'html.parser', 'json', 're', 'urllib.error', 'urllib.request']; network imports present and declared: the behavior sends one GET request; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0; the one request goes to source['endpoint'], so no model endpoint is reachable"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['read_stated_text']; entry `read_stated_text` params ['payload', 'source'] vs contract inputs ['payload', 'source']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['html', 'html.parser', 're'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['derive_geography']; entry `derive_geography` params ['payload', 'source', 'location'] vs contract inputs ['payload', 'source', 'location']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['re'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['derive_work_arrangement']; entry `derive_work_arrangement` params ['payload', 'source', 'location'] vs contract inputs ['payload', 'source', 'location']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['json', 're'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['derive_employment_type']; entry `derive_employment_type` params ['payload', 'source', 'title'] vs contract inputs ['payload', 'source', 'title']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['json', 're'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['derive_seniority']; entry `derive_seniority` params ['title'] vs contract inputs ['title']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['re'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['derive_salary']; entry `derive_salary` params ['full_text', 'countries', 'pay_floors'] vs contract inputs ['full_text', 'countries', 'pay_floors']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['re'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['derive_years_of_experience']; entry `derive_years_of_experience` params ['full_text'] vs contract inputs ['full_text']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['re'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['read_posted_date']; entry `read_posted_date` params ['payload', 'source'] vs contract inputs ['payload', 'source']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['datetime', 're'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['merge_into_store']; entry `merge_into_store` params ['stored_postings', 'extracted_results', 'as_of'] vs contract inputs ['stored_postings', 'extracted_results', 'as_of']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports [] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "refresh",
+  "node": "n1",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: function calls ['extract_fetched', 'fetch_sources', 'merge_into_store'], methods on local values none; anything outside children, builtins and local methods: none; decide/model/imports: False; branches none (each tests a declared status value, not meaning)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n1",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: child calls with wrong arity/keywords none (arity {'fetch_sources': 1, 'extract_fetched': 3, 'merge_into_store': 3}); children never called none; inputs never read none; undeclared names none; ends in return: True. Output keys are checked by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n1",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: sequential: each child called once {'fetch_sources': 1, 'extract_fetched': 1, 'merge_into_store': 1}; none inside a loop (none); no branching (True). Call counts are confirmed by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n2",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: function calls ['fetch_source'], methods on local values none; anything outside children, builtins and local methods: none; decide/model/imports: False; branches none (each tests a declared status value, not meaning)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n2",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: child calls with wrong arity/keywords none (arity {'fetch_source': 1}); children never called none; inputs never read none; undeclared names none; ends in return: True. Output keys are checked by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n2",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: iterative: children called inside a loop or comprehension: ['fetch_source'] of ['fetch_source']. Call counts are confirmed by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n3",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: function calls ['extract_posting'], methods on local values ['extracted_results.append']; anything outside children, builtins and local methods: none; decide/model/imports: False; branches [\"result['status'] != 'ok'\"] (each tests a declared status value, not meaning)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n3",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: child calls with wrong arity/keywords none (arity {'extract_posting': 3}); children never called none; inputs never read none; undeclared names none; ends in return: True. Output keys are checked by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n3",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: iterative: children called inside a loop or comprehension: ['extract_posting'] of ['extract_posting']. Call counts are confirmed by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: function calls ['derive_employment_type', 'derive_geography', 'derive_salary', 'derive_seniority', 'derive_work_arrangement', 'derive_years_of_experience', 'read_posted_date', 'read_stated_text'], methods on local values none; anything outside children, builtins and local methods: none; decide/model/imports: False; branches none (each tests a declared status value, not meaning)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: child calls with wrong arity/keywords none (arity {'read_stated_text': 2, 'derive_geography': 3, 'derive_work_arrangement': 3, 'derive_employment_type': 3, 'derive_seniority': 1, 'derive_salary': 3, 'derive_years_of_experience': 1, 'read_posted_date': 2}); children never called none; inputs never read none; undeclared names none; ends in return: True. Output keys are checked by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: sequential: each child called once {'read_stated_text': 1, 'derive_geography': 1, 'derive_work_arrangement': 1, 'derive_employment_type': 1, 'derive_seniority': 1, 'derive_salary': 1, 'derive_years_of_experience': 1, 'read_posted_date': 1}; none inside a loop (none); no branching (True). Call counts are confirmed by execution in the behavior checks."
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['evaluate_rule']; entry `evaluate_rule` params ['posting', 'rule', 'as_of'] vs contract inputs ['posting', 'rule', 'as_of']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports ['datetime', 're'] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['place_postings']; entry `place_postings` params ['postings', 'rules', 'verdicts', 'marks'] vs contract inputs ['postings', 'rules', 'verdicts', 'marks']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports [] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "assess",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: public functions ['diagnose_rules']; entry `diagnose_rules` params ['rules', 'verdicts', 'hidden'] vs contract inputs ['rules', 'verdicts', 'hidden']; no *args/**kwargs/keyword-only: True"
+ },
+ {
+  "tree": "assess",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "closure",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: imports [] within ['datetime', 'html', 'html.parser', 'json', 're']; no network; effect names/attrs none; module state written from a function: none; global/nonlocal: False"
+ },
+ {
+  "tree": "assess",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "seam",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: 0 decide() call site(s); model-call names none; claim determinism=deterministic, decisions=0"
+ },
+ {
+  "tree": "assess",
+  "node": "n1",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: function calls ['diagnose_rules', 'evaluate_rules', 'place_postings', 'set'], methods on local values none; anything outside children, builtins and local methods: none; decide/model/imports: False; branches none (each tests a declared status value, not meaning)"
+ },
+ {
+  "tree": "assess",
+  "node": "n1",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: child calls with wrong arity/keywords none (arity {'evaluate_rules': 3, 'place_postings': 4, 'diagnose_rules': 3}); children never called none; inputs never read none; undeclared names none; ends in return: True. Output keys are checked by execution in the behavior checks."
+ },
+ {
+  "tree": "assess",
+  "node": "n1",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: sequential: each child called once {'evaluate_rules': 1, 'place_postings': 1, 'diagnose_rules': 1}; none inside a loop (none); no branching (True). Call counts are confirmed by execution in the behavior checks."
+ },
+ {
+  "tree": "assess",
+  "node": "n2",
+  "unit": "node",
+  "category": "glue_determinism",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: function calls ['evaluate_rule'], methods on local values none; anything outside children, builtins and local methods: none; decide/model/imports: False; branches none (each tests a declared status value, not meaning)"
+ },
+ {
+  "tree": "assess",
+  "node": "n2",
+  "unit": "node",
+  "category": "wiring",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: child calls with wrong arity/keywords none (arity {'evaluate_rule': 3}); children never called none; inputs never read none; undeclared names none; ends in return: True. Output keys are checked by execution in the behavior checks."
+ },
+ {
+  "tree": "assess",
+  "node": "n2",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "AST: iterative: children called inside a loop or comprehension: ['evaluate_rule'] of ['evaluate_rule']. Call counts are confirmed by execution in the behavior checks."
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"source_id\": \"s/gh\", \"status\": \"ok\", \"postings\": [{\"posting_id\": \"11\", \"payload\": {\"id\": 11, \"t\": \"..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical (Greenhouse envelope, list_path 'jobs', integer IDs): one GET [('GET', '/gh')]; ok with IDs as strings in response order, payload unchanged: {\"source_id\": \"s/gh\", \"status\": \"ok\", \"postings\": [{\"posting_id\": \"11\", \"payload\": {\"id\": 11, \"t\": \"a\"}}, {\"posting_id\": \"12\", \"payload\": {\"id\": 12, \"t\": \"b\"}}]..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "list_path null (Lever bare list): whole body is the list; {\"source_id\": \"s/lever\", \"status\": \"ok\", \"postings\": [{\"posting_id\": \"u-1\", \"payload\": {\"id\": \"u-1\", \"x\": {\"deep\": [1, 2]}}}, {\"posting_id\": \"u-2\", \"payload\": {..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit: nested list_path 'data.items' and dotted id_path 'ref.key', mixed string/integer IDs: {\"source_id\": \"s/nested\", \"status\": \"ok\", \"postings\": [{\"posting_id\": \"q1\", \"payload\": {\"ref\": {\"key\": \"q1\"}}}, {\"posting_id\": \"7\", \"payload\": {\"ref\": {\"key\": 7..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "repeated ID (1 and '1' are the same ID as strings): later element omitted, first kept: {\"source_id\": \"s/dup\", \"status\": \"ok\", \"postings\": [{\"posting_id\": \"1\", \"payload\": {\"id\": 1, \"v\": \"first\"}}, {\"posting_id\": \"2\", \"payload\": {\"id\": 2}}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: an empty list is a successful fetch with no postings: {\"source_id\": \"s/empty\", \"status\": \"ok\", \"postings\": []}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "each failure kind yields status 'failed', no postings and a reason naming it, after exactly one request: /404 -> 'HTTP 404'; /500 -> 'HTTP 500'; /text -> 'response body is not JSON'; /nolist -> \"no list at 'jobs'\"; /missing -> \"no list at 'jobs'\"; /noid -> \"element 1 has no ID at 'id'\"; /nonobject -> 'element 1 is not an object'; /boolid -> \"element 0 has no ID at 'id'\"; /floatid -> \"element 0 has no ID at 'id'\""
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "never raises: connection refused -> 'request failed: [Errno 111] Connection refused'; endpoint 'not a url' -> \"unexpected error: ValueError: unknown url type: 'not a url'\"; definition without id_path -> \"unexpected error: KeyError: 'id_path'\""
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "timeout: bound set to 1s against a server that waits 3s -> 'request failed: timed out' after 1.0s; the shipped bound is 30s"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "reading 4, 'exactly its headers': with {User-Agent, X-Probe} the server received ['Accept-Encoding', 'Connection', 'Host', 'User-Agent', 'X-Probe']; with no headers it received ['Accept-Encoding', 'Connection', 'Host'] (no default User-Agent). Host, Accept-Encoding and Connection come from the HTTP transport, not the leaf; judged within the contract"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "redirect: the leaf issues one request; urllib follows the 302, so the server saw [('GET', '/redirect'), ('GET', '/gh')] and the result is 'ok'. Read as within 'sends one GET request to its endpoint' (the leaf sends one; the response is 2xx); noted for composition"
+ },
+ {
+  "tree": "refresh",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: an element whose ID is '' -> \"element 0 has no ID at 'id'\". Judged within the contract: '' is not an ID, which the failure list names ('an element without an ID')"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention map keyed ['title', 'link', 'company', 'location', 'department_team', 'full_text']; got {\"title\": {\"value\": \"Customer Success Manager, Growth\", \"evidence\": [{\"path\": \"title\", \"span\": null,..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture postings (Greenhouse escaped_html, Lever plain+html lists, Ashby html): six records keyed by output name, values in their declared spaces, one evidence entry per piece in order, company from the definition, payload unchanged, no markup left; problems: none"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "html conversion collapses whitespace runs: 0 fixture pieces still hold a run of two spaces, e.g. []"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "plain collapses and trims: got 'Senior Engineer', expected 'Senior Engineer'; evidence paths ['t']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "html: tags out, blocks to line breaks, entities decoded: got [\"About\\nWe're hiring now.\\nOne\\nTwo\\nTail\\nend\"], expected [\"About\\nWe're hiring now.\\nOne\\nTwo\\nTail\\nend\"]; evidence paths ['d']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "html: whitespace split across inline tags: got ['Hello  world again'], expected ['Hello world again']; evidence paths ['d']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "escaped_html decoded once, then as html: got ['Fish & chips'], expected ['Fish & chips']; evidence paths ['d']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "list path: indexed evidence paths, repeats and empties dropped: got ['Berlin', 'Paris'], expected ['Berlin', 'Paris']; evidence paths ['offices.0.name', 'offices.3.name']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "title is the first contributed text: got 'First', expected 'First'; evidence paths ['b', 'c']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "non-text values contribute nothing: got None, expected None; evidence paths []"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit: nested steps through two lists: got ['x', 'y', 'z'], expected ['x', 'y', 'z']; evidence paths ['a.b.0.c.0.d', 'a.b.0.c.1.d', 'a.b.1.c.0.d']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n7",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: a definition with no locators gives every stated field null with no evidence, company still from the definition: {\"title\": {\"value\": null, \"evidence\": []}, \"link\": {\"value\": null, \"evidence\": []}, \"company\": {\"value\": \"Acme\", \"evidence\": [{\"path\": \"source.company\", \"span\":..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention map keyed ['countries', 'regions']; got {\"countries\": {\"value\": [\"US\"], \"evidence\": [{\"path\": \"address.postalAddress.addressCountry\", \"span\"..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture postings; both records in their declared spaces, spans read back the raw text from the location pieces; problems none; e.g. [[\"Remote, Canada; Remote, United Kingdom; Remote, United States\"], [\"CA\", \"GB\", \"US\"], [\"europe\", \"north_america\"]], [[\"Europe\"], null, [\"europe\"]]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "short form 'US': ('Remote - US',) -> countries ['US'], regions ['north_america']; expected ['US'], ['north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "country names, several: ('Remote, Canada; Remote, United Kingdom',) -> countries ['CA', 'GB'], regions ['europe', 'north_america']; expected ['CA', 'GB'], ['europe', 'north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "state by name implies US: ('Remote, Colorado',) -> countries ['US'], regions ['north_america']; expected ['US'], ['north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "state postal code that is not an ISO code implies US: ('Austin, TX',) -> countries ['US'], regions ['north_america']; expected ['US'], ['north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "state code that is also an ISO code is not read in location text: ('San Francisco, CA',) -> countries None, regions None; expected None, None"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "'Georgia' is not in the table: ('Atlanta, Georgia',) -> countries None, regions None; expected None, None"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "'New South Wales' is Australia, not Wales: ('Sydney, New South Wales',) -> countries ['AU'], regions ['oceania']; expected ['AU'], ['oceania']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "'Indiana' is not India: ('Indianapolis, Indiana',) -> countries ['US'], regions ['north_america']; expected ['US'], ['north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "region names; a region never implies a country: ('Remote, EMEA',) -> countries None, regions ['emea']; expected None, ['emea']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "region synonym: ('LATAM',) -> countries None, regions ['latin_america']; expected None, ['latin_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "one region is not added because another names it: ('Europe',) -> countries None, regions ['europe']; expected None, ['europe']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a country implying two regions: ('Istanbul, Turkey',) -> countries ['TR'], regions ['europe', 'middle_east']; expected ['TR'], ['europe', 'middle_east']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "narrowed contract: an entry counts where the text means something else: ('Lebanon, NH',) -> countries ['LB', 'US'], regions ['middle_east', 'north_america']; expected ['LB', 'US'], ['middle_east', 'north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "cities are not read: ('Bangalore',) -> countries None, regions None; expected None, None"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "an implied region's evidence is its country's evidence with value the region: [{\"path\": \"loc.0\", \"span\": [8, 10], \"raw\": \"US\", \"value\": \"north_america\"}]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a countries-locator value 'CA' is the ISO code (Canada), not California: ['CA'], ['north_america']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a locator value naming nothing is kept as evidence with value null: {\"value\": null, \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"Narnia\", \"value\": null}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "the contract's own example: 'European Union' at a countries locator 'names neither one country nor a region' and is kept as evidence with value null. Got countries {\"value\": null, \"evidence\": []}, regions {\"value\": [\"europe\"], \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"European Union\", \"value\": \"europe\"}]}: the region table maps 'european union' to europe. Ashby states it on every EU posting."
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "span offsets are into the text 'as converted to plain text': locator value '  Canada,  Mexico' converts to 'Canada, Mexico'; spans [[2, 8], [11, 17]] read back the raw value (True) but not the converted text (False). Only when a locator value has extra whitespace"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "reading 1: the contract reads location texts 'whole words, case-insensitive'. Upper-case 'US'/'UK'/'USA' -> [['US'], ['GB'], ['US']]; lower-case 'us'/'uk'/'usa' -> [None, None, None]. The leaf matches codes in capitals only, so it departs from the letter of the contract, deliberately ('join us', 'in', 'it', 'no' would otherwise read as the US, India, Italy, Norway)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n8",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit: a locator stepping into a list ('geo.list[].iso'), a lower-case code: ['DE', 'FR'], paths ['geo.list.0.iso', 'geo.list.1.iso']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"value\": \"remote\", \"evidence\": [{\"path\": \"workplaceType\", \"span\": null, \"raw\": \"Remote\", \"value\": \"..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture postings; values ['hybrid', 'onsite', 'remote']; problems none"
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "unmapped board value kept as evidence with value null, then location text read: {\"value\": \"remote\", \"evidence\": [{\"path\": \"w\", \"span\": null, \"raw\": \"unspecified\", \"value\": null}, {\"path\": \"loc.0\", \"span\": [0, 6], \"raw\": \"Remote\", \"value\": \"..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "first mapped value in locator order wins; a JSON true is looked up as 'true'; location not read: {\"value\": \"hybrid\", \"evidence\": [{\"path\": \"a\", \"span\": null, \"raw\": \"x\", \"value\": \"hybrid\"}, {\"path\": \"b\", \"span\": null, \"raw\": true, \"value\": \"remote\"}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n9",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "location words (whole words, case-insensitive; two arrangements -> null; none -> null, never onsite): [('Remote - US', 'remote'), ('Hybrid, NYC', 'hybrid'), ('On-site in Berlin', 'onsite'), ('onsite', 'onsite'), ('In office, London', 'onsite'), ('in-office', 'onsite'), ('Remote or Hybrid', None), ('Berlin', None), ('Remotely', None)]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"value\": \"full-time\", \"evidence\": [{\"path\": \"employmentType\", \"span\": null, \"raw\": \"FullTime\", \"val..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture postings; problems none; e.g. [('Candidate Experience Specialist, Contractor', 'contract'), ('Candidate Experience Specialist, Contractor', 'contract')]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "unmapped board value 'Short Term' kept with value null, then the title read: {\"value\": \"contract\", \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"Short Term\", \"value\": null}, {\"path\": \"title\", \"span\": [9, 19], \"raw\": \"(Contract)\", \"val..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a mapped locator value wins and the title is not read: {\"value\": \"full-time\", \"evidence\": [{\"path\": \"c\", \"span\": null, \"raw\": \"Permanent\", \"value\": \"full-time\"}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "title words from the contract's list: [('Software Engineering Intern', 'internship'), ('Summer Internship 2027', 'internship'), ('Contracts Manager', None), ('Contract Specialist', None), ('Designer (Contract)', 'contract'), ('Data Analyst - Contract', 'contract'), ('Candidate Experience Specialist, Contractor', 'contract'), ('Part-time Barista', 'part-time'), ('Part Time Tutor', 'part-time'), ('Temporary Receptionist', 'temporary'), ('Full-time Engineer', 'full-time'), ('Full Time / Part Time Associate', None), ('Engineer', None)]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n10",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "the contract: 'a word naming the subject of the work gives nothing'. Titles where a listed word names the work, not the terms: [('Internship Program Manager', 'internship'), ('Intern Recruiter', 'internship'), ('Temporary Housing Coordinator', 'temporary'), ('Full-Time Equivalent Planning Analyst', 'full-time')]. Only 'Contract' is guarded; the other words count wherever they appear"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"value\": [\"manager\"], \"evidence\": [{\"path\": \"title\", \"span\": [17, 24], \"raw\": \"Manager\", \"value\": \"..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture titles; spans read back the title; problems none; e.g. ('Android Engineer - Experience', None), ('Design Engineer (Web & Brand)', None)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "level table, exception phrases, whole words, sorted distinct; reading 2 ('Manager' counts from the word, 'Head of' and 'Associate' give nothing) and the narrowed 'Staff Pharmacist' case: [('Senior / Staff Fullstack Engineer', ['senior', 'staff']), ('Sr. Engineer', ['senior']), ('Area Vice President - Financial Services', ['executive']), ('VP, Sales', ['executive']), ('Chief Technology Officer', ['executive']), ('Director of Engineering', ['director']), ('Engineering Manager', ['manager']), ('Principal Product Designer', ['principal']), ('Team Lead, Platform', ['lead']), ('Junior Developer', ['junior']), ('Entry-Level Analyst', ['junior']), ('Software Intern', ['intern']), ('Chief of Staff, CRO', None), ('Lead Generation Specialist', None), ('Staff Pharmacist', ['staff']), ('Head of Design', None), ('Associate Product Manager', ['manager']), ('Internal Tools Engineer', None), ('Leadership Coach', None), ('Staffing Coordinator', None), ('Engineer', None)]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "evidence path is the title's own path (overfit: 'text', as on Lever): {\"value\": [\"senior\"], \"evidence\": [{\"path\": \"text\", \"span\": [0, 6], \"raw\": \"Senior\", \"value\": \"senior\"}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n11",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: an unknown title gives null with no evidence"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"value\": null, \"evidence\": []}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture postings, 9 with salary statements; spans read back the raw text; problems none; e.g. [[\"AI Transformation Owner, CRO\", {\"minimum\": 139200, \"maximum\": 235200, \"currency\": \"USD\", \"pay_period\": \"year\"}, [\"$139,200—$235,200 USD\"]], [\"AI Transformation Owner, Product & Design\", {\"minimum\": 203200, \"maximum\": 345600, \"currency\": \"USD\", \"pay_period\": \"year\"}, [\"$203,200—$345,600 USD\"]]]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "ISO code after, em dash, no period: yearly above the USD floor: '$139,200 — $235,200 USD' with countries [] -> {'minimum': 139200, 'maximum': 235200, 'currency': 'USD', 'pay_period': 'year'}; expected {'minimum': 139200, 'maximum': 235200, 'currency': 'USD', 'pay_period': 'year'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "ISO code before: 'USD 90,000 - 120,000' with countries ['CA'] -> {'minimum': 90000, 'maximum': 120000, 'currency': 'USD', 'pay_period': 'year'}; expected {'minimum': 90000, 'maximum': 120000, 'currency': 'USD', 'pay_period': 'year'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "euro with k: '€50k–€60k' with countries ['DE'] -> {'minimum': 50000, 'maximum': 60000, 'currency': 'EUR', 'pay_period': 'year'}; expected {'minimum': 50000, 'maximum': 60000, 'currency': 'EUR', 'pay_period': 'year'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "pound, 'to': '£40,000 to £50,000 per annum' with countries ['GB'] -> {'minimum': 40000, 'maximum': 50000, 'currency': 'GBP', 'pay_period': 'year'}; expected {'minimum': 40000, 'maximum': 50000, 'currency': 'GBP', 'pay_period': 'year'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "bare $ with countries exactly ['US']: '$100,000 - $150,000' with countries ['US'] -> {'minimum': 100000, 'maximum': 150000, 'currency': 'USD', 'pay_period': 'year'}; expected {'minimum': 100000, 'maximum': 150000, 'currency': 'USD', 'pay_period': 'year'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "bare $ with other countries: currency null, so no floor, period null: '$100,000 - $150,000' with countries ['US', 'CA'] -> {'minimum': 100000, 'maximum': 150000, 'currency': None, 'pay_period': None}; expected {'minimum': 100000, 'maximum': 150000, 'currency': None, 'pay_period': None}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "stated hourly: '$50 - $60 per hour' with countries ['US'] -> {'minimum': 50, 'maximum': 60, 'currency': 'USD', 'pay_period': 'hour'}; expected {'minimum': 50, 'maximum': 60, 'currency': 'USD', 'pay_period': 'hour'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "'/hr': '$50-$60/hr' with countries ['US'] -> {'minimum': 50, 'maximum': 60, 'currency': 'USD', 'pay_period': 'hour'}; expected {'minimum': 50, 'maximum': 60, 'currency': 'USD', 'pay_period': 'hour'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "below the floor, no period stated: null: '$3,000 - $4,000' with countries ['US'] -> {'minimum': 3000, 'maximum': 4000, 'currency': 'USD', 'pay_period': None}; expected {'minimum': 3000, 'maximum': 4000, 'currency': 'USD', 'pay_period': None}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "currency without a floor entry: null: 'CHF 120,000 - 140,000' with countries ['CH'] -> {'minimum': 120000, 'maximum': 140000, 'currency': 'CHF', 'pay_period': None}; expected {'minimum': 120000, 'maximum': 140000, 'currency': 'CHF', 'pay_period': None}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "k after the high figure only (read as both): '$50-60k' with countries ['US'] -> {'minimum': 50000, 'maximum': 60000, 'currency': 'USD', 'pay_period': 'year'}; expected {'minimum': 50000, 'maximum': 60000, 'currency': 'USD', 'pay_period': 'year'}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "single figure: not a statement: '$150,000 per year' with countries ['US'] -> None; expected None"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "no currency: not a statement: '2020 - 2024' with countries ['US'] -> None; expected None"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "agreeing statements in two pieces: value spans lowest minimum to highest maximum, both kept as evidence: {\"value\": {\"minimum\": 100000, \"maximum\": 140000, \"currency\": \"USD\", \"pay_period\": \"year\"}, \"evidence\": [{\"path\": \"body.0\", \"span\": [9, 28], \"raw\": \"$100,000 - $120,000\", \"value\": {\"minimum\": 100000, \"maximum\": 120000, \"currency\": \"USD\", \"pay_period\":..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "reading 3: a stipend range disagrees on pay period, so the value is null with both statements as evidence, as the contract says for disagreeing statements: {\"value\": null, \"evidence\": [{\"path\": \"body.0\", \"span\": [7, 26], \"raw\": \"$120,000 - $150,000\", \"value\": {\"minimum\": 120000, \"maximum\": 150000, \"currency\": \"USD\", \"pay_period\": \"year\"}}, {\"path\": \"body.0\", \"span\": [50, 65], \"raw\": \"$1,000 - $2,000\", \"..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "reading 5, 'beside the figures' read as within 40 characters on the same line: a period just before the figures counts (hour); 'monthly' 49 characters on, in another sentence, does not, so the floor applies (year)"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "reading 5, two statements side by side: '$4,000 - $5,000 per month or $50,000 - $60,000 per year'. Beside the first figures is 'per month', beside the second 'per year', so they disagree and the contract gives null. The 40-character window reaches across: each statement sees both periods, so each gets pay_period null; the two then 'agree' and combine into {'minimum': 4000, 'maximum': 60000, 'currency': 'USD', 'pay_period': None} with statement periods [None, None]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "symbols that name one currency (US$, C$) are read as that currency; the contract names only '€' and '£' but defines a statement's currency as 'given as a symbol', and these are not a bare '$'. Judged within the contract. CAD has no pay-floor entry in this table, so its period stays null: [{'minimum': 90000, 'maximum': 110000, 'currency': 'USD', 'pay_period': 'year'}, {'minimum': 80000, 'maximum': 100000, 'currency': 'CAD', 'pay_period': None}]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a funding range has the form of a salary statement (two figures, a currency), so it counts as one, disagrees on pay period with the real salary, and the value is null: {\"value\": null, \"evidence\": [{\"path\": \"body.0\", \"span\": [10, 18], \"raw\": \"$20 - 30\", \"value\": {\"minimum\": 20, \"maximum\": 30, \"currency\": \"USD\", \"pay_period\": null}}, {\"path\": \"body.0\", \"span\": [45, 64], \"raw\": \"$150,000 - $180,000\", \"value\": {\"minimum\": 150000.... Within the contract, which defines a statement by its form; for composition's watch list"
+ },
+ {
+  "tree": "refresh",
+  "node": "n12",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "the window stops at a line break (a period on the next line is not 'beside'): {\"minimum\": 1500, \"maximum\": 2000, \"currency\": \"USD\", \"pay_period\": null}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"value\": 3, \"evidence\": [{\"path\": \"descriptionHtml\", \"span\": [2104, 2112], \"raw\": \"3+ years\", \"valu..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical: 45 fixture postings, 23 with requirement statements; spans read back the raw text; problems none; e.g. [[8, [\"8-12 years\"]], [3, [\"at least 3+ years\"]], [7, [\"7+ years\"]]]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "the contract's forms and its non-requirements: [('5+ years of experience', 5), ('3-5 years in a similar role', 3), ('3 to 5 years', 3), ('at least 4 years', 4), ('a minimum of 2 years', 2), ('Minimum 6 years', 6), ('two or more years', 2), ('Seven years of professional software experience', 7), ('10+ yrs', 10), ('after 4 years', None), ('every 2 years', None), ('founded 10 years ago', None), ('1.5 years', None)]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "lowest N across all statements and pieces, every statement kept as evidence: {\"value\": 5, \"evidence\": [{\"path\": \"body.0\", \"span\": [0, 8], \"raw\": \"8+ years\", \"value\": 8}, {\"path\": \"body.1\", \"span\": [26, 56], \"raw\": \"5 years of research experience\", \"value\": 5}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n13",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "fail",
+  "detail": "the contract: 'a mention of years that states no requirement is not one'. Mentions in the listed forms that require nothing: [('We have been fully remote for at least 3 years.', 3), ('In 2 years you will gain experience leading a team.', 2), ('Our customers have 10+ years of history with us.', 10)]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention bare; got {\"value\": \"2021-04-27\", \"evidence\": [{\"path\": \"publishedAt\", \"span\": null, \"raw\": \"2021-04-27T20:13:..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "typical, the three fixture boards: [('greenhouse:gitlab', '2026-05-22', '2026-05-22T09:16:29-04:00'), ('lever:spotify', '2026-06-23', 1782214185805), ('ashby:linear', '2021-04-27', '2021-04-27T20:13:45.158+00:00')]; Lever's epoch millis independently -> 2026-06-23"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "each case keeps the board's value as evidence (value null when it does not parse): [('as written in its own offset, not converted to UTC', True, '2026-09-01'), ('date only', True, '2026-09-01'), ('fractional seconds, Z', True, '2021-04-27'), ('epoch millis, last ms of a UTC day', True, '1970-01-01'), ('epoch millis, next UTC day', True, '1970-01-02'), ('not a date', True, None), ('impossible date', True, None), ('a number under iso8601', True, None), ('a boolean under epoch_millis', True, None)]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "path holds nothing, null at the path, definition date null: undated with no evidence: [{'value': None, 'evidence': []}, {'value': None, 'evidence': []}, {'value': None, 'evidence': []}]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n14",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "overfit: a date path stepping into a list: {\"value\": \"2026-01-02\", \"evidence\": [{\"path\": \"meta.dates.0.posted\", \"span\": null, \"raw\": \"2026-01-02\", \"value\": \"2026-01-02\"}]}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: return convention map keyed ['updated_postings', 'source_report']; got {\"updated_postings\": [{\"source_id\": \"a\", \"posting_id\": \"1\", \"first_seen\": \"2026-09-01\", \"listing\": {..."
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "listed postings replaced with first_seen kept (a/1) or as_of (a/10, new); listed again cleared (a/4); missed becomes no_longer_listed since as_of (a/2) or keeps its date (a/3); failed source (b) and source with no result (gone) unchanged: {('a', '1'): ('2026-09-01', 'listed', None, 'new'), ('a', '10'): ('2026-10-08', 'listed', None, 'new'), ('a', '2'): ('2026-09-01', 'no_longer_listed', '2026-10-08', 'old'), ('a', '3'): ('2026-09-01', 'no_longer_listed', '2026-09-20', 'old'), ('a', '4'): ('2026-09-01', 'listed', None, 'new'), ('b', '1'): ('2026-09-01', 'listed', None, 'old'), ('gone', '9'): ('2026-09-01', 'listed', None, 'old')}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "no entry removed (6 in, 6 kept + 1 new), sorted by source_id then posting_id (posting IDs are strings, so '10' sorts before '2'), inputs not modified: True"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "report: one record per result in result order, counts listed/new/no_longer_listed/listed_again: [{'source_id': 'b', 'status': 'failed', 'reason': 'HTTP 500'}, {'source_id': 'a', 'status': 'ok', 'listed': 3, 'new': 1, 'no_longer_listed': 1, 'listed_again': 1}]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "the same fetch merged again changes nothing and counts nothing new: [{'source_id': 'a', 'status': 'ok', 'listed': 3, 'new': 0, 'no_longer_listed': 0, 'listed_again': 0}]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: empty store and no results: {'updated_postings': [], 'source_report': []}"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: one output, returned bare as a verdict {rule_id, result, field, value, evidence}: {\"rule_id\": \"r1\", \"result\": \"met\", \"field\": \"title\", \"value\": \"Senior Software Engineer\", \"evidence\": [{\"path\": \"payload.title\", \"span\": [16, 24], \"raw\": \"Engin..."
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "contains on title, case-insensitive whole word; a met contains test's evidence is one entry per match with the keyword as value: {\"rule_id\": \"r1\", \"result\": \"met\", \"field\": \"title\", \"value\": \"Senior Software Engineer\", \"evidence\": [{\"path\": \"payload.title\", \"span\": [16, 24], \"raw\": \"Engineer\", \"value\": \"engineer\"}]}"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "contains: whole words only ('engine' not in 'Engineer'); trailing * continues ('engineer*'); a phrase matches across a line break and spaces; 'go' bounded by '-' counts; any keyword; any piece of full_text; title searched alone: [(['engine'], 'title', 'not_met'), (['engineer*'], 'title', 'met'), (['software engineer'], 'full_text', 'met'), (['python'], 'full_text', 'met'), (['go'], 'full_text', 'met'), (['about us'], 'title', 'not_met'), (['ruby', 'python'], 'full_text', 'met'), (['pyth'], 'full_text', 'not_met')]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a met phrase's evidence names its piece and span: [{\"path\": \"body.1\", \"span\": [38, 57], \"raw\": \"Software\\n  Engineer\", \"value\": \"software engineer\"}]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a contains test not met rests on the field record's evidence: {\"rule_id\": \"r\", \"result\": \"not_met\", \"field\": \"title\", \"value\": \"Senior Software Engineer\", \"evidence\": [{\"path\": \"payload.title\", \"span\": null, \"raw\": \"Senior..."
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "bounded by characters that are not letters or digits ('_' bounds, 'é' is a letter): [('c++', 'met'), ('node', 'met'), ('caf', 'not_met')]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "one_of on company, work_arrangement, employment_type, listing_status (ignoring case and surrounding whitespace) and department_team (any value), the same result for every action: [('company', [' gitlab '], ['met', 'met', 'met']), ('company', ['Linear'], ['not_met', 'not_met', 'not_met']), ('work_arrangement', ['hybrid', 'remote'], ['met', 'met', 'met']), ('employment_type', ['contract'], ['not_met', 'not_met', 'not_met']), ('listing_status', ['no_longer_listed'], ['met', 'met', 'met']), ('department_team', ['platform'], ['met', 'met', 'met']), ('department_team', ['Sales'], ['not_met', 'not_met', 'not_met'])]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "listing status comes from the entry, evidence path 'entry.listing': {\"rule_id\": \"r\", \"result\": \"not_met\", \"field\": \"listing_status\", \"value\": \"no_longer_listed\", \"evidence\": [{\"path\": \"entry.listing\", \"span\": null, \"raw\": {\"stat..."
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "alternatives (results for require, exclude, prefer): require/prefer met when any value meets, else cant_tell when any cannot be told, else not_met; exclude met when every value meets, not_met when any fails, else cant_tell; a region meets when it or a region containing it is a rule value, cannot be told when a rule value lies strictly inside it: [('countries', ['CA', 'US'], ['US'], ('met', 'not_met', 'met')), ('countries', ['US'], ['us'], ('met', 'met', 'met')), ('countries', ['DE'], ['US'], ('not_met', 'not_met', 'not_met')), ('seniority', ['senior', 'staff'], ['staff'], ('met', 'not_met', 'met')), ('regions', ['europe'], ['emea'], ('met', 'met', 'met')), ('regions', ['emea'], ['europe'], ('cant_tell', 'cant_tell', 'cant_tell')), ('regions', ['asia'], ['europe'], ('not_met', 'not_met', 'not_met')), ('regions', ['emea', 'north_america'], ['europe'], ('cant_tell', 'not_met', 'cant_tell')), ('regions', ['europe', 'north_america'], ['europe'], ('met', 'not_met', 'met')), ('regions', ['europe', 'emea'], ['europe'], ('met', 'cant_tell', 'met')), ('regions', ['americas'], ['north_america', 'americas'], ('met', 'met', 'met'))]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "salary over a 90,000-120,000 USD yearly range (results for require, exclude): every amount in the range is an alternative, inclusive; a currency or pay period that is null or differs gives cant_tell: [('at_least', 100000, 'USD', 'year', ('met', 'not_met')), ('at_least', 120000, 'USD', 'year', ('met', 'not_met')), ('at_least', 120001, 'USD', 'year', ('not_met', 'not_met')), ('at_least', 90000, 'usd', 'year', ('met', 'met')), ('at_most', 95000, 'USD', 'year', ('met', 'not_met')), ('at_most', 120000, 'USD', 'year', ('met', 'met')), ('at_least', 100000, 'EUR', 'year', ('cant_tell', 'cant_tell')), ('at_least', 100000, 'USD', 'hour', ('cant_tell', 'cant_tell')), ('at_least', 100000, 'USD', 'year', ('cant_tell', 'cant_tell')), ('at_least', 100000, 'USD', 'year', ('cant_tell', 'cant_tell'))]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "years_of_experience inclusive; unknown -> cant_tell: [(3, 'at_least', 3, 'met'), (3, 'at_least', 4, 'not_met'), (3, 'at_most', 3, 'met'), (5, 'at_most', 3, 'not_met'), (None, 'at_least', 1, 'cant_tell')]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "within_days counts back from as_of 2026-10-08, on or after is met; first_seen from the entry with evidence path 'entry.first_seen': [('posted_date', '2026-10-01', 7, 'met'), ('posted_date', '2026-09-30', 7, 'not_met'), ('posted_date', '2026-10-08', 0, 'met'), ('posted_date', None, 7, 'cant_tell'), ('first_seen', '2026-09-08', 30, 'met'), ('first_seen', '2026-09-07', 30, 'not_met')]"
+ },
+ {
+  "tree": "assess",
+  "node": "n5",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "a null value gives cant_tell under every test and action: [('title', ['cant_tell', 'cant_tell', 'cant_tell']), ('countries', ['cant_tell', 'cant_tell', 'cant_tell']), ('regions', ['cant_tell', 'cant_tell', 'cant_tell']), ('seniority', ['cant_tell', 'cant_tell', 'cant_tell']), ('salary', ['cant_tell', 'cant_tell', 'cant_tell']), ('work_arrangement', ['cant_tell', 'cant_tell', 'cant_tell'])]"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: two outputs returned as a map keyed ['shown', 'hidden']: keys ['shown', 'hidden']"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "reasons: failed for require not_met / exclude met; couldnt_check only for a rule set to hide unknowns (b's exclude with unknowns left out defaults to show); saved suppresses rule reasons (c fails 'req' but is saved -> shown; d is saved and hidden -> hidden_by_you only); hidden_by_you first; prefer never hides: {'b': [{'kind': 'failed', 'rule_id': 'req'}, {'kind': 'failed', 'rule_id': 'exc'}, {'kind': 'couldnt_check', 'rule_id': 'req_hide'}], 'd': [{'kind': 'hidden_by_you'}], 'g': [{'kind': 'hidden_by_you'}]}"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "shown ordered by prefer_met most first (a 2; e and f 1; c 0, its prefer cant_tell counted as not met), then posted_date or first_seen newest first (e and f tie on 2026-10-03), then source_id and posting_id (e before f): got ['a', 'e', 'f', 'c'] with prefer_met [2, 1, 1, 0] and dates ['2026-10-01', '2026-10-03', '2026-10-03', '2026-10-07']"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "every posting exactly once; hidden ordered by source_id then posting_id; inputs not modified (True)"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "record shape; marks in the order viewed, saved, applied, hidden; flags new/no_longer_listed/no_posting_date; verdicts in rule order; fields as stored: c={\"marks\": [\"viewed\", \"saved\", \"applied\"], \"flags\": {\"new\": false, \"no_longer_listed\": true, \"no_posting_date\": true}, \"prefer_met\": 0}"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "an unmarked posting has empty marks and is new: {\"marks\": [], \"flags\": {\"new\": true, \"no_longer_listed\": false, \"no_posting_date\": false}}"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "no rules: everything shown, equal dates ordered by source_id then posting_id: [('a', 'x10'), ('a', 'x2'), ('z', 'x1')]"
+ },
+ {
+  "tree": "assess",
+  "node": "n3",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: no postings: {'shown': [], 'hidden': []}"
+ },
+ {
+  "tree": "assess",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "surface",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: one output returned bare (a list of per-rule records): [{\"rule_id\": \"r1\", \"met\": 1, \"not_met\": 1, \"cant_tell\": 2, \"hid\": 3, \"hid_couldnt_check\": 2, \"could_..."
+ },
+ {
+  "tree": "assess",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "per rule in rule order: verdict counts over all postings; hid counts hidden records whose reasons name the rule, hid_couldnt_check those naming it as couldnt_check; could_not_check ordered by source_id then posting_id ('10' before '2' as strings); inputs unchanged (True): [{'rule_id': 'r1', 'met': 1, 'not_met': 1, 'cant_tell': 2, 'hid': 3, 'hid_couldnt_check': 2, 'could_not_check': [{'source_id': 'a', 'posting_id': '1'}, {'source_id': 's', 'posting_id': '2'}]}, {'rule_id': 'r2', 'met': 1, 'not_met': 2, 'cant_tell': 1, 'hid': 1, 'hid_couldnt_check': 0, 'could_not_check': [{'source_id': 'a', 'posting_id': '1'}]}, {'rule_id': 'r3', 'met': 2, 'not_met': 1, 'cant_tell': 1, 'hid': 0, 'hid_couldnt_check': 0, 'could_not_check': [{'source_id': 's', 'posting_id': '10'}]}]"
+ },
+ {
+  "tree": "assess",
+  "node": "n4",
+  "unit": "leaf",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "boundary: no rules -> []; no postings -> zero counts"
+ },
+ {
+  "tree": "refresh",
+  "node": "n2",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed with a stub child: fetch_source called once per source, in order: ['a', 'b', 'c']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n2",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: one result per source in the same order; b's failure leaves a and c as fetched: [[\"a\", \"ok\"], [\"b\", \"failed\"], [\"c\", \"ok\"]]. Static: each result is fetch_source's result for that source alone (the child never raises, so one source cannot stop the list), which carries the ok/failed clauses"
+ },
+ {
+  "tree": "refresh",
+  "node": "n2",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: no sources -> no results"
+ },
+ {
+  "tree": "refresh",
+  "node": "n3",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed with a stub child: extract_posting called once per posting of each ok result, with that posting's payload, its own source's definition and the pay-floor table: [({'k': 1}, 'b'), ({'k': 2}, 'b'), ({'k': 9}, 'a')]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n3",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: results in the same order; the failed result passes through as the same object; each ok posting gains fields from its own source (companies [['B', 'B'], [], ['A']]) and keeps posting_id and payload; the input results are not modified"
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed with stub children: each child receives the records its contract names (location to geography and work arrangement, title to employment type and seniority, full_text and the derived countries to salary): {'read_stated_text': ['payload', 'source'], 'derive_geography': ['payload', 'source', 'stated.location'], 'derive_work_arrangement': ['payload', 'source', 'stated.location'], 'derive_employment_type': ['payload', 'source', 'stated.title'], 'derive_seniority': ['stated.title'], 'derive_salary': ['stated.full_text', 'geo.countries', 'pay_floors'], 'derive_years_of_experience': ['stated.full_text'], 'read_posted_date': ['payload', 'source']}"
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: a field record for every declared field, each the record its child returned: keys ['company', 'countries', 'department_team', 'employment_type', 'full_text', 'link', 'location', 'posted_date', 'regions', 'salary', 'seniority', 'title', 'work_arrangement', 'years_of_experience']"
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "behavior",
+  "method": "static",
+  "outcome": "pass",
+  "detail": "static, assume-guarantee: every value comes from a child whose output is a field record in its field's declared space or null, carrying the evidence it was derived from; the glue reads nothing but payload, source and pay_floors, so the result depends only on these inputs"
+ },
+ {
+  "tree": "refresh",
+  "node": "n6",
+  "unit": "node",
+  "category": "behavior",
+  "method": "static",
+  "outcome": "fail",
+  "detail": "static, assume-guarantee: n6 promises 'a board's value being mapped into a value space only where its meaning matches'. The values maps keep it (their author judges each board value). The narrowed derive_geography and derive_seniority contracts, ratified at stage 3, do not: 'an entry counts wherever it appears, even where the text means something else by it' and \"'Staff Pharmacist' gives 'staff'\" (both present: True). So the clause cannot be derived from the children. The stage 3 record said the narrowing left n6's contract holding; that missed this clause, which the root states too"
+ },
+ {
+  "tree": "refresh",
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed with stub children: fetch -> extract -> merge in that order; extract receives the sources and pay-floor table, merge the stored postings and as_of; each step's output is the next step's input"
+ },
+ {
+  "tree": "refresh",
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: both outputs, store well-formed; a's new posting first seen today and its missed one no longer listed; failed source b and retired source unchanged; report per source in order: [{'source_id': 'a', 'status': 'ok', 'listed': 1, 'new': 1, 'no_longer_listed': 1, 'listed_again': 0}, {'source_id': 'b', 'status': 'failed', 'reason': 'timeout'}]"
+ },
+ {
+  "tree": "refresh",
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "static",
+  "outcome": "fail",
+  "detail": "static, assume-guarantee over the children's contracts: the store, listing, failure, no-removal and report clauses follow from fetch_sources, extract_fetched and merge_into_store, and every value's space and evidence from the field-record shape extract_fetched promises. Two root clauses are not carried: extract_fetched's contract promises 'the extraction of its payload under its own source's definition and the pay-floor table' and the field shapes, but neither 'a board's value being mapped into a value space only where its meaning matches' (present: False) nor the salary clause (bare $ only for a US-only posting; an unstated period yearly only at or above the pay floor) (present: False). The leaves below do keep both (derive_salary's contract states the salary rules; extract_posting's states the mapping rule), but the contracts between them and the root drop them, so a different extract_fetched satisfying its own contract could break the root"
+ },
+ {
+  "tree": "assess",
+  "node": "n2",
+  "unit": "node",
+  "category": "pattern",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed with a stub child: evaluate_rule once per posting and rule, postings in order, rules in order within each: [('2', 'r2'), ('2', 'r1'), ('1', 'r2'), ('1', 'r1')]"
+ },
+ {
+  "tree": "assess",
+  "node": "n2",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: one item per posting in posting order, naming it, verdicts one per rule in rule order; no postings -> []; no rules -> empty verdict lists: [{\"source_id\": \"s\", \"posting_id\": \"2\", \"verdicts\": [{\"rule_id\": \"r2\", \"result\": \"cant_tell\", \"field\": \"title\", \"value\": null, \"evidence\": []}, {\"rule_id\": \"r1\",..."
+ },
+ {
+  "tree": "assess",
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed with stub children: only watched sources' postings go in ([('a', '1'), ('a', 'h'), ('c', '2')]; source b unwatched, 'zzz' watched but absent), in stored order; the same verdicts reach placement and diagnosis; diagnosis gets the hidden records"
+ },
+ {
+  "tree": "assess",
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "executed",
+  "outcome": "pass",
+  "detail": "executed: all three outputs; every watched posting exactly once across shown and hidden: {\"shown\": [{\"source_id\": \"a\", \"posting_id\": \"1\", \"fields\": {}, \"first_seen\": \"2026-10-01\", \"listing\": {\"status\": \"listed\", \"since\": null}, \"verdicts\": [], \"prefer_met\": 0, \"marks\": [], \"flags\": {\"new\"..."
+ },
+ {
+  "tree": "assess",
+  "node": "n1",
+  "unit": "node",
+  "category": "behavior",
+  "method": "static",
+  "outcome": "fail",
+  "detail": "static, assume-guarantee over the children's contracts: watched filtering is the glue's own; exactly-once placement, reasons, ordering, flags and marks follow from place_postings; diagnostics from diagnose_rules over the watched postings' verdicts; same inputs, same outputs from the three functions. The verdict clauses are not carried: evaluate_rules promises 'each the verdict of that rule on that posting at the current date' and the verdict's shape, but none of the root's rules for what a verdict is: {\"can't tell exactly when the field is unknown or not comparable\": False, 'alternatives: any for require/prefer, every for exclude': False, 'keyword tests: case-insensitive whole words, trailing *': False, 'within-days counts back from the current date': False}. Only evaluate_rule's contract (below evaluate_rules) states them, so a different evaluate_rules satisfying its own contract could break the root"
+ }
+]

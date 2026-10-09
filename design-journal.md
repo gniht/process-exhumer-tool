@@ -125,6 +125,16 @@ That exposed a pattern worth carrying forward. Two leaf contracts promised what 
 
 Decomposition could write leaf contracts that way from the start whenever a leaf's behavior is a lookup. Not yet folded into the prompt; queued below.
 
+## 2026-10-08 — Job-triage v2, Stage 4
+
+**199 checks, 97% executed, 10 failures in 8 of 19 units, nothing deferred.** All 13 claim audits are clean. The failures fall into three kinds:
+
+- **Code against contract (3).** Whitespace across inline HTML tags, spans into raw rather than converted text, and two salary statements sharing one pay-period window. Small re-codifications.
+- **Open language, again (n10, n13, and two n8 wording conflicts).** Stage 3 cleared n10 and n13 because their word lists were closed, but each also carries an exclusion clause ("a word naming the subject of the work", "a mention of years that states no requirement") that no list can keep. Execution found inputs that get through. Stage 3's test for faked determinism should look for clauses like these, not only for verbs like "denotes".
+- **Clauses dropped between leaf and root (both roots, and n6).** An iterative node that promises "the verdict of that rule" or "the extraction of its payload" names its child's result without restating it, so the root's clauses fall through a contract that flat verification can see. Separately, the narrowing ratified at stage 3 contradicts the "only where its meaning matches" clause in n6 and the root, which stage 3 missed. Assume-guarantee caught all three by reading, not execution.
+
+Every failure has a recommended fix in the stage record. They are wording edits in five contracts plus four small code changes, and none needs a decision point.
+
 ## Next
 
 **First, the job-triage program made usable**: revise run 2's root contract (its three defects, the user's show/hide rules, no decision the user must answer on every run) and re-run stages 2–5 under the decision seam, with a way to use it day to day (a local web page is the current direction). **Then run 3, on a different task**, to exercise the 2026-09-25 and 2026-10-04 revisions on something whose defects aren't already known. Still queued:
@@ -136,3 +146,5 @@ Decomposition could write leaf contracts that way from the start whenever a leaf
   - a cross-tree interface check in the decomposition harness;
   - a size criterion in the codify test;
   - for leaves whose behavior is a lookup, decomposition writes "the leaf's table decides" into the contract.
+  - a clause-carry check in decomposition: every clause of a parent's behavior must follow from its children's contracts;
+  - codification's faked-determinism test also looks for exclusion clauses in open language.

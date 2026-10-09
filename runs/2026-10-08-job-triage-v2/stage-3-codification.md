@@ -106,6 +106,9 @@ Where the edit landed:
 - Only these two leaf contracts changed, in `node-tree-refresh.json` and both codified trees.
 - The parent, `extract_posting` (n6), keeps its contract and glue. It promises each value is
   "within its field's declared value space or null", and a table value still is.
+  *Corrected at stage 4:* n6 also promises a board's value is mapped "only where its meaning
+  matches", and so does the root. The narrowed contracts admit the opposite in so many words, so
+  that clause no longer follows from the children. See `stage-4-verification.md`, failure C.
 - The root contracts never said "denotes", so they are unchanged.
 - The code is unchanged: it already was the table. It was re-checked mechanically against the
   narrowed contracts (same parameters, imports and zero `decide()`).
@@ -118,6 +121,11 @@ Both narrowings are ratified, so nothing from this stage is left provisional.
 `derive_employment_type`, `derive_work_arrangement`, `derive_salary` and
 `derive_years_of_experience` do not have this gap: their contracts define their forms closed,
 by listed words or a stated shape.
+
+*Corrected at stage 4:* `derive_employment_type` and `derive_years_of_experience` do have this
+gap. Each also carries an exclusion clause in open language ("a word naming the subject of the
+work gives nothing", "a mention of years that states no requirement is not one"), and execution
+found inputs the word lists can't keep out. See `stage-4-verification.md`, failure B.
 
 ## Readings verification should judge
 
