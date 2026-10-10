@@ -76,6 +76,31 @@ in the harness.
    Entries stand as `provisional` until the user chooses; mark the ones they
    ratify. An autonomous run with no user to ask leaves every entry
    provisional rather than promoting its own claims.
+
+   **Record the outcome on the entry** as
+   `ratification: { outcome, date, by, basis }`, so a later reader of the tree
+   can tell these three apart:
+
+   - `adopted_alternative` — the user took the `nearest_codifiable_alternative`.
+     The entry is **not** residue; the leaf becomes a re-codification task and
+     the decision point is expected to disappear.
+   - `ratified` — the user kept the decision point, fallback and all. The entry
+     stands as residue.
+   - `provisional` — never put to a user, or the alternative was never
+     attempted. The default, and never self-promoted: an unattempted remedy
+     means the claim is unearned.
+
+   `basis` is the user's actual argument, not a restatement of the claim. On
+   `adopted_alternative` it is the only place that reasoning survives, because
+   the `why_irreducible` above it now reads as a refuted claim — keep that text
+   verbatim rather than editing it, and say in the basis what broke it.
+
+   **A basis often rests on information the contract never carried.** A leaf
+   reaching for `decide()` is implicitly pricing an unanswered question, and a
+   flat stage cannot see what an unknown costs downstream — whether it is
+   discarded work or a few seconds of a person's attention. When the user's
+   basis supplies that, the outcome is also an upstream finding: report it,
+   because the next contract through this stage will misprice the same thing.
 6. **Emit** the updated tree as a single fenced ```json block — the handoff
    to verification. Leaf nodes now carry `code` and `result`:
 

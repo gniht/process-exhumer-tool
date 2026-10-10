@@ -70,3 +70,74 @@ malformed criterion, not an unanswerable posting.
 neither may reference the other. They are not identical. Composition nests leaf code verbatim
 into per-node wrappers, so the duplication is harmless — but it is the first concrete instance
 of the cost flatness buys, and worth watching as trees grow.
+
+---
+
+## Residue backfill — 2026-10-09
+
+Run 2 predates the residue fields (`cause`, `nearest_codifiable_alternative`) and the
+ratification gate. This records the backfill of its one entry, `n13`, and the gate's **first
+live use**. Written in run 2's vocabulary, where the seam was `ai(instruction, payload)` and a
+seam call meant a model call at run time; the seam has since become `decide(request)`, a
+question for a person.
+
+**Outcome: the alternative was adopted. The claim does not stand, and run 2's residue list is
+empty.** `cause` was `unstructured_encoding` — the fact is in the payload, but only as prose.
+
+**Writing the nearest alternative out refuted the entry's own argument.** Stage 3 had claimed a
+pattern-matcher would "silently report 'not stated'" for phrasings it failed to enumerate —
+absence reported where the text speaks, the one failure the behavior forbids. That assumes a
+**two-state** extractor. A three-state one does not have the flaw:
+
+1. value parsed → return it
+2. an amount found but not resolvable → `stated: false`, provenance naming the span it could
+   not parse
+3. no amount found → `stated: false`, payload genuinely silent
+
+State 2 is a *flagged* gap, not a silent one: detecting that a posting discusses pay is far
+cheaper than parsing the figure out of it, and the original claim missed that asymmetry.
+
+**The author's argument, which flat codification could not have made.** This leaf's consumer is
+a triage tool with plural criteria, so a posting that satisfies every other criterion and comes
+back `not_answerable` on one surfaces for a human glance that settles it in seconds. The cost of
+an unknown is a few seconds of attention, not a lost posting. Coverage is therefore the seam
+call's only advantage over deterministic extraction — and the dimension that matters least.
+
+Generalized: **a leaf reaching for the seam is implicitly pricing an unknown, and a flat stage
+cannot see what an unknown costs downstream.** The information has to travel in the contract, so
+the fix belongs at stage 1.
+
+**The claim was then checked against the recorded calls, and it failed.** `seam.log` holds all
+46 with payloads and returns, so the deterministic alternative is measurable against the model's
+own output rather than against a guess:
+
+- **`salary_floor`, 29 calls, 12 stated.** Every evidence span is a plain currency amount
+  (`$71,200`, `$139,000 — $220,000 USD`, `Salary Range $120,400`, `$132,948–$189,927`). A
+  currency regex taking the minimum plausible value scored **12/12 exact** on the low end the
+  model picked, and **0/17 false positives** on the calls it called silent.
+- **`remote`, 17 calls, 17 stated, all `True`.** Spans are a closed vocabulary: `Remote, Canada`
+  (Greenhouse's own `location.name`), `all-remote`, `All of our roles are remote`.
+
+**One design correction the data forced.** 11 of the 17 silent `salary_floor` postings carry
+compensation keywords with zero amounts — GitLab boilerplate discusses total rewards without
+stating a figure. Triggering state 2 on *keyword presence* would fire on 11/17 and bury the user
+in "go look" for postings that state nothing. **State 2 must trigger on an unparseable amount,
+never on a keyword.** Defined that way it fires zero times here, which is correct: it is a
+safety valve for phrasings outside the vocabulary, not a routine path.
+
+**Structural check, which ruled out a configuration-only fix.** Salary is prose-only across all
+three boards — Ashby carries a `compensation` object but Linear leaves it unpopulated
+(`shouldDisplayCompensationOnJobPostings: false`), Greenhouse has no salary field, Lever no
+`salaryRange`. Meanwhile `remote` is structural everywhere but **never a boolean**:
+`isRemote: true`, `workplaceType: "hybrid"`, `location.name: "Remote, Bangalore"`. That second
+finding is the value-space defect, and it sits in the *mapped* path (`n12`), not here — `n13`
+never sees the postings it spoils.
+
+**What the gate proved.** A model was one step from ratifying a claim that a model is
+indispensable, on inherited evidence, with the alternative never attempted. "Ratified by the
+user, not asserted by a model" is the rule that caught it.
+
+**Not re-codified.** The follow-on this queued was superseded by job-triage v2
+(`runs/2026-10-08-job-triage-v2/`), built on fresh contracts rather than by patching run 2, and
+already deriving salary and work arrangement deterministically with every field inside its
+declared value space. Run 2's tree stays as the historical record.

@@ -145,6 +145,52 @@ Assembly found two defects that sit between stages:
 
 Stage 4's leaf checks now also run against the assembled program, so an assembly that changes a leaf fails a check rather than a user.
 
+## 2026-10-09 — The ratification gate's first live use
+
+Backfilling run 2's one residue entry with the fields added on 2026-09-25 (`cause`,
+`nearest_codifiable_alternative`) was meant to be a records task. It ended with **the
+alternative adopted and the claim withdrawn**, leaving run 2's residue list empty.
+
+**Writing the nearest alternative out refuted the entry's own argument.** Stage 3 had claimed a
+pattern-matcher would "silently report 'not stated'" for phrasings it failed to enumerate —
+absence reported where the text speaks, the one failure the behavior forbids. That assumes a
+*two-state* extractor. A three-state one (value parsed / amount found but unresolvable / no
+amount present) flags the gap instead, because detecting that a posting discusses pay is far
+cheaper than parsing the figure out of it. The field exists to force exactly this.
+
+**The author's argument, which flat codification could not have made.** The leaf's consumer is a
+triage tool with plural criteria, so a posting that clears every other bar and returns
+`not_answerable` on one surfaces for a human glance that settles it in seconds. *The cost of an
+unknown is a few seconds of attention, not a lost posting.* Coverage is therefore the seam
+call's only advantage over deterministic extraction, and the dimension that matters least.
+Generalized: **a leaf reaching for the seam is implicitly pricing an unknown, and a flat stage
+cannot see what an unknown costs downstream.** The information has to travel in the contract for
+a flat stage to use it, so the fix belongs at stage 1 — queued below.
+
+**Then the claim was measured, and it lost.** `seam.log` records all 46 calls with payloads and
+returns, so the alternative is checkable against the model's own output. A currency regex scored
+**12/12 exact** on the salary values the model extracted and **0/17 false positives** on the
+calls it called silent; `remote` was 17/17 over a closed vocabulary, most of it Greenhouse's own
+`location.name`. The data also corrected the three-state design: 11 of 17 silent postings carry
+compensation keywords with no amount, so the flagged state must trigger on an **unparseable
+amount**, never a keyword, or it fires on postings that state nothing. Evidence and the
+structural survey of the three boards are in run 2's `stage-3-codification.md`.
+
+**What the gate proved.** A model was one step from ratifying a claim that a model is
+indispensable, on inherited evidence, with the alternative never attempted. "Ratified by the
+user, not asserted by a model" is the rule that caught it. The harness gained what it still
+lacked: the **recorded** shape of the outcome — `ratification: { outcome, date, by, basis }`
+over `adopted_alternative` / `ratified` / `provisional` — so a later reader of a tree can tell
+an entry adopted away from one never asked about, with `basis` carrying the user's actual
+argument and a refuted `why_irreducible` kept verbatim above it.
+
+**Superseded, deliberately.** The re-codification this queued was overtaken by job-triage v2,
+which rebuilt on fresh contracts instead of patching run 2 and already derives salary and work
+arrangement deterministically, every field inside its declared value space, zero model calls
+against run 2's 46. Run 2's tree stays as the historical record and is not re-codified. The
+backfill's independent value is the measurement: it is the repo's one case where a withdrawn
+claim was checked against recorded calls rather than argued.
+
 ## Next
 
 **Where things stand (2026-10-08).** Job-triage v2 (`runs/2026-10-08-job-triage-v2/`) has been through all five stages. The two programs, `job_triage_refresh.py` and `job_triage_assess.py`, ran live and are recorded in `stage-5-composition.md`. To pick it up:
@@ -170,7 +216,11 @@ Stage 4's leaf checks now also run against the assembled program, so an assembly
 Still queued:
 
 - The subagent-isolation experiment: decompose run 2's root contract in an isolated context and diff the trees.
-- The deferred interrogator refinements: entry-boundary input concreteness, a derivability check, and an AI-user front door.
+- The deferred interrogator refinements: entry-boundary input concreteness, a derivability
+  check, an AI-user front door, and a **cost-of-an-unknown probe** — make the root contract
+  declare what happens when the process cannot tell, because codification otherwise
+  overprices an unknown and reaches for a decision point to avoid a failure that is nearly
+  free (2026-10-09).
 - The residue-log decision (spec, Open Questions).
 - From job-triage v2:
   - a cross-tree interface check in the decomposition harness;
