@@ -191,9 +191,25 @@ against run 2's 46. Run 2's tree stays as the historical record and is not re-co
 backfill's independent value is the measurement: it is the repo's one case where a withdrawn
 claim was checked against recorded calls rather than argued.
 
+## 2026-10-17 — Job-triage v2, the host
+
+**A local server and page around the two programs, built by hand outside the pipeline** (`runs/2026-10-08-job-triage-v2/host/`). It is standard-library Python plus one HTML/JS page with no build step and no outside scripts. It imports `job_triage_refresh.py` and `job_triage_assess.py` unchanged and calls their roots in-process. The host never filters, ranks or reads a posting: the page shows what assess returned. Over the 2026-10-08 store, demo-a gets 66 shown and 272 hidden and demo-b 13 and 100, the same as the Stage 5 live runs.
+
+What lives in the host, as stage 1 placed it (items 8, 13, 14):
+- **Accounts and sessions.** Password sign-in (PBKDF2), an HttpOnly SameSite=Strict session cookie, and every change applied to the user the session names, never one the request names. The server binds 127.0.0.1 and refuses other Host headers and cross-origin posts. The demo users from `live/users.json` are created on first start with the password "demo", and the sign-in page offers them one click each, which is the user switch for a demo. Real accounts come from `python3 host/server.py adduser NAME`. Sessions are in memory, so a restart means signing in again.
+- **Every rule option the contracts allow**, offered from the declared value spaces plus the values in the store, with counts. Can't-tell is set per require or exclude rule and defaults to shown. Each rule shows its diagnostics: met, not met, can't tell, and how many postings it hides.
+- **Restore defaults behind a confirmation, with undo.** The only setting with a declared default is a rule's can't-tell handling, so restoring sets every rule back to shown. Rules, watched sources and marks are untouched, as item 14 proposed. Restoring again when nothing differs keeps the earlier undo.
+- **Local storage only:** `host/data/` (git-ignored) holds the store, one file per user and the last refresh report. Sources and pay floors are read from `live/` on every refresh.
+
+**One display choice.** A verdict chip is coloured by what it does to the posting, not by the literal verdict. An exclude rule *not met* counts for the posting, and showing it as a red ✗ read as a failure. The evidence panel keeps the literal met / not met / can't tell.
+
+Checked by `host/check_host.py` (45 checks, offline): a fixture server serves run 2's saved board responses, so refresh runs end to end with a failing fourth board. The checks cover the sign-in gate, per-user isolation, rule validation, marks, saved overriding rules, restore and undo, and output identical to assess called directly. The page was also driven in headless Firefox through sign-in, evidence, the hidden list, the rule editor, restore and undo, and the user switch, at desktop and narrow widths, with no script errors.
+
 ## Next
 
-**Where things stand (2026-10-08).** Job-triage v2 (`runs/2026-10-08-job-triage-v2/`) has been through all five stages. The two programs, `job_triage_refresh.py` and `job_triage_assess.py`, ran live and are recorded in `stage-5-composition.md`. To pick it up:
+**Where things stand (2026-10-17).** Job-triage v2 (`runs/2026-10-08-job-triage-v2/`) has been through all five stages, and the host around its two programs is built. The two programs, `job_triage_refresh.py` and `job_triage_assess.py`, ran live and are recorded in `stage-5-composition.md`. To pick it up:
+
+- **Run the host:** from the run directory, `python3 host/server.py`, then open http://127.0.0.1:8765. Its checks: `python3 host/check_host.py`.
 
 - **Rerun the live runs:** from the run directory, `python3 live/run_live.py`. It needs network access to the boards and rebuilds the git-ignored stores and outputs.
 - **Re-check everything:** `python3 verify/run_all.py` for stage 4, and `VERIFY_ARTIFACT=1 python3 verify/artifact_checks.py` for the leaf checks against the assembled programs.
@@ -203,14 +219,8 @@ claim was checked against recorded calls rather than argued.
 The author's two open questions from `stage-5-composition.md` were answered on 2026-10-17, and the answer to both is no change: "Permanent" stays unmapped and pay floors stay USD only. The reasons are recorded there.
 
 **Next, in order:**
-1. **The host**, built outside the pipeline. It calls the two programs:
-   - a small local server and page, local storage only;
-   - basic authentication;
-   - users switchable for a demo;
-   - every rule option the data supports, with can't-tell per rule, shown by default;
-   - restore defaults behind a confirmation popup.
-2. **A run with the author's own rules.** The demo users' rules in `live/users.json` are not theirs.
-3. **Run 3, on a different task**, to exercise the revisions on something whose defects aren't already known.
+1. **A run with the author's own rules.** The demo users' rules in `live/users.json` are not theirs. The host is now the way to write them: `adduser`, then rules in the page.
+2. **Run 3, on a different task**, to exercise the revisions on something whose defects aren't already known.
 
 Still queued:
 
