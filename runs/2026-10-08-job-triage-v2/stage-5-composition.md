@@ -177,6 +177,14 @@ this program needs lives where you can read and edit it:
 2. **Pay floors beyond USD**, whenever you want salaries in other currencies read as yearly
    without a stated period. It needs each country's minimum wage, so it's yours to set.
 
+**Answered 2026-10-17: both stay as they are.** No data changed.
+- **"Permanent" stays unmapped.** It is 71 of the 79 listed Spotify postings, and none of the 71
+  says full-time or part-time in its text. Spotify's commitment values separate employees from
+  contractors ("Full Time Contractor"), not hours. An unknown here costs a glance, while a wrong
+  "full-time" would be a silent error.
+- **Pay floors stay USD only.** PLN is the only other currency in any salary, on 4 GitLab
+  postings, and those keep an unknown pay period.
+
 ## Framework findings
 
 1. **Composition's "verbatim, indented one level" changes code that has multi-line strings.**

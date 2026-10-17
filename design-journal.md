@@ -200,18 +200,17 @@ claim was checked against recorded calls rather than argued.
 - **Change a contract:** edit `tools/build_trees.py`, then run `python3 tools/build_trees.py && python3 tools/codify_trees.py`, then `python3 verify/run_all.py`, then `python3 compose.py`. Leaf code lives in `leaves/`.
 - **Change what is fetched:** edit `live/sources.json` (data, no rebuild needed).
 
+The author's two open questions from `stage-5-composition.md` were answered on 2026-10-17, and the answer to both is no change: "Permanent" stays unmapped and pay floors stay USD only. The reasons are recorded there.
+
 **Next, in order:**
-1. **The author's two open questions** from `stage-5-composition.md`:
-   - map Lever's "Permanent" to full-time?
-   - pay floors beyond USD?
-2. **The host**, built outside the pipeline. It calls the two programs:
+1. **The host**, built outside the pipeline. It calls the two programs:
    - a small local server and page, local storage only;
    - basic authentication;
    - users switchable for a demo;
    - every rule option the data supports, with can't-tell per rule, shown by default;
    - restore defaults behind a confirmation popup.
-3. **A run with the author's own rules.** The demo users' rules in `live/users.json` are not theirs.
-4. **Run 3, on a different task**, to exercise the revisions on something whose defects aren't already known.
+2. **A run with the author's own rules.** The demo users' rules in `live/users.json` are not theirs.
+3. **Run 3, on a different task**, to exercise the revisions on something whose defects aren't already known.
 
 Still queued:
 
